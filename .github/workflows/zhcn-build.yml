@@ -19,9 +19,9 @@ jobs:
       - name: Apply Chinese patch
         shell: pwsh
         run: |
-          git apply --check zhCN.patch
+          git apply --check zhCN-fixed.patch
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          git apply zhCN.patch
+          git apply zhCN-fixed.patch
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Setup Flutter
