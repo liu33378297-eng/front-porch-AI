@@ -1,0 +1,598 @@
+diff --git a/lib/services/chargen/archetype_presets.dart b/lib/services/chargen/archetype_presets.dart
+index 1bb8614..f4b9104 100644
+--- a/lib/services/chargen/archetype_presets.dart
++++ b/lib/services/chargen/archetype_presets.dart
+@@ -6,89 +6,89 @@
+ const Map<String, Map<String, String>> kArchetypePresets = {
+   'Tsundere': {
+     'concept':
+-        'A sharp-tongued person who hides their caring nature behind a cold exterior, denying their feelings while secretly looking out for {{user}}',
++        '一个嘴上刻薄、外表冷淡，却暗中关心 {{user}} 的人；总是否认自己的感情，却会悄悄照顾对方。',
+     'keywords':
+-        'tsundere, sharp-tongued, secretly caring, stubborn, easily flustered',
++        '傲娇、嘴硬、暗中关心他人、固执、容易害羞',
+   },
+   'Yandere': {
+     'concept':
+-        'An obsessively devoted person whose love borders on dangerous possessiveness, willing to do anything to keep {{user}} close',
++        '一个痴迷而专情的人，爱意近乎危险的占有欲，愿意不惜一切代价让 {{user}} 留在身边。',
+     'keywords':
+-        'yandere, obsessive, possessive, devoted, unstable, sweet on the surface',
++        '病娇、痴迷、占有欲强、专情、情绪不稳定、表面甜美',
+   },
+   'Kuudere': {
+     'concept':
+-        'A stoic and emotionally reserved individual who rarely shows feelings, but whose rare moments of warmth are deeply meaningful',
+-    'keywords': 'kuudere, stoic, calm, reserved, analytical, quietly caring',
++        '一个沉着冷静、情感内敛的人，很少流露感情，但偶尔展现的温柔格外珍贵。',
++    'keywords': '冷娇、沉稳、冷静、内敛、善于分析、默默关心他人',
+   },
+   'Femme Fatale': {
+     'concept':
+-        'A dangerously alluring and manipulative figure who uses charm and wit as weapons, always three steps ahead',
++        '一个极具危险魅力、擅长操纵他人的人物，把魅力与机智当作武器，总能先人三步。',
+     'keywords':
+-        'seductive, cunning, confident, dangerous, mysterious, manipulative',
++        '迷人、狡黠、自信、危险、神秘、善于操纵',
+   },
+   'Dark Lord': {
+     'concept':
+-        'A powerful and charismatic ruler of dark forces, whose iron will conceals a complex past and a surprising code of honor',
++        '一位强大而富有魅力的黑暗势力统治者，钢铁般的意志背后藏着复杂的过去，以及出人意料的荣誉准则。',
+     'keywords':
+-        'commanding, ruthless, charismatic, intelligent, dark humor, powerful',
++        '威严、冷酷、有魅力、聪明、黑色幽默、强大',
+   },
+   'Mentor': {
+     'concept':
+-        'A wise and experienced guide who mentors {{user}} through challenges, offering cryptic advice and hard-earned wisdom',
+-    'keywords': 'wise, patient, cryptic, experienced, protective, tough love',
++        '一位睿智而经验丰富的引路人，在 {{user}} 遭遇挑战时给予指导，提供晦涩的建议与历经磨炼才获得的智慧。',
++    'keywords': '睿智、耐心、言辞隐晦、经验丰富、保护欲强、严厉的关怀',
+   },
+   'Rival': {
+     'concept':
+-        'A fiercely competitive adversary who pushes {{user}} to their limits, respecting strength while refusing to lose',
++        '一位竞争心极强的对手，不断逼迫 {{user}} 挑战极限；尊重强者，却绝不认输。',
+     'keywords':
+-        'competitive, proud, skilled, determined, begrudging respect, ambitious',
++        '好胜、自尊心强、技艺高超、坚定、嘴上不服但心存敬意、有野心',
+   },
+   'Best Friend': {
+     'concept':
+-        'A loyal and easygoing companion who always has {{user}}\'s back, bringing laughter and genuine support to every situation',
+-    'keywords': 'loyal, funny, supportive, easygoing, ride-or-die, honest',
++        '一位忠诚随和的伙伴，总会支持 {{user}}，无论遇到什么情况都能带来欢笑与真诚的帮助。',
++    'keywords': '忠诚、幽默、乐于支持他人、随和、可靠、坦诚',
+   },
+   'The Healer': {
+     'concept':
+-        'A gentle and empathetic soul with healing abilities who tends to everyone\'s wounds but their own, carrying quiet burdens',
++        '一位温柔而富有同理心、拥有治疗能力的人，总在照料他人的伤口，却忽略自己的伤痛，默默背负着重担。',
+     'keywords':
+-        'gentle, empathetic, selfless, nurturing, quietly strong, burdened',
++        '温柔、共情、无私、善于照料他人、外柔内刚、背负重担',
+   },
+   'Rogue': {
+     'concept':
+-        'A charming and morally grey trickster who lives by their own rules, stealing hearts as easily as coin purses',
++        '一位魅力十足、善恶界限模糊的诡计家，只按自己的规则行事，偷走人心就像顺手牵羊一样轻松。',
+     'keywords':
+-        'charming, witty, roguish, morally grey, quick on their feet, flirtatious',
++        '迷人、机智、狡黠、道德立场模糊、反应敏捷、风流',
+   },
+   'Chosen One': {
+     'concept':
+-        'A reluctant hero burdened by an ancient prophecy, thrust into a destiny they never asked for while just wanting a normal life',
++        '一位被古老预言束缚的无奈英雄，被迫踏上从未选择的命运之路，心里却只想过平凡生活。',
+     'keywords':
+-        'reluctant, burdened, humble, determined, conflicted, growing into power',
++        '不情愿、背负重担、谦逊、坚定、内心矛盾、逐渐成长为强者',
+   },
+   'The Ex': {
+     'concept':
+-        'A former flame who reappears unexpectedly in {{user}}\'s life, carrying unresolved tension, lingering feelings, and unanswered questions',
++        '一位突然重新出现在 {{user}} 生活中的旧爱，带着未解的矛盾、挥之不去的感情和没有答案的问题。',
+     'keywords':
+-        'complicated, nostalgic, guarded, magnetic, unresolved, bittersweet',
++        '关系复杂、怀旧、戒备心强、富有吸引力、心结未解、苦乐参半',
+   },
+   'Dandere': {
+     'concept':
+-        'A painfully shy and quiet soul who struggles to express themselves, but reveals incredible sweetness and depth once they feel safe enough to open up',
++        '一个极度害羞安静的人，不善表达自己；但在感到足够安全、愿意敞开心扉后，会展现出惊人的温柔与深度。',
+     'keywords':
+-        'dandere, shy, quiet, gentle, sweet, anxious, secretly passionate',
++        '沉默寡言、害羞、安静、温柔、甜美、容易焦虑、内心热情',
+   },
+   'Genki': {
+     'concept':
+-        'An unstoppable ball of infectious energy and optimism who drags everyone into adventures, refuses to let anyone be sad, and lights up every room',
++        '一个活力与乐观仿佛永不枯竭的人，总能感染周围的人、拉着大家去冒险，不愿看到任何人难过，也总能点亮整个房间。',
+     'keywords':
+-        'genki, energetic, optimistic, loud, cheerful, stubborn positivity, adventurous',
++        '元气满满、精力旺盛、乐观、活泼、开朗、积极得近乎固执、热爱冒险',
+   },
+   'Ojou-sama': {
+     'concept':
+-        'A sheltered noble or wealthy heir with an imperious demeanor and signature "ohoho" laugh, who secretly yearns for normal friendships and real connections',
++        '一位受保护过度的贵族或富家继承人，举止高傲，带着标志性的“呵呵呵”笑声，内心却渴望普通的友谊与真诚的联结。',
+     'keywords':
+-        'ojou-sama, elegant, prideful, sheltered, secretly lonely, dramatic, refined',
++        '大小姐气质、优雅、骄傲、被保护过度、内心孤独、戏剧化、讲究',
+   },
+ };
+diff --git a/lib/ui/character_creator/steps/quick_config_step.dart b/lib/ui/character_creator/steps/quick_config_step.dart
+index 31f6a9d..a50aae8 100644
+--- a/lib/ui/character_creator/steps/quick_config_step.dart
++++ b/lib/ui/character_creator/steps/quick_config_step.dart
+@@ -100,38 +100,38 @@ class QuickConfigStep extends StatelessWidget {
+             children: [
+               CreatorConfigHeader(
+                 state: state,
+-                title: 'Quick Create',
+-                intro: 'Name it, describe it, generate.',
++                title: '快速创建',
++                intro: '为角色命名、添加描述，然后生成。',
+               ),
+               const SizedBox(height: 16),
+ 
+               // The Basics
+               CreatorSectionCard(
+-                title: 'The Basics',
+-                subtitle: 'Who are they? A name and a sentence is plenty.',
++                title: '基本信息',
++                subtitle: '角色是谁？填写名称，再用一句话简单描述即可。',
+                 icon: Icons.badge_outlined,
+                 accentColor: quickAccent,
+                 initiallyExpanded: true,
+                 children: [
+-                  _inputLabel(context, 'Character Name'),
++                  _inputLabel(context, '角色名称'),
+                   _textField(
+                     context,
+                     controller: state.nameController,
+-                    hint: 'Morgana, Kaito, Vex...',
++                    hint: '例如：Morgana、Kaito、Vex…',
+                     accent: quickAccent,
+                   ),
+                   const SizedBox(height: 16),
+                   _inputLabel(
+                     context,
+-                    'Describe them (optional)',
++                    '角色描述（选填）',
+                     helper:
+-                        'A sentence or two is plenty. Leave it blank and the AI will invent someone.',
++                        '写一两句话即可。留空则由 AI 自动构思角色。',
+                   ),
+                   _textField(
+                     context,
+                     controller: state.conceptController,
+                     hint:
+-                        'A gruff dwarven blacksmith who secretly writes poetry...',
++                        '一位外表粗犷、私下却喜欢写诗的矮人铁匠……',
+                     accent: quickAccent,
+                     maxLines: 4,
+                     minLines: 3,
+@@ -139,15 +139,15 @@ class QuickConfigStep extends StatelessWidget {
+                   const SizedBox(height: 16),
+                   _inputLabel(
+                     context,
+-                    'Scenario / Setting (optional)',
++                    '场景／背景设定（选填）',
+                     helper:
+-                        'Where does the story take place? What\'s the situation? The AI will build on this.',
++                        '故事发生在哪里？当前是什么情境？AI 会据此扩展。',
+                   ),
+                   _textField(
+                     context,
+                     controller: state.quickScenarioController,
+                     hint:
+-                        'A modern coffee shop where they work as a barista, a fantasy guild hall, a space station...',
++                        '例如：角色工作的现代咖啡馆、奇幻公会大厅、空间站……',
+                     accent: quickAccent,
+                     maxLines: 3,
+                     minLines: 2,
+@@ -157,13 +157,13 @@ class QuickConfigStep extends StatelessWidget {
+ 
+               // Style & Greetings
+               CreatorSectionCard(
+-                title: 'Style & Greetings',
+-                subtitle: 'How they look and how they say hello.',
++                title: '风格与开场白',
++                subtitle: '设置角色的外观画风与开场白风格。',
+                 icon: Icons.tune,
+                 accentColor: quickAccent,
+                 initiallyExpanded: true,
+                 children: [
+-                  _inputLabel(context, 'Avatar Art Style'),
++                  _inputLabel(context, '头像画风'),
+                   AvatarArtStyleSelector(
+                     selectedStyle: state.artStyle,
+                     accentColor: quickAccent,
+@@ -174,7 +174,7 @@ class QuickConfigStep extends StatelessWidget {
+                     },
+                   ),
+                   const SizedBox(height: 16),
+-                  _inputLabel(context, 'Greeting Tone'),
++                  _inputLabel(context, '开场白风格'),
+                   GreetingToneSelector(
+                     selectedTones: state.quickSelectedTones,
+                     greetingCount: state.quickGreetingCount,
+@@ -189,16 +189,16 @@ class QuickConfigStep extends StatelessWidget {
+                   const SizedBox(height: 16),
+                   _inputLabel(
+                     context,
+-                    'Number of Greetings',
++                    '开场白数量',
+                     helper:
+-                        'How many first messages to generate (1 main + alternates).',
++                        '要生成多少条开场消息（1 条主消息，其余为备用版本）。',
+                   ),
+                   AlternateGreetingsSlider(
+                     value: state.quickGreetingCount,
+                     accentColor: quickAccent,
+                     formatLabel: (v) => v == 0
+-                        ? '1 greeting'
+-                        : '1 + $v alt${v == 1 ? '' : 's'}',
++                        ? '1 条开场白'
++                        : '1 + $v 条备用开场白',
+                     onChanged: (val) {
+                       state.quickGreetingCount = val;
+                       final maxTones = state.quickGreetingCount + 1;
+@@ -212,10 +212,9 @@ class QuickConfigStep extends StatelessWidget {
+                   const SizedBox(height: 16),
+                   _inputLabel(
+                     context,
+-                    'Greeting voice',
++                    '叙述视角与时态',
+                     helper:
+-                        'Perspective and tense for the first message, '
+-                        'alternates, and example dialogue.',
++                        '设置首条消息、备用开场白和示例对话使用的叙述视角与时态。',
+                   ),
+                   NarrativeVoiceSelector(
+                     perspective: state.narrativePerspective,
+@@ -257,8 +256,8 @@ class QuickConfigStep extends StatelessWidget {
+ 
+               // World Lore
+               CreatorSectionCard(
+-                title: 'World Lore',
+-                subtitle: 'Optional — paste wiki/lore URLs or attach files.',
++                title: '世界观资料',
++                subtitle: '选填：粘贴百科／世界观资料链接，或添加本地文件。',
+                 icon: Icons.menu_book,
+                 accentColor: quickAccent,
+                 children: [
+@@ -270,9 +269,9 @@ class QuickConfigStep extends StatelessWidget {
+               NsfwToggle(
+                 value: state.quickNsfwEnabled,
+                 accentColor: nsfwAccent,
+-                title: 'NSFW Content',
++                title: '成人内容（NSFW）',
+                 subtitle:
+-                    'Enables adult themes in personality, lorebook, and greetings',
++                    '允许在角色性格、世界书和开场白中加入成人主题。',
+                 animated: true,
+                 onChanged: (v) {
+                   state.quickNsfwEnabled = v;
+diff --git a/lib/ui/character_creator/widgets/creator_config_header.dart b/lib/ui/character_creator/widgets/creator_config_header.dart
+index 8fceab7..290c1ee 100644
+--- a/lib/ui/character_creator/widgets/creator_config_header.dart
++++ b/lib/ui/character_creator/widgets/creator_config_header.dart
+@@ -101,7 +101,7 @@ class CreatorConfigHeader extends StatelessWidget {
+               Icon(Icons.bookmark_border, size: 14, color: amber),
+               Flexible(
+                 child: Text(
+-                  'Started from: $name',
++                  '来源模板：$name',
+                   maxLines: 1,
+                   overflow: TextOverflow.ellipsis,
+                   style: TextStyle(
+@@ -147,7 +147,7 @@ class _SaveAsTemplateButton extends StatelessWidget {
+         icon: const Icon(Icons.bookmark_border, size: 18),
+         // On the Text, so the label keeps the theme's font.
+         label: const Text(
+-          'Save as template',
++          '保存为模板',
+           style: TextStyle(
+             fontSize: 14,
+             fontWeight: FontWeight.w700,
+diff --git a/lib/ui/character_creator/widgets/dynamic_macros_toggle.dart b/lib/ui/character_creator/widgets/dynamic_macros_toggle.dart
+index 6d315c1..50ccf66 100644
+--- a/lib/ui/character_creator/widgets/dynamic_macros_toggle.dart
++++ b/lib/ui/character_creator/widgets/dynamic_macros_toggle.dart
+@@ -44,12 +44,9 @@ class DynamicMacrosToggle extends StatelessWidget {
+               const SizedBox(width: 6),
+               Tooltip(
+                 message:
+-                    'Lets the AI sprinkle {{pick:…}} and {{roll:…}} macros into '
+-                    'world lore and the opening message, so small details vary '
+-                    'each playthrough — a tavern\'s daily special, a passing '
+-                    'sound, a random count. Off by default: capable models use '
+-                    'them well; smaller models may place them awkwardly or skip '
+-                    'them.',
++                    '允许 AI 在世界观资料和开场消息中加入 {{pick:…}}、{{roll:…}} 动态宏，'
++                    '让每次游玩时的小细节有所变化，例如酒馆每日特供、路过的声音或随机数量。'
++                    '默认关闭：能力较强的模型通常能正确使用；较小的模型可能放置不当或忽略它们。',
+                 child: Icon(
+                   Icons.info_outline,
+                   size: 14,
+diff --git a/lib/ui/character_creator/widgets/interview_question_row.dart b/lib/ui/character_creator/widgets/interview_question_row.dart
+index cabf19d..51dc677 100644
+--- a/lib/ui/character_creator/widgets/interview_question_row.dart
++++ b/lib/ui/character_creator/widgets/interview_question_row.dart
+@@ -104,11 +104,11 @@ class _InterviewQuestionRowState extends State<InterviewQuestionRow> {
+     final muted = StudioColors.mutedOf(context);
+     final pills = [
+       if (q.condition == InterviewCondition.relationship)
+-        _pill('Asked only when a relationship is set', amber, amber, 0.5),
++        _pill('仅在设置关系后提问', amber, amber, 0.5),
+       if (q.condition == InterviewCondition.nsfw)
+-        _pill('Asked only when 18+ is on', amber, amber, 0.5),
++        _pill('仅在启用成人内容后提问', amber, amber, 0.5),
+       if (q.isEdited)
+-        _pill('Edited · kept as written', muted, StudioColors.lineOf(context)),
++        _pill('已编辑 · 保留原文', muted, StudioColors.lineOf(context)),
+     ];
+     return Row(
+       crossAxisAlignment: CrossAxisAlignment.start,
+@@ -122,8 +122,8 @@ class _InterviewQuestionRowState extends State<InterviewQuestionRow> {
+             child: MouseRegion(
+               cursor: SystemMouseCursors.grab,
+               child: Semantics(
+-                label: 'Move question $n',
+-                hint: 'Drag, or use the up and down arrow keys',
++                label: '移动问题 $n',
++                hint: '拖动，或使用向上／向下箭头键',
+                 child: SizedBox(
+                   width: 24,
+                   height: 44,
+@@ -176,7 +176,7 @@ class _InterviewQuestionRowState extends State<InterviewQuestionRow> {
+             height: 44,
+             child: IconButton(
+               onPressed: widget.onRemove,
+-              tooltip: 'Remove question $n',
++              tooltip: '删除问题 $n',
+               padding: EdgeInsets.zero,
+               // The sketch draws × in `muted`; the web card does too.
+               icon: Icon(Icons.close, size: 18, color: muted),
+@@ -231,9 +231,9 @@ class _InterviewQuestionRowState extends State<InterviewQuestionRow> {
+       ),
+     );
+     final label = switch (q.condition) {
+-      InterviewCondition.relationship => 'Relationship question',
+-      InterviewCondition.nsfw => '18+ question',
+-      null => 'Question $n',
++      InterviewCondition.relationship => '关系问题',
++      InterviewCondition.nsfw => '成人内容问题',
++      null => '问题 $n',
+     };
+     return Semantics(
+       label: label,
+diff --git a/lib/ui/character_creator/widgets/interview_questions_card.dart b/lib/ui/character_creator/widgets/interview_questions_card.dart
+index 71aee57..cad8507 100644
+--- a/lib/ui/character_creator/widgets/interview_questions_card.dart
++++ b/lib/ui/character_creator/widgets/interview_questions_card.dart
+@@ -188,9 +188,8 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+         '${p.possessive[0].toUpperCase()}${p.possessive.substring(1)}';
+     final speaks = p.subject == 'they' ? 'speak' : 'speaks';
+     final caption = voice.isFirst
+-        ? 'Follows Narrative voice above.'
+-        : 'Follows Narrative voice above. $whose own words are quoted when '
+-              '${p.subject} $speaks.';
++        ? '遵循上方设置的叙述视角。'
++        : '遵循上方设置的叙述视角；${p.subject} 说的话会以引号标出。';
+     return Row(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       spacing: 12,
+@@ -243,7 +242,7 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+                 ],
+               ),
+               Text(
+-                'The character is interviewed before the profile is written. Every answer reaches every later step. Edit any question, drag to reorder, or add your own. Each one is a model call, so fewer is faster on a local model. Voice first and appearance last works best.',
++                '生成角色资料前，AI 会先向角色提问。每个回答都会用于后续步骤。你可以编辑问题、拖动排序或添加自己的问题。每个问题都会调用一次模型，因此本地模型下问题越少，生成越快。建议先询问角色的表达方式，最后询问外观。',
+                 style: TextStyle(
+                   fontSize: 12,
+                   height: 1.5,
+@@ -265,7 +264,7 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+                         borderRadius: BorderRadius.circular(13),
+                       ),
+                       child: Text(
+-                        'Answered in $person person, $tense',
++                        '回答采用${person == 'first' ? '第一人称' : '第三人称'}、${tense == 'past' ? '过去时' : '现在时'}',
+                         style: TextStyle(
+                           fontSize: 12,
+                           fontWeight: FontWeight.w600,
+@@ -306,7 +305,7 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+               ),
+             ),
+             child: const Text(
+-              'Reset to the standard questions',
++              '恢复默认问题',
+               style: TextStyle(
+                 fontSize: 13,
+                 fontWeight: FontWeight.w600,
+@@ -334,8 +333,8 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+           pronouns: _pronouns,
+         );
+     final caption = none
+-        ? '$count of $kInterviewQuestionCap · no interview: the profile comes straight from your settings'
+-        : '$count of $kInterviewQuestionCap · remove them all and the profile comes straight from your settings, no interview';
++        ? '$count / $kInterviewQuestionCap · 不进行访谈：直接根据你的设置生成角色资料'
++        : '$count / $kInterviewQuestionCap · 删除全部问题后，将直接根据你的设置生成角色资料';
+     return Row(
+       spacing: 12,
+       children: [
+@@ -356,7 +355,7 @@ class _InterviewQuestionsCardState extends State<InterviewQuestionsCard> {
+                 onPressed: canAdd ? _add : null,
+                 icon: const Icon(Icons.add, size: 16),
+                 label: const Text(
+-                  'Add a question',
++                  '添加问题',
+                   style: TextStyle(
+                     fontSize: 14,
+                     fontWeight: FontWeight.w700,
+diff --git a/lib/ui/character_creator/widgets/lore_input_section.dart b/lib/ui/character_creator/widgets/lore_input_section.dart
+index 704311c..d68d174 100644
+--- a/lib/ui/character_creator/widgets/lore_input_section.dart
++++ b/lib/ui/character_creator/widgets/lore_input_section.dart
+@@ -45,10 +45,10 @@ class LoreInputSection extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        const CreatorInputLabel('World Lore / Wiki URLs (optional)'),
++        const CreatorInputLabel('世界观资料／百科链接（选填）'),
+         const SizedBox(height: 4),
+         Text(
+-          'Paste one or more wiki/lore URLs separated by commas. You can also attach local files below.',
++          '可输入一个或多个百科／世界观资料链接，用逗号分隔；也可以在下方添加本地文件。',
+           style: TextStyle(color: StudioColors.mutedOf(context), fontSize: 11),
+         ),
+         const SizedBox(height: 8),
+@@ -147,7 +147,7 @@ class LoreInputSection extends StatelessWidget {
+             onPressed: () => _attach(context),
+             icon: const Icon(Icons.upload_file, size: 16),
+             label: const Text(
+-              'Attach Lore File (.txt, .md, .pdf)',
++              '添加世界观资料文件（.txt、.md、.pdf）',
+               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+             ),
+             style: OutlinedButton.styleFrom(
+diff --git a/lib/ui/character_creator/widgets/narrative_voice_selector.dart b/lib/ui/character_creator/widgets/narrative_voice_selector.dart
+index 2bd40e8..cdd5ed6 100644
+--- a/lib/ui/character_creator/widgets/narrative_voice_selector.dart
++++ b/lib/ui/character_creator/widgets/narrative_voice_selector.dart
+@@ -34,10 +34,10 @@ class NarrativeVoiceSelector extends StatelessWidget {
+   final VoidCallback? onSexChanged;
+ 
+   static const perspectives = [
+-    ('first', 'First person'),
+-    ('third', 'Third person'),
++    ('first', '第一人称'),
++    ('third', '第三人称'),
+   ];
+-  static const tenses = [('present', 'Present'), ('past', 'Past')];
++  static const tenses = [('present', '现在时'), ('past', '过去时')];
+ 
+   @override
+   Widget build(BuildContext context) {
+@@ -64,8 +64,8 @@ class NarrativeVoiceSelector extends StatelessWidget {
+           const SizedBox(height: 8),
+           Text(
+             sexController == null
+-                ? 'Third person uses the Sex field for he/she/they. Blank Sex defaults to they/them.'
+-                : 'Third person uses Sex for he/she/they. Leave blank for they/them.',
++                ? '第三人称会根据“性别”字段选择 he/she/they 代词。留空时默认使用 they/them。'
++                : '第三人称会根据“性别”字段选择代词；留空则使用 they/them。',
+             style: TextStyle(
+               color: StudioColors.mutedOf(context),
+               fontSize: 11,
+@@ -81,7 +81,7 @@ class NarrativeVoiceSelector extends StatelessWidget {
+                 fontSize: 14,
+               ),
+               decoration: InputDecoration(
+-                hintText: 'e.g. Female, Male, they/them',
++                hintText: '例如：Female、Male、they/them',
+                 hintStyle: TextStyle(
+                   color: StudioColors.faintOf(context),
+                   fontSize: 13,
+diff --git a/lib/ui/character_creator/widgets/reasoning_toggle.dart b/lib/ui/character_creator/widgets/reasoning_toggle.dart
+index 3246b16..36bfde5 100644
+--- a/lib/ui/character_creator/widgets/reasoning_toggle.dart
++++ b/lib/ui/character_creator/widgets/reasoning_toggle.dart
+@@ -51,7 +51,7 @@ class ReasoningToggle extends StatelessWidget {
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+-                    'Model Thinking',
++                    '模型思考',
+                     style: TextStyle(
+                       color: enabled
+                           ? StudioColors.inkOf(context)
+@@ -62,7 +62,7 @@ class ReasoningToggle extends StatelessWidget {
+                   ),
+                   const SizedBox(height: 2),
+                   Text(
+-                    'Let the model reason before generating. Higher quality, but slower',
++                    '生成前先进行推理，通常能提升质量，但速度会更慢。',
+                     style: TextStyle(
+                       color: enabled
+                           ? accentColor.withValues(alpha: 0.6)
+diff --git a/lib/ui/widgets/avatar_art_style_selector.dart b/lib/ui/widgets/avatar_art_style_selector.dart
+index 227cc8a..efcf362 100644
+--- a/lib/ui/widgets/avatar_art_style_selector.dart
++++ b/lib/ui/widgets/avatar_art_style_selector.dart
+@@ -25,6 +25,17 @@ class AvatarArtStyleSelector extends StatelessWidget {
+     'Fantasy Illustration',
+   ];
+ 
++  String _displayStyle(String style) => switch (style) {
++    'Anime' => '动漫',
++    'Realistic' => '写实',
++    'Painterly' => '绘画风',
++    'Pixel Art' => '像素风',
++    'Comic Book' => '漫画风',
++    'Watercolor' => '水彩',
++    'Fantasy Illustration' => '奇幻插画',
++    _ => style,
++  };
++
+   @override
+   Widget build(BuildContext context) {
+     // Inside the AI Character Creator a selected chip is solid amber.
+@@ -35,7 +46,7 @@ class AvatarArtStyleSelector extends StatelessWidget {
+       children: _artStyles.map((style) {
+         final isSelected = selectedStyle == style;
+         return ChoiceChip(
+-          label: Text(style),
++          label: Text(_displayStyle(style)),
+           selected: isSelected,
+           onSelected: (_) => onChanged(style),
+           selectedColor:
+diff --git a/lib/ui/widgets/greeting_tone_selector.dart b/lib/ui/widgets/greeting_tone_selector.dart
+index e6d5ab5..13f5a72 100644
+--- a/lib/ui/widgets/greeting_tone_selector.dart
++++ b/lib/ui/widgets/greeting_tone_selector.dart
+@@ -35,6 +35,21 @@ class GreetingToneSelector extends StatelessWidget {
+     'Philosophical',
+   ];
+ 
++  String _displayTone(String tone) => switch (tone) {
++    'Neutral' => '中性',
++    'Romantic' => '浪漫',
++    'Spicy/NSFW' => '成人／刺激',
++    'Flirty/Playful' => '调情／俏皮',
++    'Wholesome' => '温馨',
++    'Slice of Life' => '日常',
++    'Story/Narrative' => '故事／叙事',
++    'Adventure' => '冒险',
++    'Dark/Mystery' => '黑暗／悬疑',
++    'Humorous' => '幽默',
++    'Philosophical' => '哲思',
++    _ => tone,
++  };
++
+   @override
+   Widget build(BuildContext context) {
+     final p = CreatorPalette.maybeOf(context);
+@@ -44,8 +59,8 @@ class GreetingToneSelector extends StatelessWidget {
+         Text(
+           subtitle ??
+               (greetingCount == 0
+-                  ? 'Tone for the first message.'
+-                  : 'Select up to ${greetingCount + 1} \u2014 one per greeting.'),
++                  ? '设置第一条开场消息的语气。'
++                  : '最多选择 ${greetingCount + 1} 种语气，每条开场白对应一种。'),
+           style: TextStyle(
+             color:
+                 context.creatorPalette?.muted ??
+@@ -64,7 +79,7 @@ class GreetingToneSelector extends StatelessWidget {
+                 final maxTones = greetingCount + 1;
+                 final atLimit = selectedTones.length >= maxTones && !isSelected;
+                 return FilterChip(
+-                  label: Text(tone),
++                  label: Text(_displayTone(tone)),
+                   selected: isSelected,
+                   onSelected: (selected) {
+                     final updated = List<String>.from(selectedTones);
