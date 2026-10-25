@@ -1,0 +1,21 @@
+diff --git a/lib/ui/character_creator/widgets/archetype_preset_card.dart b/lib/ui/character_creator/widgets/archetype_preset_card.dart
+--- a/lib/ui/character_creator/widgets/archetype_preset_card.dart
++++ b/lib/ui/character_creator/widgets/archetype_preset_card.dart
+@@ -3,6 +3,7 @@
+ 
+ import 'package:flutter/material.dart';
+ import 'package:front_porch_ai/ui/character_creator/character_creator.dart';
++import 'package:front_porch_ai/ui/character_creator/creator_options.dart';
+ import 'package:front_porch_ai/ui/theme/studio_colors.dart';
+ 
+ /// Amber-bordered "Quick Start" card of archetype preset chips. Tapping a chip
+diff --git a/lib/ui/character_creator/widgets/chip_select_row.dart b/lib/ui/character_creator/widgets/chip_select_row.dart
+--- a/lib/ui/character_creator/widgets/chip_select_row.dart
++++ b/lib/ui/character_creator/widgets/chip_select_row.dart
+@@ -3,5 +3,6 @@
+ 
+ import 'package:flutter/material.dart';
++import 'package:front_porch_ai/ui/character_creator/creator_options.dart';
+ import 'package:front_porch_ai/ui/character_creator/widgets/creator_input_label.dart';
+ import 'package:front_porch_ai/ui/character_creator/widgets/creator_pill.dart';
+ import 'package:front_porch_ai/ui/theme/studio_colors.dart';
