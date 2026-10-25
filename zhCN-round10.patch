@@ -1,0 +1,758 @@
+diff --git a/lib/ui/pages/backups_page.dart b/lib/ui/pages/backups_page.dart
+index 12e8b23..bf56e4a 100644
+--- a/lib/ui/pages/backups_page.dart
++++ b/lib/ui/pages/backups_page.dart
+@@ -51,7 +51,7 @@ class _BackupsPageState extends State<BackupsPage> {
+       body: ListView(
+         padding: const EdgeInsets.all(20),
+         children: [
+-          _sectionHeader(context, 'Database Backups'),
++          _sectionHeader(context, '数据库备份'),
+           const SizedBox(height: 8),
+           if (isPreRelease)
+             _disabledNotice(context, theme)
+@@ -86,7 +86,7 @@ class _BackupsPageState extends State<BackupsPage> {
+           Icon(Icons.backup, size: 48, color: accent.withValues(alpha: 0.6)),
+           const SizedBox(height: 12),
+           Text(
+-            'Backups Disabled',
++            '备份功能已禁用',
+             style: theme.textTheme.titleMedium?.copyWith(
+               fontWeight: FontWeight.bold,
+               color: AppColors.textPrimary(context),
+@@ -94,9 +94,8 @@ class _BackupsPageState extends State<BackupsPage> {
+           ),
+           const SizedBox(height: 8),
+           Text(
+-            'Database backups are disabled in nightly builds to prevent '
+-            'confusion between nightly and stable databases. Backups will be '
+-            're-enabled once $stableVersionBase goes stable.',
++            '夜间构建版本暂时禁用数据库备份，以免与稳定版数据库混淆。'
++            '待 $stableVersionBase 转为稳定版后，将重新启用备份功能。',
+             textAlign: TextAlign.center,
+             style: theme.textTheme.bodySmall?.copyWith(
+               color: accent,
+@@ -113,10 +112,9 @@ class _BackupsPageState extends State<BackupsPage> {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text(
+-          'Backups are created automatically every 30 minutes. The newest '
+-          '${BackupService.maxBackups} are always kept, plus one per day for the '
+-          'last ${BackupService.dailyRetentionDays} days — fine-grained recent '
+-          'history and a rolling week of daily restore points.',
++          '系统每 30 分钟自动创建一次备份。始终保留最新的 '
++          '${BackupService.maxBackups} 份备份，并额外保留最近 '
++          '${BackupService.dailyRetentionDays} 天每天的一份备份，方便恢复近期记录。',
+           style: theme.textTheme.bodySmall?.copyWith(
+             color: AppColors.textSecondary(context),
+           ),
+@@ -135,7 +133,7 @@ class _BackupsPageState extends State<BackupsPage> {
+                 child: FilledButton.icon(
+                   onPressed: _createBackup,
+                   icon: const Icon(Icons.backup, size: 18),
+-                  label: const Text('Create Backup Now'),
++                  label: const Text('立即创建备份'),
+                   style: FilledButton.styleFrom(
+                     backgroundColor: AppColors.porchAmberOf(context),
+                     foregroundColor: AppColors.onAccentOf(context),
+@@ -160,8 +158,8 @@ class _BackupsPageState extends State<BackupsPage> {
+                     return Padding(
+                       padding: const EdgeInsets.all(16),
+                       child: Text(
+-                        'No backups yet. One is created automatically every 30 '
+-                        'minutes, or make one now with the button above.',
++                        '目前还没有备份。系统每 30 分钟会自动创建一份，'
++                        '你也可以点击上方按钮立即创建。',
+                         style: theme.textTheme.bodySmall?.copyWith(
+                           color: AppColors.textTertiary(context),
+                         ),
+@@ -216,7 +214,7 @@ class _BackupsPageState extends State<BackupsPage> {
+           TextButton(
+             onPressed: () => _confirmRestore(context, backup.path),
+             child: Text(
+-              'Restore',
++              '恢复',
+               style: TextStyle(color: AppColors.porchAmberOf(context)),
+             ),
+           ),
+@@ -226,7 +224,7 @@ class _BackupsPageState extends State<BackupsPage> {
+               size: 20,
+               color: AppColors.negativeAccentOf(context),
+             ),
+-            tooltip: 'Delete backup',
++            tooltip: '删除备份',
+             onPressed: () => _confirmDelete(context, backup, timeStr, sizeMb),
+           ),
+         ],
+@@ -241,9 +239,8 @@ class _BackupsPageState extends State<BackupsPage> {
+       SnackBar(
+         content: Text(
+           path != null
+-              ? 'Backup created successfully'
+-              : 'Backup could not be created — the database may be busy or '
+-                    'the disk full. Try again in a moment.',
++              ? '备份创建成功'
++              : '无法创建备份：数据库可能正忙或磁盘空间不足。请稍后重试。',
+         ),
+       ),
+     );
+@@ -260,10 +257,10 @@ class _BackupsPageState extends State<BackupsPage> {
+     // context can belong to a different navigator than the dialog's.
+     final confirmed = await showWarmDialog<bool>(
+       context,
+-      title: 'Delete Backup?',
++      title: '删除这份备份？',
+       destructive: true,
+       content: WarmDialogText(
+-        'Delete backup from $timeStr ($sizeMb MB)?\n\nThis cannot be undone.',
++        '确定删除 $timeStr 的备份（$sizeMb MB）吗？\n\n删除后无法撤销。',
+       ),
+       actions: [
+         Builder(builder: (ctx) => warmDialogCancel(ctx, value: false)),
+@@ -284,32 +281,31 @@ class _BackupsPageState extends State<BackupsPage> {
+       setState(() {});
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(const SnackBar(content: Text('Backup deleted')));
++      ).showSnackBar(const SnackBar(content: Text('备份已删除')));
+     } catch (e) {
+       if (!mounted) return;
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(SnackBar(content: Text('Delete failed: $e')));
++      ).showSnackBar(SnackBar(content: Text('删除失败：$e')));
+     }
+   }
+ 
+   void _confirmRestore(BuildContext context, String backupPath) {
+     showWarmDialog<void>(
+       context,
+-      title: 'Restore Backup?',
++      title: '恢复这份备份？',
+       icon: Icons.warning_amber_rounded,
+       accent: AppColors.porchAmberOf(context),
+       content: const WarmDialogText(
+-        'This will replace your current database with the backup. '
+-        'All changes made after this backup was created will be lost.\n\n'
+-        'Your library reloads in place, so you should not need to restart.',
++        '这将使用备份替换当前数据库。备份创建之后所做的所有更改都会丢失。\n\n'
++        '应用会尝试直接重新加载资料库，通常无需重启。',
+       ),
+       actions: [
+         Builder(builder: (ctx) => warmDialogCancel(ctx)),
+         Builder(
+           builder: (ctx) => warmDialogConfirm(
+             ctx,
+-            label: 'Restore',
++            label: '恢复',
+             onPressed: () => _restore(ctx, backupPath),
+           ),
+         ),
+@@ -333,9 +329,8 @@ class _BackupsPageState extends State<BackupsPage> {
+         SnackBar(
+           content: Text(
+             rebound != null
+-                ? 'Backup restored. Your library is back to that snapshot.'
+-                : 'Backup restored to disk, but the app could not reload it — '
+-                      'please close and reopen Front Porch AI.',
++                ? '备份已恢复，资料库已回到该备份的状态。'
++                : '备份已写入磁盘，但应用无法重新加载。请关闭并重新打开 Front Porch AI。',
+           ),
+         ),
+       );
+@@ -343,7 +338,7 @@ class _BackupsPageState extends State<BackupsPage> {
+       if (!mounted) return;
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(SnackBar(content: Text('Restore failed: $e')));
++      ).showSnackBar(SnackBar(content: Text('恢复失败：$e')));
+     }
+   }
+ }
+diff --git a/lib/ui/pages/home/home_actions/home_bulk_import.dart b/lib/ui/pages/home/home_actions/home_bulk_import.dart
+index 2494703..b4ae9ca 100644
+--- a/lib/ui/pages/home/home_actions/home_bulk_import.dart
++++ b/lib/ui/pages/home/home_actions/home_bulk_import.dart
+@@ -76,8 +76,7 @@ class HomeBulkImport {
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(
+           content: Text(
+-            'No character cards (.png) or Backyard AI files (.byaf) found in '
+-            'the selected folder.',
++            '所选文件夹中没有找到角色卡（.png）或 Backyard AI 文件（.byaf）。',
+           ),
+         ),
+       );
+@@ -97,7 +96,7 @@ class HomeBulkImport {
+     if (pngs.isEmpty && byafs.isEmpty) return;
+ 
+     await _importPngAndByafBatch(
+-      title: 'Import Folder',
++      title: '导入文件夹',
+       pngs: pngs,
+       byafs: byafs,
+       importChats: importChats,
+@@ -150,7 +149,7 @@ class HomeBulkImport {
+   /// and folder import.
+   Future<void> _runBulkImport(List<File> files) {
+     return _runBulkProgressImport(
+-      title: 'Bulk Import',
++      title: '批量导入',
+       totalCount: files.length,
+       runImport: ({required onProgress, required isCancelled}) async {
+         final repo = Provider.of<CharacterRepository>(context, listen: false);
+@@ -217,8 +216,8 @@ class HomeBulkImport {
+                     if (ctx.mounted) Navigator.of(ctx).pop();
+                     if (context.mounted) {
+                       final msg = failedCount > 0
+-                          ? 'Imported $importedCount character${importedCount == 1 ? '' : 's'} ($failedCount failed)'
+-                          : 'Imported $importedCount character${importedCount == 1 ? '' : 's'} successfully!';
++                          ? '已导入 $importedCount 个角色，$failedCount 个失败'
++                          : '成功导入 $importedCount 个角色！';
+                       ScaffoldMessenger.of(
+                         context,
+                       ).showSnackBar(SnackBar(content: Text(msg)));
+@@ -277,8 +276,8 @@ class HomeBulkImport {
+                     // Status text
+                     Text(
+                       currentCount == 0
+-                          ? 'Starting import...'
+-                          : 'Importing $currentCount of $totalCount...',
++                          ? '正在准备导入…'
++                          : '正在导入 $currentCount / $totalCount…',
+                       style: TextStyle(
+                         color: AppColors.textSecondary(ctx),
+                         fontSize: 14,
+@@ -304,13 +303,13 @@ class HomeBulkImport {
+                         _bulkStatChip(
+                           Icons.check_circle,
+                           AppColors.verifiedAccentOf(ctx),
+-                          '$importedCount imported',
++                          '已导入 $importedCount',
+                         ),
+                         const SizedBox(width: 16),
+                         _bulkStatChip(
+                           Icons.error,
+                           AppColors.negativeAccentOf(ctx),
+-                          '$failedCount failed',
++                          '失败 $failedCount',
+                         ),
+                       ],
+                     ),
+@@ -323,7 +322,7 @@ class HomeBulkImport {
+                     cancelled = true;
+                   },
+                   child: Text(
+-                    cancelled ? 'Cancelling...' : 'Cancel',
++                    cancelled ? '正在取消…' : '取消',
+                     style: TextStyle(
+                       color: cancelled
+                           ? AppColors.textTertiary(ctx)
+diff --git a/lib/ui/pages/home/home_actions/home_card_import.dart b/lib/ui/pages/home/home_actions/home_card_import.dart
+index 375e7f1..e387bbc 100644
+--- a/lib/ui/pages/home/home_actions/home_card_import.dart
++++ b/lib/ui/pages/home/home_actions/home_card_import.dart
+@@ -77,7 +77,7 @@ class HomeCardImport {
+           }
+           if (context.mounted) {
+             ScaffoldMessenger.of(context).showSnackBar(
+-              const SnackBar(content: Text('Character imported successfully!')),
++              const SnackBar(content: Text('角色导入成功！')),
+             );
+           }
+         }
+@@ -203,7 +203,7 @@ class HomeCardImport {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+             content: Text(
+-              'Imported "${importedCard.name}" from Backyard AI$chatNote!',
++              '已从 Backyard AI 导入“${importedCard.name}”$chatNote！',
+             ),
+           ),
+         );
+@@ -213,7 +213,7 @@ class HomeCardImport {
+       if (context.mounted) {
+         ScaffoldMessenger.of(
+           context,
+-        ).showSnackBar(SnackBar(content: Text('Failed to import .byaf: $e')));
++        ).showSnackBar(SnackBar(content: Text('导入 .byaf 文件失败：$e')));
+       }
+     }
+   }
+@@ -227,7 +227,7 @@ class HomeCardImport {
+     final (:importChats, :applySettings) = choice;
+ 
+     await _bulk.runWithProgress(
+-      title: 'Import Backyard AI',
++      title: '导入 Backyard AI',
+       totalCount: paths.length,
+       runImport: ({required onProgress, required isCancelled}) =>
+           importHomeByafFiles(
+diff --git a/lib/ui/pages/home/home_actions/home_folder_dialogs.dart b/lib/ui/pages/home/home_actions/home_folder_dialogs.dart
+index fea159d..6a0e97d 100644
+--- a/lib/ui/pages/home/home_actions/home_folder_dialogs.dart
++++ b/lib/ui/pages/home/home_actions/home_folder_dialogs.dart
+@@ -36,7 +36,7 @@ void showHomeCreateFolderDialog(
+   final controller = TextEditingController();
+   showWarmDialog(
+     context,
+-    title: parentId != null ? 'New Subfolder' : 'New Folder',
++    title: parentId != null ? '新建子文件夹' : '新建文件夹',
+     icon: Icons.create_new_folder,
+     accent: AppColors.porchAmberOf(context),
+     content: TextField(
+@@ -44,7 +44,7 @@ void showHomeCreateFolderDialog(
+       autofocus: true,
+       style: TextStyle(color: AppColors.textPrimary(context)),
+       decoration: InputDecoration(
+-        hintText: 'Folder name...',
++        hintText: '输入文件夹名称…',
+         hintStyle: TextStyle(color: AppColors.textTertiary(context)),
+       ),
+       onSubmitted: (value) {
+@@ -58,7 +58,7 @@ void showHomeCreateFolderDialog(
+       warmDialogCancel(context),
+       warmDialogConfirm(
+         context,
+-        label: 'Create',
++        label: '创建',
+         onPressed: () {
+           if (controller.text.trim().isNotEmpty) {
+             folderService.createFolder(
+@@ -81,7 +81,7 @@ void showHomeRenameFolderDialog(
+   final controller = TextEditingController(text: folder.name);
+   showWarmDialog(
+     context,
+-    title: 'Rename Folder',
++    title: '重命名文件夹',
+     icon: Icons.drive_file_rename_outline,
+     accent: AppColors.porchAmberOf(context),
+     content: TextField(
+@@ -123,23 +123,21 @@ void showHomeDeleteFolderDialog(
+   final groupCount = folderService.groupIdsInFolderRecursive(folder.id).length;
+   showWarmDialog(
+     context,
+-    title: 'Delete Folder',
++    title: '删除文件夹',
+     destructive: true,
+     content: WarmDialogText(
+-      'Delete "${folder.name}"?\n\n'
+-      '• Delete Folder Only: the $charCount character'
+-      '${charCount == 1 ? '' : 's'}'
+-      '${groupCount > 0 ? ' and $groupCount group${groupCount == 1 ? '' : 's'}' : ''}'
+-      ' inside return to the top level.\n'
+-      '• Delete Folder + Characters: PERMANENTLY deletes the folder AND '
+-      'every character inside it (including subfolders)'
+-      '${groupCount > 0 ? '; groups are kept and return to the top level' : ''}.',
++      '确定删除“${folder.name}”吗？\n\n'
++      '• 仅删除文件夹：其中的 $charCount 个角色'
++      '${groupCount > 0 ? ' 和 $groupCount 个群组' : ''}'
++      '将移回上一级。\n'
++      '• 删除文件夹及角色：永久删除文件夹及其中的所有角色（包括子文件夹）'
++      '${groupCount > 0 ? '；群组会保留并移回上一级' : ''}。',
+     ),
+     actions: [
+       warmDialogCancel(context),
+       warmDialogConfirm(
+         context,
+-        label: 'Delete Folder Only',
++        label: '仅删除文件夹',
+         onPressed: () {
+           folderService.deleteFolder(folder.id);
+           Navigator.pop(context);
+@@ -149,7 +147,7 @@ void showHomeDeleteFolderDialog(
+       if (charCount > 0)
+         warmDialogConfirm(
+           context,
+-          label: 'Delete Folder + Characters…',
++          label: '删除文件夹及角色…',
+           destructive: true,
+           onPressed: () {
+             Navigator.pop(context);
+@@ -191,13 +189,11 @@ Future<void> _deleteFolderWithCharacters(
+   await runHomeMassDelete(
+     context,
+     cards,
+-    title: 'Delete "${folder.name}" & ${cards.length} Characters?',
++    title: '删除“${folder.name}”及 ${cards.length} 个角色？',
+     message:
+-        'This will PERMANENTLY delete the folder "${folder.name}"'
+-        '${subfolders > 0 ? ', its subfolders,' : ''} and ALL '
+-        '${cards.length} character${cards.length == 1 ? '' : 's'} inside — '
+-        'their cards, image files, chat histories, and any linked worlds. '
+-        'There is no undo and no recycle bin.',
++        '这将永久删除文件夹“${folder.name}”'
++        '${subfolders > 0 ? '及其子文件夹' : ''}，以及其中的全部 ${cards.length} 个角色，'
++        '包括角色卡、图片文件、聊天记录和关联世界。此操作无法撤销，也没有回收站。',
+     afterDelete: () async {
+       await folderService.deleteFolder(folder.id);
+       onLeaveFolder(folder);
+diff --git a/lib/ui/pages/home/home_actions/home_import_dialogs.dart b/lib/ui/pages/home/home_actions/home_import_dialogs.dart
+index 4885f83..ff4b54d 100644
+--- a/lib/ui/pages/home/home_actions/home_import_dialogs.dart
++++ b/lib/ui/pages/home/home_actions/home_import_dialogs.dart
+@@ -49,7 +49,7 @@ Future<({bool importChats, bool applySettings})?> showHomeBulkByafConfirm(
+             const SizedBox(width: 10),
+             Expanded(
+               child: Text(
+-                'Import ${paths.length} Backyard AI characters?',
++                '导入 ${paths.length} 个 Backyard AI 角色？',
+                 style: TextStyle(color: AppColors.textPrimary(ctx)),
+               ),
+             ),
+@@ -60,8 +60,7 @@ Future<({bool importChats, bool applySettings})?> showHomeBulkByafConfirm(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             Text(
+-              'Each .byaf will be imported as a character card. (No per-file '
+-              'preview is shown for batch imports.)',
++              '每个 .byaf 文件都会导入为一张角色卡。（批量导入时不会逐个显示文件预览。）',
+               style: TextStyle(
+                 color: AppColors.textSecondary(ctx),
+                 fontSize: 13,
+@@ -74,7 +73,7 @@ Future<({bool importChats, bool applySettings})?> showHomeBulkByafConfirm(
+               contentPadding: EdgeInsets.zero,
+               controlAffinity: ListTileControlAffinity.leading,
+               title: Text(
+-                'Also import chat history',
++                '同时导入聊天记录',
+                 style: TextStyle(color: AppColors.textPrimary(ctx)),
+               ),
+             ),
+@@ -84,12 +83,12 @@ Future<({bool importChats, bool applySettings})?> showHomeBulkByafConfirm(
+               contentPadding: EdgeInsets.zero,
+               controlAffinity: ListTileControlAffinity.leading,
+               title: Text(
+-                'Apply Backyard model settings',
++                '应用 Backyard 模型设置',
+                 style: TextStyle(color: AppColors.textPrimary(ctx)),
+               ),
+               subtitle: Text(
+-                "Each import uses its archive's sampler values "
+-                '(temperature, min-p, …) for the imported chat',
++                "每次导入都会将压缩包中的采样参数（temperature、min-p 等）"
++                '应用到导入的聊天中。',
+                 style: TextStyle(
+                   color: AppColors.textSecondary(ctx),
+                   fontSize: 12,
+@@ -108,7 +107,7 @@ Future<({bool importChats, bool applySettings})?> showHomeBulkByafConfirm(
+           ),
+           ElevatedButton(
+             onPressed: () => Navigator.pop(ctx, true),
+-            child: Text('Import ${paths.length}'),
++            child: Text('导入 ${paths.length} 个'),
+           ),
+         ],
+       ),
+@@ -152,7 +151,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+               const SizedBox(width: 10),
+               Expanded(
+                 child: Text(
+-                  'Import from folder',
++                  '从文件夹导入',
+                   style: TextStyle(color: AppColors.textPrimary(ctx)),
+                 ),
+               ),
+@@ -163,7 +162,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                'This folder contains:',
++                '此文件夹包含：',
+                 style: TextStyle(
+                   color: AppColors.textSecondary(ctx),
+                   fontSize: 13,
+@@ -177,7 +176,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+                   contentPadding: EdgeInsets.zero,
+                   controlAffinity: ListTileControlAffinity.leading,
+                   title: Text(
+-                    '${pngFiles.length} character card${pngFiles.length == 1 ? '' : 's'} (V2 PNG)',
++                    '${pngFiles.length} 张角色卡（V2 PNG）',
+                     style: TextStyle(color: AppColors.textPrimary(ctx)),
+                   ),
+                 ),
+@@ -188,7 +187,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+                   contentPadding: EdgeInsets.zero,
+                   controlAffinity: ListTileControlAffinity.leading,
+                   title: Text(
+-                    '${byafFiles.length} Backyard AI file${byafFiles.length == 1 ? '' : 's'} (.byaf)',
++                    '${byafFiles.length} 个 Backyard AI 文件（.byaf）',
+                     style: TextStyle(color: AppColors.textPrimary(ctx)),
+                   ),
+                 ),
+@@ -203,7 +202,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+                     contentPadding: EdgeInsets.zero,
+                     controlAffinity: ListTileControlAffinity.leading,
+                     title: Text(
+-                      'also import their chat history',
++                      '同时导入聊天记录',
+                       style: TextStyle(
+                         color: importByaf
+                             ? AppColors.textSecondary(ctx)
+@@ -224,7 +223,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+                     contentPadding: EdgeInsets.zero,
+                     controlAffinity: ListTileControlAffinity.leading,
+                     title: Text(
+-                      'apply their Backyard model settings',
++                      '应用 Backyard 模型设置',
+                       style: TextStyle(
+                         color: importByaf
+                             ? AppColors.textSecondary(ctx)
+@@ -253,7 +252,7 @@ Future<(bool, bool, bool, bool)?> showHomeFolderImportDialog(
+                       importChats,
+                       applySettings,
+                     )),
+-              child: Text('Import $count'),
++              child: Text('导入 $count 个'),
+             ),
+           ],
+         );
+diff --git a/lib/ui/pages/home/home_actions/home_move_dialog.dart b/lib/ui/pages/home/home_actions/home_move_dialog.dart
+index 364c4a3..36c2380 100644
+--- a/lib/ui/pages/home/home_actions/home_move_dialog.dart
++++ b/lib/ui/pages/home/home_actions/home_move_dialog.dart
+@@ -162,14 +162,14 @@ Future<String?> _promptFolderName(BuildContext context) async {
+       controller: controller,
+       autofocus: true,
+       style: TextStyle(color: AppColors.textPrimary(context)),
+-      decoration: const InputDecoration(hintText: 'Folder name'),
++      decoration: const InputDecoration(hintText: '文件夹名称'),
+       onSubmitted: (val) => Navigator.pop(context, val),
+     ),
+     actions: [
+       warmDialogCancel(context),
+       warmDialogConfirm(
+         context,
+-        label: 'Create',
++        label: '创建',
+         onPressed: () => Navigator.pop(context, controller.text),
+       ),
+     ],
+@@ -200,8 +200,8 @@ void snackHomeMoved(BuildContext context, int moved, String? folderId) {
+     SnackBar(
+       content: Text(
+         folderId == null
+-            ? 'Moved $moved item${moved == 1 ? '' : 's'} out of the folder'
+-            : 'Moved $moved item${moved == 1 ? '' : 's'} to folder',
++            ? '已将 $moved 个项目移出文件夹'
++            : '已将 $moved 个项目移入文件夹',
+       ),
+     ),
+   );
+diff --git a/lib/ui/pages/import_lorebook/import_destination_step.dart b/lib/ui/pages/import_lorebook/import_destination_step.dart
+index d9a6e0f..decc2e6 100644
+--- a/lib/ui/pages/import_lorebook/import_destination_step.dart
++++ b/lib/ui/pages/import_lorebook/import_destination_step.dart
+@@ -62,7 +62,7 @@ class ImportDestinationStep extends StatelessWidget {
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           Text(
+-            'Where should this lorebook live?',
++            '要将这本世界书保存到哪里？',
+             style: TextStyle(
+               fontSize: 15,
+               fontWeight: FontWeight.bold,
+@@ -71,7 +71,7 @@ class ImportDestinationStep extends StatelessWidget {
+           ),
+           const SizedBox(height: 4),
+           Text(
+-            'A book has one home — attaching never copies.',
++            '每本世界书只有一个存放位置；关联到其他地方不会复制内容。',
+             style: TextStyle(
+               fontSize: 12.5,
+               color: AppColors.textTertiary(context),
+@@ -84,19 +84,18 @@ class ImportDestinationStep extends StatelessWidget {
+             icon: Icons.public,
+             title: '新建世界',
+             body:
+-                'Goes into your shared library. Attach it to any character, '
+-                'group, or chat whenever you like.',
++                '保存到共享资料库。之后可以随时将它关联到角色、群组或聊天。',
+             config: Column(
+               children: [
+                 const SizedBox(height: 10),
+                 AppTextField(
+                   controller: worldNameCtrl,
+-                  decoration: _dec(context, 'World name'),
++                  decoration: _dec(context, '世界名称'),
+                 ),
+                 const SizedBox(height: 8),
+                 AppTextField(
+                   controller: worldDescCtrl,
+-                  decoration: _dec(context, 'Description (optional)'),
++                  decoration: _dec(context, '描述（可选）'),
+                 ),
+               ],
+             ),
+@@ -106,13 +105,12 @@ class ImportDestinationStep extends StatelessWidget {
+             dest: LoreImportDestination.characters,
+             icon: Icons.person,
+             title: '导入到角色',
+-            body: 'Becomes part of their card and travels with them when '
+-                'exported.',
++            body: '将世界书加入角色卡，导出角色时也会一并带上。',
+             config: allCharacters.isEmpty
+                 ? Padding(
+                     padding: const EdgeInsets.only(top: 8),
+                     child: Text(
+-                      'No characters in your library yet.',
++                      '资料库中还没有角色。',
+                       style: TextStyle(
+                         fontSize: 12,
+                         color: AppColors.textTertiary(context),
+@@ -145,8 +143,8 @@ class ImportDestinationStep extends StatelessWidget {
+               context,
+               dest: LoreImportDestination.group,
+               icon: Icons.groups,
+-              title: 'This group — $activeGroupName',
+-              body: 'Shared by everyone in the current group chat.',
++              title: '当前群组 — $activeGroupName',
++              body: '当前群聊中的所有成员都可以使用。',
+             ),
+           if (chatAvailable)
+             _option(
+@@ -154,8 +152,7 @@ class ImportDestinationStep extends StatelessWidget {
+               dest: LoreImportDestination.chat,
+               icon: Icons.chat_bubble_outline,
+               title: '仅当前聊天',
+-              body: 'Try a book in one conversation without touching the '
+-                  'character or your library.',
++              body: '仅在当前对话中试用，不会修改角色或资料库。',
+             ),
+         ],
+       ),
+diff --git a/lib/ui/pages/import_lorebook/import_review_step.dart b/lib/ui/pages/import_lorebook/import_review_step.dart
+index 9e1a48d..134fcbd 100644
+--- a/lib/ui/pages/import_lorebook/import_review_step.dart
++++ b/lib/ui/pages/import_lorebook/import_review_step.dart
+@@ -67,7 +67,7 @@ class ImportReviewStep extends StatelessWidget {
+                       const SizedBox(height: 2),
+                       Text(
+                         '${summary.suggestedName} · ${summary.entryCount} '
+-                        'entries · ~${summary.approxTokens} tokens',
++                        '条词条 · 约 ${summary.approxTokens} 个 token',
+                         style: TextStyle(
+                           fontSize: 12.5,
+                           color: AppColors.textSecondary(context),
+@@ -147,7 +147,7 @@ class ImportReviewStep extends StatelessWidget {
+                         const SizedBox(width: 10),
+                         Flexible(
+                           child: Text(
+-                            e.constant ? 'always active' : e.key,
++                            e.constant ? '始终启用' : e.key,
+                             maxLines: 1,
+                             overflow: TextOverflow.ellipsis,
+                             style: TextStyle(
+@@ -163,7 +163,7 @@ class ImportReviewStep extends StatelessWidget {
+                   Padding(
+                     padding: const EdgeInsets.all(8),
+                     child: Text(
+-                      '· · · ${book.entries.length - 8} more · · ·',
++                      '· · · 还有 ${book.entries.length - 8} 条 · · ·',
+                       style: TextStyle(
+                         fontSize: 12,
+                         color: AppColors.textTertiary(context),
+diff --git a/lib/ui/pages/import_lorebook_page.dart b/lib/ui/pages/import_lorebook_page.dart
+index 7348384..5242e93 100644
+--- a/lib/ui/pages/import_lorebook_page.dart
++++ b/lib/ui/pages/import_lorebook_page.dart
+@@ -108,8 +108,7 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+         _book = null;
+         _summary = null;
+         _pickError =
+-            'Could not read this file as a lorebook. Supported formats: '
+-            'SillyTavern, Chub, NovelAI, AgnAI, RisuAI, Front Porch.';
++            '无法将此文件识别为世界书。支持的格式：SillyTavern、Chub、NovelAI、AgnAI、RisuAI 和 Front Porch。';
+       });
+     }
+   }
+@@ -154,7 +153,7 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+               lorebook: _clonedBook(),
+             ),
+           );
+-          where = 'the world "$candidate"';
++          where = '世界“$candidate”';
+         case LoreImportDestination.characters:
+           var count = 0;
+           for (final c in chars.characters) {
+@@ -170,7 +169,7 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+             await chars.updateCharacter(c);
+             count++;
+           }
+-          where = '$count character${count == 1 ? '' : 's'}';
++          where = '$count 个角色';
+         case LoreImportDestination.group:
+           final g = chat.activeGroup!;
+           g.groupLorebook = appendToGroupLorebookJson(
+@@ -178,11 +177,11 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+             _clonedEntries(),
+           );
+           await groups.save(g);
+-          where = 'the group "${g.name}"';
++          where = '群组“${g.name}”';
+         case LoreImportDestination.chat:
+           chat.chatLorebook.entries.addAll(_clonedEntries());
+           await chat.commitChatLorebookEdit();
+-          where = 'this chat';
++          where = '当前聊天';
+       }
+     } catch (e) {
+       if (mounted) {
+@@ -198,7 +197,7 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+     Navigator.of(context).pop();
+     ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+-        content: Text('Imported ${_book!.entries.length} entries into $where.'),
++        content: Text('已将 ${_book!.entries.length} 条词条导入至$where。'),
+       ),
+     );
+   }
+@@ -264,11 +263,11 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+     return Row(
+       mainAxisSize: MainAxisSize.min,
+       children: [
+-        _stepDot(0, 'Pick a file'),
++        _stepDot(0, '选择文件'),
+         _stepLine(),
+-        _stepDot(1, 'Review'),
++        _stepDot(1, '检查内容'),
+         _stepLine(),
+-        _stepDot(2, 'Destination'),
++        _stepDot(2, '选择位置'),
+       ],
+     );
+   }
+@@ -349,7 +348,7 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+                     Icon(Icons.upload_file, size: 40, color: amber),
+                     const SizedBox(height: 12),
+                     Text(
+-                      _fileName ?? 'Choose a lorebook file',
++                      _fileName ?? '选择世界书文件',
+                       style: TextStyle(
+                         fontSize: 15,
+                         fontWeight: FontWeight.bold,
+@@ -358,8 +357,8 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+                     ),
+                     const SizedBox(height: 4),
+                     Text(
+-                      'JSON from SillyTavern, Chub, NovelAI, AgnAI, RisuAI, '
+-                      'or Front Porch — the format is detected automatically.',
++                      '支持 SillyTavern、Chub、NovelAI、AgnAI、RisuAI 或 Front Porch 的 JSON 文件，'
++                      '系统会自动识别格式。',
+                       textAlign: TextAlign.center,
+                       style: TextStyle(
+                         fontSize: 12.5,
+@@ -426,10 +425,10 @@ class _ImportLorebookPageState extends State<ImportLorebookPage> {
+             ),
+             label: Text(
+               _currentStep < 2
+-                  ? 'Next'
++                  ? '下一步'
+                   : _importing
+-                  ? 'Importing…'
+-                  : 'Import ${_book?.entries.length ?? 0} entries',
++                  ? '正在导入…'
++                  : '导入 ${_book?.entries.length ?? 0} 条词条',
+             ),
+           ),
+         ],
