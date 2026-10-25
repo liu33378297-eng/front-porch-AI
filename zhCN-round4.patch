@@ -1,0 +1,1617 @@
+diff --git a/web_ui/src/components/AppearanceSettings.tsx b/web_ui/src/components/AppearanceSettings.tsx
+index 594eae3..536b367 100644
+--- a/web_ui/src/components/AppearanceSettings.tsx
++++ b/web_ui/src/components/AppearanceSettings.tsx
+@@ -67,7 +67,7 @@ export function AppearanceSettings() {
+         />
+         {' '}Dark mode
+       </label>
+-      <p className="reading-blurb">The desktop app's own switch. Changing it here changes it there too.</p>
++      <p className="reading-blurb">这是桌面应用自身的开关。在此处更改，也会同步更改桌面应用中的设置。</p>
+       {error && <p className="error">{error}</p>}
+       <label>
+         On this device
+diff --git a/web_ui/src/components/AvatarManager.tsx b/web_ui/src/components/AvatarManager.tsx
+index ff96f4a..36d5d97 100644
+--- a/web_ui/src/components/AvatarManager.tsx
++++ b/web_ui/src/components/AvatarManager.tsx
+@@ -212,7 +212,7 @@ export function AvatarManager({ characterId }: { characterId: string }) {
+         <div className="drawer-backdrop center" onClick={() => setConfirmSwap(null)}>
+           <div className="modal" onClick={(e) => e.stopPropagation()}>
+             <div className="drawer-head">
+-              <span>Swap the portrait?</span>
++              <span>替换肖像？</span>
+               <button className="link-btn" onClick={() => setConfirmSwap(null)}>
+                 Close
+               </button>
+diff --git a/web_ui/src/components/CastBar.tsx b/web_ui/src/components/CastBar.tsx
+index 10f6370..3420bed 100644
+--- a/web_ui/src/components/CastBar.tsx
++++ b/web_ui/src/components/CastBar.tsx
+@@ -140,7 +140,7 @@ export function CastBar({
+       )}
+       {pendingDetection && (
+         <div className="cast-banner detect">
+-          <span>New character mentioned: <strong>{pendingDetection}</strong></span>
++          <span>提到了新角色：<strong>{pendingDetection}</strong></span>
+           <button className="ghost small" disabled={busy} onClick={() => onCommand(`/create ${pendingDetection}: a character in the scene`)}>
+             Add to scene
+           </button>
+diff --git a/web_ui/src/components/CharacterPicker.tsx b/web_ui/src/components/CharacterPicker.tsx
+index e7bcaea..455be7c 100644
+--- a/web_ui/src/components/CharacterPicker.tsx
++++ b/web_ui/src/components/CharacterPicker.tsx
+@@ -45,11 +45,11 @@ export function CharacterPicker({
+     <div className="drawer-backdrop" onClick={onClose}>
+       <div className="picker-modal" onClick={(e) => e.stopPropagation()}>
+         <div className="drawer-head">
+-          <span>Add to scene</span>
++          <span>加入场景</span>
+           <button className="link-btn" onClick={onClose}>关闭</button>
+         </div>
+         <label className="tool-toggle">
+-          <span>Join as a full member (otherwise a lightweight guest)</span>
++          <span>以正式成员身份加入（否则将作为轻量访客加入）</span>
+           <input type="checkbox" checked={full} onChange={(e) => setFull(e.target.checked)} />
+         </label>
+         <input
+diff --git a/web_ui/src/components/ChatInsight.tsx b/web_ui/src/components/ChatInsight.tsx
+index 38cc565..03d349b 100644
+--- a/web_ui/src/components/ChatInsight.tsx
++++ b/web_ui/src/components/ChatInsight.tsx
+@@ -199,7 +199,7 @@ export function ChatInsight({
+         percent={realism.trust.percent}
+         tone={realism.trust.level < 0 ? 'danger' : ''}
+       />
+-      <div className="stat-line"><span>Lust</span><span className="muted">{realism.arousal.tier} · {realism.arousal.level}</span></div>
++      <div className="stat-line"><span>欲望</span><span className="muted">{realism.arousal.tier} · {realism.arousal.level}</span></div>
+       </>
+       )}
+       {realism.needsEnabled && Object.keys(realism.needs).length > 0 && (
+diff --git a/web_ui/src/components/ChatMessageList.tsx b/web_ui/src/components/ChatMessageList.tsx
+index 2a81816..c153db8 100644
+--- a/web_ui/src/components/ChatMessageList.tsx
++++ b/web_ui/src/components/ChatMessageList.tsx
+@@ -523,7 +523,7 @@ export function ChatMessageList({
+       </div>
+       {streaming && (() => {
+         // Separate a (possibly still-open) <think> block so reasoning streams
+-        // into a muted "thinking…" area and the reply shows below — mirrors how
++        // into a muted "thinking…" area and the reply shows 以下： mirrors how
+         // the finished message renders its collapsible thinking block.
+         // Case-INSENSITIVE like the Dart strip (<THINK> is valid there too);
+         // the old case-sensitive match streamed an uppercase think block as
+diff --git a/web_ui/src/components/ChatPackageBar.tsx b/web_ui/src/components/ChatPackageBar.tsx
+index 33192bc..c3a3afd 100644
+--- a/web_ui/src/components/ChatPackageBar.tsx
++++ b/web_ui/src/components/ChatPackageBar.tsx
+@@ -145,7 +145,7 @@ export function ChatPackageBar({
+               This chat was exported for “{mismatch.packageName}”, but the open
+               card is “{mismatch.activeName}”.
+             </p>
+-            <p>Restore full Front Porch state anyway, or import dialogue only?</p>
++            <p>仍要恢复完整的 Front Porch 状态，还是仅导入对话？</p>
+             <div className="modal-actions">
+               <button
+                 type="button"
+diff --git a/web_ui/src/components/ChatPlacesSection.tsx b/web_ui/src/components/ChatPlacesSection.tsx
+index d062471..72b4361 100644
+--- a/web_ui/src/components/ChatPlacesSection.tsx
++++ b/web_ui/src/components/ChatPlacesSection.tsx
+@@ -221,7 +221,7 @@ export function ChatPlacesSection({ reloadKey }: { reloadKey?: number }) {
+           </div>
+         ) : (
+           <div className="chat-place-chip setting" style={{ marginTop: 4 }}>
+-            <span className="chat-place-pill setting">SETTING</span>
++            <span className="chat-place-pill setting">场景设定</span>
+             <span>{primary.name}</span>
+             <button
+               type="button"
+@@ -330,7 +330,7 @@ export function ChatPlacesSection({ reloadKey }: { reloadKey?: number }) {
+                 >
+                   ⋮⋮
+                 </span>
+-                <span className="chat-place-pill lore">LORE</span>
++                <span className="chat-place-pill lore">背景设定</span>
+                 <span className="chat-place-lore-name">{p.name}</span>
+                 <button
+                   type="button"
+diff --git a/web_ui/src/components/ChatTools.tsx b/web_ui/src/components/ChatTools.tsx
+index 497ef6f..8280420 100644
+--- a/web_ui/src/components/ChatTools.tsx
++++ b/web_ui/src/components/ChatTools.tsx
+@@ -209,7 +209,7 @@ export function ChatTools({
+       )}
+ 
+       <details className="tool-section">
+-        <summary>Scene &amp; time</summary>
++        <summary>场景与时间</summary>
+         <div className="tool-body">
+           <div className="stat-line">
+             <span>{t.time.date ?? t.time.weekday}, day {t.time.dayCount}</span>
+diff --git a/web_ui/src/components/ChatToolsMemory.tsx b/web_ui/src/components/ChatToolsMemory.tsx
+index 29ce1a9..8d3ccd5 100644
+--- a/web_ui/src/components/ChatToolsMemory.tsx
++++ b/web_ui/src/components/ChatToolsMemory.tsx
+@@ -62,7 +62,7 @@ function WikiPicker({
+   if (urls.length === 0 && !value) return null;
+   return (
+     <details className="tool-section" data-testid="wiki-picker" open>
+-      <summary>Wiki</summary>
++      <summary>维基资料</summary>
+       <div className="tool-body">
+         <p className="muted small">仅搜索此 Wiki（MediaWiki / Fandom），不会搜索 Google。</p>
+         <label className="tool-toggle">
+diff --git a/web_ui/src/components/ChatToolsRealism.tsx b/web_ui/src/components/ChatToolsRealism.tsx
+index 8d03ab3..3e89faf 100644
+--- a/web_ui/src/components/ChatToolsRealism.tsx
++++ b/web_ui/src/components/ChatToolsRealism.tsx
+@@ -35,7 +35,7 @@ export function ChatToolsPockets({
+     <details className="tool-section" open>
+       <summary>随身物品与衣橱</summary>
+       <div className="tool-body">
+-        <div className="muted small side-quest-label">Wearing</div>
++        <div className="muted small side-quest-label">穿着</div>
+         <div className="pocket-items">
+           {worn.length === 0 ? (
+             <span className="pocket-empty">穿上衣物</span>
+@@ -56,7 +56,7 @@ export function ChatToolsPockets({
+         </div>
+         {carrying.length > 0 && (
+           <>
+-            <div className="muted small side-quest-label">Carrying</div>
++            <div className="muted small side-quest-label">携带</div>
+             <div className="pocket-items">
+               {carrying.map((i, n) => (
+                 <span className="pocket-item" key={`c${n}`}>
+@@ -75,7 +75,7 @@ export function ChatToolsPockets({
+         )}
+         {setAside.length > 0 && (
+           <>
+-            <div className="muted small side-quest-label">Set aside</div>
++            <div className="muted small side-quest-label">放置一旁</div>
+             <div className="pocket-items">
+               {setAside.map((i, n) => (
+                 <span className="pocket-item pocket-item-aside" key={`s${n}`}>
+@@ -135,9 +135,9 @@ export function ChatToolsChaos({ t, toggle }: { t: ToolsState; toggle: ToolsTogg
+ export function ChatToolsNsfw({ t, toggle }: { t: ToolsState; toggle: ToolsToggle }) {
+   return (
+     <details className="tool-section">
+-      <summary>NSFW</summary>
++      <summary>成人内容</summary>
+       <div className="tool-body">
+-        <div className="stat-line"><span>Lust</span><span className="muted">{t.nsfw.arousalTier} · {t.nsfw.arousalLevel}</span></div>
++        <div className="stat-line"><span>欲望</span><span className="muted">{t.nsfw.arousalTier} · {t.nsfw.arousalLevel}</span></div>
+         <Toggle label={t.group ? 'NSFW Enhancements (all members)' : 'NSFW Enhancements'} value={t.nsfw.cooldownEnabled} onChange={(v) => toggle('nsfwCooldown', v)} />
+         {t.nsfw.cooldownEnabled && t.nsfw.refractoryMinutesRemaining > 0 && (
+           <div className="stat-line"><span className="muted">{t.nsfw.refractoryLabel}</span></div>
+diff --git a/web_ui/src/components/GenerationSettingsFields.tsx b/web_ui/src/components/GenerationSettingsFields.tsx
+index 8a71c1e..1363099 100644
+--- a/web_ui/src/components/GenerationSettingsFields.tsx
++++ b/web_ui/src/components/GenerationSettingsFields.tsx
+@@ -284,7 +284,7 @@ export function GenerationSettingsFields({
+         />
+       </label>
+       {Boolean(reasoningMandatory) && (
+-        <p className="muted small">This model always thinks — Off is not available.</p>
++        <p className="muted small">此模型始终启用思考模式，无法关闭。</p>
+       )}
+       {reasoningLocalSupport === 'none' && (
+         <p className="muted small">
+@@ -350,7 +350,7 @@ export function GenerationSettingsFields({
+         </p>
+       )}
+       <label className="row-label">
+-        <span>Provide periodic responses when user is AFK?</span>
++        <span>用户暂时离开时，是否定期自动回复？</span>
+         <input
+           type="checkbox"
+           checked={g.dynamicResponses}
+@@ -362,16 +362,16 @@ export function GenerationSettingsFields({
+           <SliderField label="Idle timeout (s)" value={g.dynamicResponseInterval} min={30} max={300} step={10}
+             onChange={(v) => patchGen({ dynamicResponseInterval: Math.round(v) })} />
+           <label className="field">
+-            <span>Story time per away scene</span>
++            <span>每个离开场景的故事时间</span>
+             <select
+               value={g.dynamicResponsePacePeriods ?? 1}
+               onChange={(e) =>
+                 patchGen({ dynamicResponsePacePeriods: Number(e.target.value) })
+               }
+             >
+-              <option value={1}>a few hours</option>
+-              <option value={3}>half the day</option>
+-              <option value={6}>a full day</option>
++              <option value={1}>数小时</option>
++              <option value={3}>半天</option>
++              <option value={6}>一整天</option>
+             </select>
+           </label>
+         </>
+@@ -398,7 +398,7 @@ export function GenerationSettingsFields({
+             }
+             placeholder="One phrase per line"
+           />
+-          <p className="muted small">KoboldCpp only — the model will not emit these strings.</p>
++          <p className="muted small">仅适用于 KoboldCpp——模型不会自行输出这些字符串。</p>
+         </label>
+       )}
+       {g.outputSanitizerEnabled !== undefined && (
+diff --git a/web_ui/src/components/GreetingSeedForm.tsx b/web_ui/src/components/GreetingSeedForm.tsx
+index a6da723..c00ac79 100644
+--- a/web_ui/src/components/GreetingSeedForm.tsx
++++ b/web_ui/src/components/GreetingSeedForm.tsx
+@@ -79,7 +79,7 @@ export function GreetingSeedForm({
+               onChange={(v) => patch({ timeOfDay: v || undefined })}
+             />
+             <label className="realism-field">
+-              <span>Day number</span>
++              <span>天数</span>
+               <input
+                 type="number"
+                 min={1}
+@@ -115,7 +115,7 @@ export function GreetingSeedForm({
+             </label>
+           </div>
+ 
+-          <h4 className="realism-head">Relationship</h4>
++          <h4 className="realism-head">关系</h4>
+           <div className="card realism-card">
+             <Slider
+               label="Short-term bond"
+@@ -146,10 +146,10 @@ export function GreetingSeedForm({
+             />
+           </div>
+ 
+-          <h4 className="realism-head">Starting emotion</h4>
++          <h4 className="realism-head">初始情绪</h4>
+           <div className="realism-grid-2">
+             <label className="realism-field">
+-              <span>Emotion</span>
++              <span>情绪</span>
+               <input
+                 value={s.characterEmotion ?? ''}
+                 placeholder="e.g. furious, warm, guarded"
+@@ -179,7 +179,7 @@ export function GreetingSeedForm({
+ 
+           {showNeeds && (
+             <>
+-              <h4 className="realism-head">Needs Simulation</h4>
++              <h4 className="realism-head">需求模拟</h4>
+               <NeedsClockOffNote clockOn={clockOn} />
+               <div className="card realism-card">
+                 <p className="muted small">
+diff --git a/web_ui/src/components/GrowthPanel.tsx b/web_ui/src/components/GrowthPanel.tsx
+index 6acbcf3..78ea6a3 100644
+--- a/web_ui/src/components/GrowthPanel.tsx
++++ b/web_ui/src/components/GrowthPanel.tsx
+@@ -228,7 +228,7 @@ export function GrowthPanel({
+         <button className="small" disabled={d.passRunning} onClick={() => act('check')}>
+           {d.passRunning ? 'Checking…' : 'Check now'}
+         </button>
+-        <button className="small" onClick={() => setEditor({ mode: 'plant' })}>Plant a ring</button>
++        <button className="small" onClick={() => setEditor({ mode: 'plant' })}>埋下一个戒指</button>
+         <span className="grow" />
+         <button
+           className="small danger"
+diff --git a/web_ui/src/components/GrowthReviewModal.tsx b/web_ui/src/components/GrowthReviewModal.tsx
+index 0d62f7b..eba2fea 100644
+--- a/web_ui/src/components/GrowthReviewModal.tsx
++++ b/web_ui/src/components/GrowthReviewModal.tsx
+@@ -86,11 +86,11 @@ export function GrowthReviewModal({ onClose }: { onClose: () => void }) {
+         </div>
+         {!batch && !error && <div className="centered"><div className="spinner" /></div>}
+         {batch && !batch.pending && (
+-          <p className="muted small">Nothing waiting — it was settled elsewhere.</p>
++          <p className="muted small">没有待处理项目——它已在其他位置处理。</p>
+         )}
+         {batch?.pending && (
+           <>
+-            <p className="muted small">Uncheck anything that doesn&apos;t ring true, then apply.</p>
++            <p className="muted small">取消勾选任何不符合实际的项目，然后应用。</p>
+             <div className="growth-review-list">
+               {batch.owners.map((owner, o) => (
+                 <div key={o}>
+@@ -119,7 +119,7 @@ export function GrowthReviewModal({ onClose }: { onClose: () => void }) {
+             </div>
+             {error && <p className="error">{error}</p>}
+             <div className="modal-actions">
+-              <button className="danger" onClick={() => settle(false)} disabled={busy}>Discard all</button>
++              <button className="danger" onClick={() => settle(false)} disabled={busy}>全部丢弃</button>
+               <button className="primary" onClick={() => settle(true)} disabled={busy}>
+                 {busy ? 'Applying…' : 'Apply selected'}
+               </button>
+diff --git a/web_ui/src/components/InstallHint.tsx b/web_ui/src/components/InstallHint.tsx
+index 6bbea04..59e1111 100644
+--- a/web_ui/src/components/InstallHint.tsx
++++ b/web_ui/src/components/InstallHint.tsx
+@@ -61,7 +61,7 @@ export function InstallHint() {
+       </div>
+       <div className="install-hint-actions">
+         <button className="primary" onClick={install}>安装</button>
+-        <button className="link-btn" onClick={() => setDismissed(true)}>Dismiss</button>
++        <button className="link-btn" onClick={() => setDismissed(true)}>关闭</button>
+       </div>
+     </div>
+   );
+diff --git a/web_ui/src/components/JournalReviewModal.tsx b/web_ui/src/components/JournalReviewModal.tsx
+index 8ecf779..d20e5d4 100644
+--- a/web_ui/src/components/JournalReviewModal.tsx
++++ b/web_ui/src/components/JournalReviewModal.tsx
+@@ -94,11 +94,11 @@ export function JournalReviewModal({ onClose }: { onClose: () => void }) {
+         </div>
+         {!batch && !error && <div className="centered"><div className="spinner" /></div>}
+         {batch && !batch.pending && (
+-          <p className="muted small">Nothing waiting — it was settled elsewhere.</p>
++          <p className="muted small">没有待处理项目——它已在其他位置处理。</p>
+         )}
+         {batch?.pending && (
+           <>
+-            <p className="muted small">Uncheck anything that doesn&apos;t ring true, then apply.</p>
++            <p className="muted small">取消勾选任何不符合实际的项目，然后应用。</p>
+             <div className="growth-review-list">
+               {batch.owners.map((owner, o) => (
+                 <div key={o}>
+@@ -140,7 +140,7 @@ export function JournalReviewModal({ onClose }: { onClose: () => void }) {
+             </div>
+             {error && <p className="error">{error}</p>}
+             <div className="modal-actions">
+-              <button className="danger" onClick={() => settle(false)} disabled={busy}>Discard all</button>
++              <button className="danger" onClick={() => settle(false)} disabled={busy}>全部丢弃</button>
+               <button className="primary" onClick={() => settle(true)} disabled={busy}>
+                 {busy ? 'Applying…' : 'Apply selected'}
+               </button>
+diff --git a/web_ui/src/components/MessageActions.tsx b/web_ui/src/components/MessageActions.tsx
+index dcee826..7d5edf2 100644
+--- a/web_ui/src/components/MessageActions.tsx
++++ b/web_ui/src/components/MessageActions.tsx
+@@ -197,12 +197,12 @@ export function MessageActions({
+             onKeyDown={critiqueKey}
+           >
+             <div className="drawer-head">
+-              <span>Regenerate</span>
++              <span>重新生成</span>
+               <button type="button" className="link-btn" onClick={closeCritique} aria-label="关闭">
+                 ×
+               </button>
+             </div>
+-            <p className="muted small">Optional note for this swipe. Leave blank to just try again.</p>
++            <p className="muted small">可为本次候选回复添加备注。留空即可直接重试。</p>
+             <textarea
+               className="regen-critique"
+               data-testid="regen-critique-field"
+@@ -236,7 +236,7 @@ export function MessageActions({
+                     </button>
+                   </div>
+                 ) : (
+-                  <span className="muted small" data-testid="regen-lookup-wiki">Wiki</span>
++                  <span className="muted small" data-testid="regen-lookup-wiki">维基</span>
+                 )}
+                 <input
+                   className="regen-lookup-query"
+@@ -251,7 +251,7 @@ export function MessageActions({
+             <div className="regen-critique-actions">
+               <span className="muted small regen-critique-chord">⌘/Ctrl+Enter</span>
+               <button type="button" className="link-btn" onClick={closeCritique}>取消</button>
+-              <button type="submit">Regenerate</button>
++              <button type="submit">重新生成</button>
+             </div>
+           </form>
+         </div>
+diff --git a/web_ui/src/components/MessageEditModal.tsx b/web_ui/src/components/MessageEditModal.tsx
+index 3fcbf76..7f8eee7 100644
+--- a/web_ui/src/components/MessageEditModal.tsx
++++ b/web_ui/src/components/MessageEditModal.tsx
+@@ -180,7 +180,7 @@ export function MessageEditModal({
+             {thinking.trim() ? (
+               <span className="msg-edit-think-badge">{thinking.trim().length} chars</span>
+             ) : (
+-              <span className="muted small">Edit model reasoning (no tags needed)</span>
++              <span className="muted small">编辑模型推理内容（无需标签）</span>
+             )}
+           </button>
+         )}
+diff --git a/web_ui/src/components/ModelPicker.tsx b/web_ui/src/components/ModelPicker.tsx
+index fe67c32..259bdbc 100644
+--- a/web_ui/src/components/ModelPicker.tsx
++++ b/web_ui/src/components/ModelPicker.tsx
+@@ -155,7 +155,7 @@ export function ModelPicker({
+               <button type="button" className="ghost" onClick={() => void fetchModels()}>重试</button>
+             </div>
+           ) : filtered.length === 0 ? (
+-            <div className="mp-state muted">No matching models.</div>
++            <div className="mp-state muted">没有匹配的模型。</div>
+           ) : (
+             <ul className="mp-list">
+               {filtered.map((m) => (
+diff --git a/web_ui/src/components/ModelTransportCard.tsx b/web_ui/src/components/ModelTransportCard.tsx
+index 444593f..b809fd6 100644
+--- a/web_ui/src/components/ModelTransportCard.tsx
++++ b/web_ui/src/components/ModelTransportCard.tsx
+@@ -47,7 +47,7 @@ export function ModelTransportCard() {
+           <span className="pl-row-icon" aria-hidden="true">🔧</span>
+           <div className="pl-row-body">
+             <div className="pl-row-label-line">
+-              <span className="pl-label">Native tool calling</span>
++              <span className="pl-label">原生工具调用</span>
+               <span className="pl-chip pl-chip-alone">独立运行</span>
+             </div>
+             <p className="pl-blurb">
+diff --git a/web_ui/src/components/PocketAddRow.tsx b/web_ui/src/components/PocketAddRow.tsx
+index 5db1584..d4abaaf 100644
+--- a/web_ui/src/components/PocketAddRow.tsx
++++ b/web_ui/src/components/PocketAddRow.tsx
+@@ -49,9 +49,9 @@ export function PocketAddRow({ onAdd }: { onAdd: PocketAddFn }) {
+         }
+       />
+       <select value={section} onChange={(e) => setSection(e.target.value)}>
+-        <option value="worn">Wearing</option>
+-        <option value="carrying">Carrying</option>
+-        <option value="set_aside">Set aside</option>
++        <option value="worn">穿着</option>
++        <option value="carrying">携带</option>
++        <option value="set_aside">放置一旁</option>
+       </select>
+       {!wearing && (
+         <button
+diff --git a/web_ui/src/components/PorchLifeSettings.tsx b/web_ui/src/components/PorchLifeSettings.tsx
+index fbe66f3..3e6646d 100644
+--- a/web_ui/src/components/PorchLifeSettings.tsx
++++ b/web_ui/src/components/PorchLifeSettings.tsx
+@@ -675,13 +675,13 @@ export function PorchLifeSettings() {
+           }
+         />
+         <p className="muted small" data-testid="user-tools-folder-note">
+-          Extra tools are JSON recipe cards in the desktop library <code>tools</code> folder
++          额外工具是 JSON 配方卡，存放在桌面端资料库的 <code>tools</code> 文件夹中
+           — the same drawer character chat and Waifu Coder share (next to chats and worlds).
+           Phone and browser use built-in web search — there is no file picker here.
+         </p>
+         <p className="muted small" data-testid="user-skills-folder-note">
+-          Waifu Coder also reads OpenCode skill folders from the desktop library <code>skills</code> folder
+-          (<code>skills/&lt;name&gt;/SKILL.md</code>). Character chat does not use them. Phone and browser
++          Waifu Coder 也会读取桌面端资料库 <code>skills</code> 文件夹中的 OpenCode 技能目录
++          (<code>skills/&lt;name&gt;/SKILL.md</code>). 角色聊天不会使用这些技能。手机和浏览器
+           have no file picker here.
+         </p>
+       </FeatureGroup>
+diff --git a/web_ui/src/components/ProcessingOverlay.tsx b/web_ui/src/components/ProcessingOverlay.tsx
+index e61a6a6..726eae6 100644
+--- a/web_ui/src/components/ProcessingOverlay.tsx
++++ b/web_ui/src/components/ProcessingOverlay.tsx
+@@ -102,7 +102,7 @@ function ActiveProcessingOverlay({
+ 
+           {realismMode && p.text ? (
+             <div className="proc-stream">
+-              <div className="proc-stream-head"><span className="proc-dot" aria-hidden /> LIVE EVAL STREAM</div>
++              <div className="proc-stream-head"><span className="proc-dot" aria-hidden /> 实时评估流</div>
+               <pre className="proc-stream-body" ref={streamRef}>{p.text}</pre>
+             </div>
+           ) : !realismMode ? (
+diff --git a/web_ui/src/components/PromptSettingsCard.tsx b/web_ui/src/components/PromptSettingsCard.tsx
+index f0b7480..b47821c 100644
+--- a/web_ui/src/components/PromptSettingsCard.tsx
++++ b/web_ui/src/components/PromptSettingsCard.tsx
+@@ -20,7 +20,7 @@ export function PromptSettingsCard({
+   return (
+     <section className="card" data-testid="prompt-settings-card">
+       <h3>备用系统提示词</h3>
+-      <p className="muted small">Used in one-to-one chats when the character has no system prompt. Groups use their own prompt or a group default.</p>
++      <p className="muted small">当角色没有系统提示词时，此设置用于一对一聊天。群聊会使用自己的提示词或群组默认提示词。</p>
+       <label data-testid="fallback-system-prompt">
+         Fallback system prompt
+         <textarea
+@@ -38,7 +38,7 @@ export function PromptSettingsCard({
+               <textarea rows={4} value={additionalSystemPrompt}
+                 onChange={(e) => patch({ additionalSystemPrompt: e.target.value })} />
+             </label>
+-            <p className="muted small">Appended to the selected system prompt, including character and group prompts.</p>
++            <p className="muted small">此内容会追加到选定的系统提示词末尾，包括角色提示词和群组提示词。</p>
+             <label>Additional post-history instructions
+               <textarea rows={4} value={additionalPostHistoryInstructions}
+                 onChange={(e) => patch({ additionalPostHistoryInstructions: e.target.value })} />
+diff --git a/web_ui/src/components/PromptSource.tsx b/web_ui/src/components/PromptSource.tsx
+index 47530e3..184d61b 100644
+--- a/web_ui/src/components/PromptSource.tsx
++++ b/web_ui/src/components/PromptSource.tsx
+@@ -185,7 +185,7 @@ function PromptPane({ title, text, isBase }: { title: string; text: string; isBa
+     <div className={`prompt-pane${isBase ? ' base' : ' dim'}`}>
+       <div className="prompt-pane-head">
+         <span>{title}</span>
+-        {isBase && <span className="prompt-pane-tag">BASE</span>}
++        {isBase && <span className="prompt-pane-tag">基础</span>}
+       </div>
+       <div className="prompt-pane-text" tabIndex={0}>{text || '(empty)'}</div>
+     </div>
+diff --git a/web_ui/src/components/ReadingSizeSettings.tsx b/web_ui/src/components/ReadingSizeSettings.tsx
+index 1316da9..4877fbf 100644
+--- a/web_ui/src/components/ReadingSizeSettings.tsx
++++ b/web_ui/src/components/ReadingSizeSettings.tsx
+@@ -24,7 +24,7 @@ export function ReadingSizeSlider() {
+ 
+   return (
+     <label className="reading-size-row">
+-      <span>Reading size</span>
++      <span>阅读字号</span>
+       <input
+         type="range"
+         min={READING_SIZE_MIN}
+@@ -45,7 +45,7 @@ export function ReadingSizeSlider() {
+ export function ReadingSizeSettings() {
+   return (
+     <section className="card" data-testid="reading-size-card">
+-      <h3>Reading size</h3>
++      <h3>阅读字号</h3>
+       <p className="reading-blurb">
+         Chat bubbles, the composer, message edit, and sidebar help. Buttons and
+         labels stay put.
+diff --git a/web_ui/src/components/StoryCalendarModal.tsx b/web_ui/src/components/StoryCalendarModal.tsx
+index 207edbf..1b49e97 100644
+--- a/web_ui/src/components/StoryCalendarModal.tsx
++++ b/web_ui/src/components/StoryCalendarModal.tsx
+@@ -139,7 +139,7 @@ export function StoryCalendarModal({
+         {data.todaySentence && (
+           <div className="stat-line" style={{ marginBottom: 8 }}>
+             <div>
+-              <div className="muted small" style={{ letterSpacing: 0.8, fontWeight: 800 }}>TODAY</div>
++              <div className="muted small" style={{ letterSpacing: 0.8, fontWeight: 800 }}>今天</div>
+               <div style={{ fontStyle: 'italic' }}>{data.todaySentence}</div>
+             </div>
+             {canEdit && (
+diff --git a/web_ui/src/components/WorkerBackendCard.tsx b/web_ui/src/components/WorkerBackendCard.tsx
+index f3c0f11..b531a00 100644
+--- a/web_ui/src/components/WorkerBackendCard.tsx
++++ b/web_ui/src/components/WorkerBackendCard.tsx
+@@ -156,7 +156,7 @@ export function WorkerBackendCard({
+ 
+   return (
+     <div className="side-jobs" data-testid="side-jobs-card">
+-      <h4>Realism evals</h4>
++      <h4>拟真评估</h4>
+       <p className="muted small">
+         Feelings, wiki/web, journal, growth can use another host. Chat speech stays above.
+         Two local engines take turns on the GPU when unload/swap is available.
+diff --git a/web_ui/src/components/aichargen/AutomatedConfig.tsx b/web_ui/src/components/aichargen/AutomatedConfig.tsx
+index 00592a5..91f9891 100644
+--- a/web_ui/src/components/aichargen/AutomatedConfig.tsx
++++ b/web_ui/src/components/aichargen/AutomatedConfig.tsx
+@@ -74,7 +74,7 @@ export function AutomatedConfig({
+ 
+       {form.nsfw && (
+         <>
+-          <h4 className="cg-subhead">Intimate (mature)</h4>
++          <h4 className="cg-subhead">亲密（成人向）</h4>
+           <ChipSelect label="Chest" value={form.chestSize} options={CHEST_SIZES} onChange={(v) => set({ chestSize: v })} />
+           <ChipSelect label="Butt" value={form.buttSize} options={BUTT_SIZES} onChange={(v) => set({ buttSize: v })} />
+           <ChipSelect label="Experience" value={form.experience} options={EXPERIENCE_OPTIONS} onChange={(v) => set({ experience: v })} />
+diff --git a/web_ui/src/components/aichargen/EnhanceReviewModal.tsx b/web_ui/src/components/aichargen/EnhanceReviewModal.tsx
+index e26f868..879a539 100644
+--- a/web_ui/src/components/aichargen/EnhanceReviewModal.tsx
++++ b/web_ui/src/components/aichargen/EnhanceReviewModal.tsx
+@@ -295,7 +295,7 @@ export function EnhanceReviewModal({
+             {selection.porchLife && proposal.porchLife && (
+               <div className="enh-section">
+                 <div className="enh-section-head">
+-                  <strong>Porch Life (wardrobe, ambitions, likes)</strong>
++                  <strong>Porch Life（衣着、抱负、喜好）</strong>
+                   <label className="cg-field cg-toggle enh-use">
+                     <input
+                       type="checkbox"
+diff --git a/web_ui/src/components/aichargen/FactsCard.tsx b/web_ui/src/components/aichargen/FactsCard.tsx
+index 8bf2dec..642320f 100644
+--- a/web_ui/src/components/aichargen/FactsCard.tsx
++++ b/web_ui/src/components/aichargen/FactsCard.tsx
+@@ -57,7 +57,7 @@ export function FactsCard({
+     >
+       <div className="cg-p-facts-head">
+         <div className="cg-p-facts-title">
+-          <h3>Also written from the interview</h3>
++          <h3>也根据访谈内容生成</h3>
+           <span className={rewriting ? 'cg-p-reread-note' : 'cg-p-caption'}>
+             {rewriting
+               ? 'Re-read after the rewrite'
+@@ -104,14 +104,14 @@ export function FactsCard({
+           <div className="cg-field cg-p-fact">
+             <span className="cg-field-label">INTIMATE PREFERENCES · 18+ IS ON</span>
+             <div className="cg-p-intimate">
+-              <span className="cg-p-sub-label">into</span>
++              <span className="cg-p-sub-label">喜欢</span>
+               <Chips
+                 values={facts.intimateInto}
+                 disabled={dim}
+                 label="Into"
+                 onChange={(v) => set({ intimateInto: v })}
+               />
+-              <span className="cg-p-sub-label">not into</span>
++              <span className="cg-p-sub-label">不喜欢</span>
+               <Chips
+                 values={facts.intimateNotInto}
+                 disabled={dim}
+diff --git a/web_ui/src/components/aichargen/GreetingsStep.tsx b/web_ui/src/components/aichargen/GreetingsStep.tsx
+index c02da5c..d8f0053 100644
+--- a/web_ui/src/components/aichargen/GreetingsStep.tsx
++++ b/web_ui/src/components/aichargen/GreetingsStep.tsx
+@@ -334,7 +334,7 @@ export const GreetingsStep = forwardRef<
+   return (
+     <div className="cg-greetings" data-testid="greetings-step">
+       <div className="cg-g-intro">
+-        <h2>Greetings</h2>
++        <h2>开场白</h2>
+         <p>
+           <span className="cg-g-wide">
+             The first message opens every new chat. Alternates are other openings you can swipe to.{' '}
+@@ -375,7 +375,7 @@ export const GreetingsStep = forwardRef<
+           <PlusIcon />
+           Add another greeting
+         </button>
+-        <span className="cg-g-hint">Writes a new one right away</span>
++        <span className="cg-g-hint">立即生成一条新的开场白</span>
+       </div>
+       {saveError && <p className="error">{saveError}</p>}
+       <ReviewSection
+diff --git a/web_ui/src/components/aichargen/GuidedConfig.tsx b/web_ui/src/components/aichargen/GuidedConfig.tsx
+index 35925a2..32d9dc1 100644
+--- a/web_ui/src/components/aichargen/GuidedConfig.tsx
++++ b/web_ui/src/components/aichargen/GuidedConfig.tsx
+@@ -50,7 +50,7 @@ export function GuidedConfig({
+ 
+       {form.nsfw && (
+         <>
+-          <h4 className="cg-subhead">Intimate (mature)</h4>
++          <h4 className="cg-subhead">亲密（成人向）</h4>
+           <div className="cg-grid2">
+             <Field label="Intimate body details" value={form.gnBody} onChange={(v) => set({ gnBody: v })} />
+             <Field label="Sexual experience" value={form.gnExp} onChange={(v) => set({ gnExp: v })} />
+diff --git a/web_ui/src/components/aichargen/LoreContext.tsx b/web_ui/src/components/aichargen/LoreContext.tsx
+index f4af4a6..c899499 100644
+--- a/web_ui/src/components/aichargen/LoreContext.tsx
++++ b/web_ui/src/components/aichargen/LoreContext.tsx
+@@ -85,7 +85,7 @@ export function LoreContext({
+         <div className="cg-field">
+           <span className="cg-field-label">
+             Gathered lore — {form.worldLore.length.toLocaleString()} chars{' '}
+-            <button type="button" className="link-btn" onClick={() => set({ worldLore: '' })}>clear</button>
++            <button type="button" className="link-btn" onClick={() => set({ worldLore: '' })}>清空</button>
+           </span>
+           <textarea rows={6} value={form.worldLore} onChange={(e) => set({ worldLore: e.target.value })} />
+         </div>
+diff --git a/web_ui/src/components/models/KoboldChatTemplatePicker.tsx b/web_ui/src/components/models/KoboldChatTemplatePicker.tsx
+index 399aefe..87c03cf 100644
+--- a/web_ui/src/components/models/KoboldChatTemplatePicker.tsx
++++ b/web_ui/src/components/models/KoboldChatTemplatePicker.tsx
+@@ -61,7 +61,7 @@ export function KoboldChatTemplatePicker({ preset, onSaved }: {
+         }} />
+       {name && <button className="btn" type="button" disabled={busy}
+         onClick={() => void save()}>使用内嵌模板</button>}
+-    </div> : <p>Edit this preset on desktop, or select a preset in the host engine folder.</p>}
++    </div> : <p>请在桌面端编辑此预设，或在宿主引擎文件夹中选择一个预设。</p>}
+     <p className="kc-words">A custom template overrides the GGUF template.
+       Stop and restart KoboldCpp after saving to apply the change.</p>
+     {preset.chatTemplateWarning && <div className="kc-template-warning">
+diff --git a/web_ui/src/components/models/studio/DeskModel.tsx b/web_ui/src/components/models/studio/DeskModel.tsx
+index 4c38317..20fca3f 100644
+--- a/web_ui/src/components/models/studio/DeskModel.tsx
++++ b/web_ui/src/components/models/studio/DeskModel.tsx
+@@ -35,7 +35,7 @@ export function DeskModel(props: {
+   const hasGraphSlots = (facts?.slots ?? []).length > 0;
+   return (
+     <div className="fp-model-controls">
+-      <div>Model</div>
++      <div>模型</div>
+       <strong>{familyLabel(facts?.loraFamily, file)}</strong>
+       <div>{file || 'No model chosen'}</div>
+       {comfy ? <p>{why(cfg, mode, facts, file)}</p> : null}
+@@ -55,7 +55,7 @@ export function DeskModel(props: {
+         </button>
+       )}
+       {facts?.kind === 'needsLoaderUpdate' && facts.canUpdateLoader ? (
+-        <p>Confirm the ComfyUI-GGUF loader update on your computer, then check again.</p>
++        <p>请先在电脑上确认 ComfyUI-GGUF 加载器已更新，然后再次检查。</p>
+       ) : null}
+       {comfy && (facts?.kind === 'needsLoaderUpdate' || facts?.loaderSupportConfirmed) ? (
+         <button type="button" onClick={props.onLoaderSupport} disabled={props.busy}>
+@@ -64,10 +64,10 @@ export function DeskModel(props: {
+       ) : null}
+       {comfy && hasGraphSlots ? (
+         support.length === 0 ? (
+-          <p>This graph has no text encoder or VAE slot.</p>
++          <p>此工作流图没有文本编码器或 VAE 插槽。</p>
+         ) : (
+           <>
+-            <p>This graph also loads</p>
++            <p>此工作流图还会加载</p>
+             {support.map((slot) => (
+               <div key={slot.token}>
+                 <span>{slot.label || (slot.token.includes('VAE') ? 'VAE' : 'Text encoder')}</span>
+@@ -77,7 +77,7 @@ export function DeskModel(props: {
+                 </button>
+               </div>
+             ))}
+-            <p>These files do not set the LoRA family. The text encoder can be Qwen while the model is Z-Image.</p>
++            <p>这些文件无法决定 LoRA 的系列类型。文本编码器可以是 Qwen，而模型本身可以是 Z-Image。</p>
+           </>
+         )
+       ) : null}
+diff --git a/web_ui/src/components/models/studio/DeskRemote.tsx b/web_ui/src/components/models/studio/DeskRemote.tsx
+index 9184ec7..1254e9a 100644
+--- a/web_ui/src/components/models/studio/DeskRemote.tsx
++++ b/web_ui/src/components/models/studio/DeskRemote.tsx
+@@ -159,7 +159,7 @@ export function DeskRemote(props: {
+ 
+       {showModel ? (
+         <section aria-label="Model" className="fp-remote-group fp-remote-rule">
+-          <div className="fp-remote-label">Model</div>
++          <div className="fp-remote-label">模型</div>
+           <div className="fp-remote-model">{panel.modelName}</div>
+           {panel.modelId && panel.modelId !== panel.modelName ? (
+             <div className="fp-remote-id">{panel.modelId}</div>
+diff --git a/web_ui/src/components/models/studio/GraphSheet.tsx b/web_ui/src/components/models/studio/GraphSheet.tsx
+index 0fb4681..676e13b 100644
+--- a/web_ui/src/components/models/studio/GraphSheet.tsx
++++ b/web_ui/src/components/models/studio/GraphSheet.tsx
+@@ -101,8 +101,8 @@ export function GraphSheet(props: {
+       <button type="button" onClick={props.onClose}>关闭</button>
+       <h2>{mode === 'edit' ? 'Change graph — Edit' : 'Change graph — Create'}</h2>
+       <p>{note}</p>
+-      <p>Drop a ComfyUI graph, or an image that has one saved inside it.</p>
+-      <p>JSON, or a PNG from Comfy’s Save.</p>
++      <p>拖入 ComfyUI 工作流图，或拖入内嵌了工作流图的图像。</p>
++      <p>JSON 文件，或通过 Comfy 的保存功能生成的 PNG 文件。</p>
+       <input
+         ref={chooser}
+         aria-label="Workflow file"
+@@ -128,7 +128,7 @@ export function GraphSheet(props: {
+           />
+           {asks === 'unstated' ? (
+             <div>
+-              <p>This graph doesn’t say Create or Edit.</p>
++              <p>此工作流图未指定「创建」或「编辑」模式。</p>
+               <button type="button" disabled={!password} onClick={() => send('create')}>用于创建</button>
+               <button type="button" disabled={!password} onClick={() => send('edit')}>用于编辑</button>
+             </div>
+diff --git a/web_ui/src/components/models/studio/LoraSheet.tsx b/web_ui/src/components/models/studio/LoraSheet.tsx
+index 6d69285..5bca10c 100644
+--- a/web_ui/src/components/models/studio/LoraSheet.tsx
++++ b/web_ui/src/components/models/studio/LoraSheet.tsx
+@@ -71,7 +71,7 @@ export function LoraSheet(props: {
+           {refreshing ? 'Loading...' : 'Refresh LoRAs'}
+         </button>
+       ) : null}
+-      <p>These are the LoRA files the connected app listed. A tap fills the first empty slot.</p>
++      <p>这些是已连接应用列出的 LoRA 文件。点击后会填入第一个空槽位。</p>
+       {failed ? <p>无法读取列表。</p> : null}
+       <p>与此模型匹配</p>
+       <ul>
+diff --git a/web_ui/src/components/models/studio/PackDiscardConfirmation.tsx b/web_ui/src/components/models/studio/PackDiscardConfirmation.tsx
+index 75ce1ae..fbc0a6b 100644
+--- a/web_ui/src/components/models/studio/PackDiscardConfirmation.tsx
++++ b/web_ui/src/components/models/studio/PackDiscardConfirmation.tsx
+@@ -20,7 +20,7 @@ export function PackDiscardConfirmation(props: {
+     onKeyDown={(e) => {
+       if (e.key === 'Escape' && !props.busy) { e.preventDefault(); e.stopPropagation(); props.onKeep(); }
+     }}>
+-    <p id={description}>Clear this pack's results and unlock its target, prompt, and source? Imported expressions stay in the library. Generation starts only when you press Start pack.</p>
++    <p id={description}>清除此任务包的结果，并解锁目标、提示词和来源？已导入的表情仍会保留在图库中。只有点击「开始任务包」后才会开始生成。</p>
+     <button type="button" disabled={props.busy} onClick={props.onDiscard}>重置预设包</button>
+     <button type="button" ref={keep} disabled={props.busy} onClick={props.onKeep}>保留此预设包</button>
+   </div>;
+diff --git a/web_ui/src/components/models/studio/PackDraft.tsx b/web_ui/src/components/models/studio/PackDraft.tsx
+index de38500..8419225 100644
+--- a/web_ui/src/components/models/studio/PackDraft.tsx
++++ b/web_ui/src/components/models/studio/PackDraft.tsx
+@@ -76,7 +76,7 @@ export function PackDraft(props: PackDraftProps) {
+   return (
+     <fieldset disabled={props.frozen} className="fp-pack-draft">
+       <legend>预设包提示词与来源</legend>
+-      {props.edit ? <p>Each expression supplies its own edit instruction. No base prompt is needed.</p> : <>
++      {props.edit ? <p>每个表情都有自己的编辑指令，无需填写基础提示词。</p> : <>
+       <label>Image prompt
+         <textarea aria-label="Image prompt" rows={4} value={props.description}
+           onChange={(e) => props.onDescription(e.target.value)} />
+@@ -84,7 +84,7 @@ export function PackDraft(props: PackDraftProps) {
+       <button type="button" disabled={props.crafting || !props.characterId} onClick={props.onCraft}>
+         {props.crafting ? 'Writing prompt…' : 'Write it for me'}
+       </button>
+-      <p>Leave blank to prepare an image prompt automatically when starting.</p>
++      <p>留空后，开始时会自动准备图像提示词。</p>
+       </>}
+       <p>{props.picture ? `Source: ${props.picture.name}`
+         : `Source: ${props.characterName || 'selected character'} · character portrait`}</p>
+@@ -103,7 +103,7 @@ export function PackDraft(props: PackDraftProps) {
+         props.onPicture(null);
+         props.onReloadPortrait?.();
+       }}>{props.picture ? 'Use character portrait' : 'Reload character portrait'}</button>
+-      {props.frozen ? <p>Target, prompt, and source are fixed for this pack. Reset pack clears its results and unlocks these fields. Use Start pack to generate again.</p> : null}
++      {props.frozen ? <p>此任务包的目标、提示词和来源已固定。重置任务包会清除结果并解锁这些字段。点击「开始任务包」即可重新生成。</p> : null}
+     </fieldset>
+   );
+ }
+diff --git a/web_ui/src/components/models/studio/PackPanel.tsx b/web_ui/src/components/models/studio/PackPanel.tsx
+index 7c43945..2df9a80 100644
+--- a/web_ui/src/components/models/studio/PackPanel.tsx
++++ b/web_ui/src/components/models/studio/PackPanel.tsx
+@@ -326,7 +326,7 @@ export function PackPanel(props: {
+         onReloadPortrait={() => { setPortrait(null); setPortraitLoading(true); setPortraitTick((value) => value + 1); }}
+         lastSaved={props.lastSaved} frozen={frozen} onProblem={setStartProblem} /> : null}
+       <fieldset className="fp-pack-options" disabled={frozen}>
+-      <legend>Pack target and options</legend>
++      <legend>任务包目标与选项</legend>
+       <label>
+         Character
+         <select
+@@ -446,7 +446,7 @@ export function PackPanel(props: {
+               : "This engine has no Edit path, so the pack varies the portrait (img2img)."}
+           </p>
+           {pack.note ? <p>{pack.note}</p> : null}
+-          {pack.origin === "desktop" ? <p>Started on the computer.</p> : null}
++          {pack.origin === "desktop" ? <p>已在电脑上启动。</p> : null}
+           {!running && pack.origin === "phone" && pack.imported == null ? (
+             <button
+               type="button"
+@@ -547,7 +547,7 @@ export function PackPanel(props: {
+             </p>
+           ) : null}
+           {!running && pack.origin === "desktop" && pack.done > 0 ? (
+-            <p>Import it from Image Studio on the computer.</p>
++            <p>请从电脑端的图像工作室导入。</p>
+           ) : null}
+         </div>
+       ) : null}
+diff --git a/web_ui/src/components/models/studio/RemoteModelSheet.tsx b/web_ui/src/components/models/studio/RemoteModelSheet.tsx
+index 4bad017..f17dd3a 100644
+--- a/web_ui/src/components/models/studio/RemoteModelSheet.tsx
++++ b/web_ui/src/components/models/studio/RemoteModelSheet.tsx
+@@ -49,7 +49,7 @@ export function RemoteModelSheet(props: {
+       />
+       {models === null ? <p>正在加载…</p> : null}
+       {problem ? <p>{problem}</p> : null}
+-      {models !== null && !problem && shown.length === 0 ? <p>No matching models.</p> : null}
++      {models !== null && !problem && shown.length === 0 ? <p>没有匹配的模型。</p> : null}
+       <ul className="fp-remote-models">
+         {shown.map((m) => (
+           <li key={m.id}>
+diff --git a/web_ui/src/components/realism/NeedsFormSection.tsx b/web_ui/src/components/realism/NeedsFormSection.tsx
+index 761e61b..702a149 100644
+--- a/web_ui/src/components/realism/NeedsFormSection.tsx
++++ b/web_ui/src/components/realism/NeedsFormSection.tsx
+@@ -84,7 +84,7 @@ export function NeedsFormSection({
+           />
+ 
+           <div className="needs-pace" role="group" aria-label="Pace">
+-            <span>Pace — how fast needs drop as time passes</span>
++            <span>衰减速度——需求随时间流逝而下降的速度</span>
+             {(['sloth', 'normal', 'fast'] as const).map((pace) => (
+               <button
+                 key={pace}
+diff --git a/web_ui/src/components/realism/RealismFormSection.tsx b/web_ui/src/components/realism/RealismFormSection.tsx
+index 624c1f7..4647883 100644
+--- a/web_ui/src/components/realism/RealismFormSection.tsx
++++ b/web_ui/src/components/realism/RealismFormSection.tsx
+@@ -89,7 +89,7 @@ export function RealismFormSection({
+               onChange={(s) => set({ timeOfDay: s })}
+             />
+             <label className="realism-field">
+-              <span>Day number</span>
++              <span>天数</span>
+               <input
+                 type="number"
+                 min={1}
+@@ -115,7 +115,7 @@ export function RealismFormSection({
+           {v.realismEnabled && (
+           <>
+           {/* ── Relationship ── */}
+-          <h4 className="realism-head">Relationship</h4>
++          <h4 className="realism-head">关系</h4>
+           <div className="card realism-card">
+             <Slider
+               label="Short-term bond"
+@@ -144,10 +144,10 @@ export function RealismFormSection({
+           </div>
+ 
+           {/* ── Starting emotion ── */}
+-          <h4 className="realism-head">Starting emotion</h4>
++          <h4 className="realism-head">初始情绪</h4>
+           <div className="realism-grid-2">
+             <label className="realism-field">
+-              <span>Emotion</span>
++              <span>情绪</span>
+               <input
+                 value={v.characterEmotion}
+                 placeholder="e.g. curious, guarded, amused"
+@@ -370,7 +370,7 @@ function WorkFields({ v, set }: { v: RealismValues; set: Patch }) {
+         />
+       </label>
+       <label className="realism-field">
+-        <span>What the job is</span>
++        <span>工作内容</span>
+         <textarea
+           data-testid="work-brief"
+           className="work-brief"
+@@ -484,7 +484,7 @@ function RecoveryBlock({
+   return (
+     <div className="recovery-block" data-testid="recovery-block">
+       <span className="recovery-head">亲密行为后的恢复</span>
+-      <p className="muted small">How this character comes down after climax.</p>
++      <p className="muted small">描述角色在高潮后如何平复下来。</p>
+       <SelectRow
+         label="Recovery preset"
+         value={presetKey}
+diff --git a/web_ui/src/components/realism/controls.tsx b/web_ui/src/components/realism/controls.tsx
+index a101150..ee1f2ff 100644
+--- a/web_ui/src/components/realism/controls.tsx
++++ b/web_ui/src/components/realism/controls.tsx
+@@ -32,7 +32,7 @@ export function Slider({
+       <div className="realism-slider-head">
+         <span>{label}</span>
+         {unset ? (
+-          <span className="realism-badge muted">inherit</span>
++          <span className="realism-badge muted">继承</span>
+         ) : onClear ? (
+           <button type="button" className="realism-badge muted" onClick={onClear}>
+             inherit
+diff --git a/web_ui/src/components/stoop/StoopCardTile.tsx b/web_ui/src/components/stoop/StoopCardTile.tsx
+index 1099d54..7ad0a67 100644
+--- a/web_ui/src/components/stoop/StoopCardTile.tsx
++++ b/web_ui/src/components/stoop/StoopCardTile.tsx
+@@ -62,7 +62,7 @@ export function StoopBadges({ card }: { card: StoopCard }) {
+           </span>
+         </>
+       )}
+-      {card.nsfw && <span className="stoop-badge nsfw">NSFW</span>}
++      {card.nsfw && <span className="stoop-badge nsfw">成人内容</span>}
+     </span>
+   );
+ }
+diff --git a/web_ui/src/pages/CharacterEditPage.tsx b/web_ui/src/pages/CharacterEditPage.tsx
+index 1cf4bcb..f077b00 100644
+--- a/web_ui/src/pages/CharacterEditPage.tsx
++++ b/web_ui/src/pages/CharacterEditPage.tsx
+@@ -329,9 +329,9 @@ export function CharacterEditPage() {
+         </>
+       )}
+ 
+-      <h3 className="section-label">Linked places</h3>
++      <h3 className="section-label">关联地点</h3>
+       {allWorlds.length === 0 ? (
+-        <p className="muted small">No places yet. Create one from the Worlds page to link it here.</p>
++        <p className="muted small">暂时没有地点。请先在「世界」页面创建地点，再将其关联到这里。</p>
+       ) : (
+         <div className="world-picker">
+           {allWorlds.map((w) => (
+@@ -343,17 +343,17 @@ export function CharacterEditPage() {
+         </div>
+       )}
+ 
+-      <h3 className="section-label">Realism Engine</h3>
++      <h3 className="section-label">拟真引擎</h3>
+       <RealismFormSection v={rv} set={patch} showIntimate={adultThemes} />
+ 
+       {rv.realismEnabled && (
+         <>
+-          <h3 className="section-label">Needs Simulation</h3>
++          <h3 className="section-label">需求模拟</h3>
+           <NeedsFormSection v={rv} set={patch} clockOn={clockOn} />
+         </>
+       )}
+ 
+-      <h3 className="section-label">Avatars &amp; expressions</h3>
++      <h3 className="section-label">头像与表情</h3>
+       <AvatarManager characterId={c.id} />
+ 
+       {error && <p className="error">{error}</p>}
+diff --git a/web_ui/src/pages/ChatPage.tsx b/web_ui/src/pages/ChatPage.tsx
+index 0711711..aa0f615 100644
+--- a/web_ui/src/pages/ChatPage.tsx
++++ b/web_ui/src/pages/ChatPage.tsx
+@@ -192,7 +192,7 @@ export function ChatPage() {
+   if (cast.length === 0 && !state.character) {
+     return (
+       <div className="page centered-col">
+-        <p className="muted">No character selected.</p>
++        <p className="muted">尚未选择角色。</p>
+         <button className="primary" onClick={() => navigate('/')}>
+           Choose a character
+         </button>
+@@ -452,7 +452,7 @@ export function ChatPage() {
+         <div className="drawer-backdrop" onClick={() => setShowStats(false)}>
+           <div className="sessions-drawer stats-drawer" onClick={(e) => e.stopPropagation()}>
+             <div className="drawer-head">
+-              <span>Chat insight</span>
++              <span>聊天洞察</span>
+               <button className="link-btn" onClick={() => setShowStats(false)}>关闭</button>
+             </div>
+             {insight}
+@@ -502,7 +502,7 @@ export function ChatPage() {
+         <div className="drawer-backdrop" onClick={() => setShowTheme(false)}>
+           <div className="settings-drawer" onClick={(e) => e.stopPropagation()}>
+             <div className="drawer-head">
+-              <span>Chat settings</span>
++              <span>聊天设置</span>
+               <button className="link-btn" onClick={() => setShowTheme(false)}>关闭</button>
+             </div>
+             {state.promptSource && (
+diff --git a/web_ui/src/pages/CreateAiCharacterPage.tsx b/web_ui/src/pages/CreateAiCharacterPage.tsx
+index 97a140a..3f5fccf 100644
+--- a/web_ui/src/pages/CreateAiCharacterPage.tsx
++++ b/web_ui/src/pages/CreateAiCharacterPage.tsx
+@@ -349,8 +349,8 @@ export function CreateAiCharacterPage() {
+                   <>
+                     <div className="cg-card cg-review">
+                       <div><span className="cg-review-key">名称</span><div>{form.name || '—'}</div></div>
+-                      <div><span className="cg-review-key">Mode</span><div style={{ textTransform: 'capitalize' }}>{form.mode}</div></div>
+-                      <div><span className="cg-review-key">Mature content</span><div>{form.nsfw ? 'On' : 'Off'}</div></div>
++                      <div><span className="cg-review-key">创建模式</span><div style={{ textTransform: 'capitalize' }}>{form.mode}</div></div>
++                      <div><span className="cg-review-key">成人内容</span><div>{form.nsfw ? '开启' : '关闭'}</div></div>
+                       <div><span className="cg-review-key">世界书</span><div>{form.generateLorebook ? `${form.loreDepth}` : 'Off'}</div></div>
+                     </div>
+                     <button
+@@ -405,7 +405,7 @@ export function CreateAiCharacterPage() {
+               />
+             )}
+             {step === GREETINGS && !createdId && (
+-              <p className="muted">Generate a character first; its greetings open here.</p>
++              <p className="muted">请先生成角色，之后可在此编辑开场白。</p>
+             )}
+           </div>
+         </div>
+diff --git a/web_ui/src/pages/ImageBatchesPage.tsx b/web_ui/src/pages/ImageBatchesPage.tsx
+index 77f0658..c10644d 100644
+--- a/web_ui/src/pages/ImageBatchesPage.tsx
++++ b/web_ui/src/pages/ImageBatchesPage.tsx
+@@ -102,7 +102,7 @@ export function ImageBatchesPage({ embedded = false }: { embedded?: boolean } =
+       {['prepare', 'queue', 'review'].map((value) => <button key={value} aria-pressed={tab === value} onClick={() => setTab(value)}>{value[0].toUpperCase() + value.slice(1)}</button>)}
+     </div>
+     {confirmSave ? <section className="card" aria-label="Confirm portrait replacement">
+-      <h3>替换主肖像？</h3><p>The kept primary portrait candidates replace the selected characters’ current portraits; the old portraits move to the gallery. Additional portraits stay in the gallery.</p>
++      <h3>替换主肖像？</h3><p>保留的主肖像候选图将替换所选角色当前的肖像；旧肖像会移入图库。其他肖像仍保留在图库中。</p>
+       <button disabled={reviewLocked} onClick={() => void save()}>替换肖像</button><button onClick={() => setConfirmSave(false)}>取消</button>
+     </section> : null}
+     {tab === 'prepare' ? <section className="card">
+@@ -117,10 +117,10 @@ export function ImageBatchesPage({ embedded = false }: { embedded?: boolean } =
+         <p>{kind === 'additional' ? 'Additional portraits are saved to the character’s gallery. They do not replace the primary portrait or become expressions.'
+           : kind === 'expressions' ? 'Expression wording comes from the shared expression prompts and your rules. Character descriptions are used only for img2img.'
+           : 'Primary portraits replace the character’s current portrait only after review and confirmation.'}</p>
+-        <label>Prompt / instruction<textarea rows={4} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Use {character} for each character’s name." /></label>
++        <label>提示词 / 指令<textarea rows={4} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="使用 {character} 代表对应角色的名字。" /></label>
+         {kind !== 'expressions' ? <label><input type="checkbox" checked={edit} onChange={(e) => setEdit(e.target.checked)} /> 编辑当前角色肖像</label> :
+           <label><input type="checkbox" checked={missingOnly} onChange={(e) => setMissingOnly(e.target.checked)} /> 仅生成缺失的表情</label>}
+-        <p>Uses current Image Studio settings. Source images and prompts are captured when prepared. Changing generation settings pauses older waiting work until those settings are restored.</p>
++        <p>使用当前的图像工作室设置。准备任务时会记录源图像和提示词。更改生成设置后，旧的待处理任务会暂停，直到恢复原设置。</p>
+         {kind === 'expressions' ? <>
+           <label>表情组<select aria-label="表情组" value={fullSet ? 'full' : 'starter'} onChange={(e) => setFullSet(e.target.value === 'full')}>
+             <option value="starter">入门版（8 个）</option><option value="full">完整版（28 个）</option>
+diff --git a/web_ui/src/pages/RemoteAccessPage.tsx b/web_ui/src/pages/RemoteAccessPage.tsx
+index 6515ce1..6475ec0 100644
+--- a/web_ui/src/pages/RemoteAccessPage.tsx
++++ b/web_ui/src/pages/RemoteAccessPage.tsx
+@@ -48,7 +48,7 @@ function TunnelResult({ url }: { url: string }) {
+       <div className="qr">
+         <QRCodeSVG value={url} size={160} />
+       </div>
+-      <p className="muted small">Scan with your phone to open and install the app.</p>
++      <p className="muted small">使用手机扫描二维码，即可打开并安装应用。</p>
+     </div>
+   );
+ }
+@@ -125,7 +125,7 @@ export function RemoteAccessPage() {
+         <div className="callout">
+           You're on an insecure connection, so this can't be installed as an app
+           (no offline / push / mic). For full mobile install, use
+-          <strong> Tailscale</strong> (recommended) or <strong>ngrok</strong> below —
++          <strong> Tailscale</strong> （推荐）或 <strong>ngrok</strong> 以下：
+           both give a real, warning-free HTTPS address. A plain home-network
+           address works in a browser tab only.
+         </div>
+diff --git a/web_ui/src/pages/SettingsPage.tsx b/web_ui/src/pages/SettingsPage.tsx
+index 294d011..106f6c1 100644
+--- a/web_ui/src/pages/SettingsPage.tsx
++++ b/web_ui/src/pages/SettingsPage.tsx
+@@ -369,7 +369,7 @@ export function SettingsPage() {
+         <h3 className="settings-section-heading">常规</h3>
+ 
+         <div className="settings-group" data-testid="chat-appearance-group">
+-          <h4 className="settings-group-heading">Chat appearance</h4>
++          <h4 className="settings-group-heading">聊天外观</h4>
+           <MessageSideSettings />
+           <FollowStreamingSettings />
+           <AppearanceSettings />
+@@ -427,7 +427,7 @@ export function SettingsPage() {
+       <div className="settings-section" data-section="backend">
+         <h3 className="settings-section-heading">后端</h3>
+         <section className="card" data-testid="chat-speech-card">
+-          <h3>Chat speech</h3>
++          <h3>聊天语音</h3>
+           <label>
+             Backend
+             <select value={selectedId} onChange={(e) => onBackendChange(e.target.value)}>
+@@ -443,7 +443,7 @@ export function SettingsPage() {
+               {INTEL_MAC_LOCAL_UNSUPPORTED}
+             </div>
+           )}
+-          <p className="muted small">Loaded model: <strong>{s.loadedModel}</strong> · context {s.contextSize}</p>
++          <p className="muted small">当前加载的模型：<strong>{s.loadedModel}</strong> · context {s.contextSize}</p>
+ 
+           {isManagedLocal && (
+             <p className="muted small">
+@@ -590,7 +590,7 @@ export function SettingsPage() {
+ 
+         {legacy && legacy.totalBytes > 0 && (
+           <section className="card" data-testid="reclaim-disk-card">
+-            <h3>Reclaim disk space</h3>
++            <h3>释放磁盘空间</h3>
+             <p className="muted small">
+               The new built-in speech engines use their own models. These files
+               from the old engines are no longer used:
+diff --git a/web_ui/src/pages/StoriesPage.tsx b/web_ui/src/pages/StoriesPage.tsx
+index 64ef6ca..841a786 100644
+--- a/web_ui/src/pages/StoriesPage.tsx
++++ b/web_ui/src/pages/StoriesPage.tsx
+@@ -103,7 +103,7 @@ export function StoriesPage() {
+   return (
+     <div className="studio-scope" data-testid="story-shelf">
+       <header className="studio-head">
+-        <span className="t">Porch Stories</span>
++        <span className="t">Porch 故事</span>
+         <span className="s">{count === 0 ? 'no stories yet' : `${count} ${count === 1 ? 'story' : 'stories'}`}</span>
+         <span className="spacer" />
+         {!narrow && (
+@@ -121,7 +121,7 @@ export function StoriesPage() {
+         ) : stories.length === 0 ? (
+           <div className="s-card s-empty" style={{ maxWidth: 420, margin: '48px auto 0', width: '100%' }} data-testid="story-empty">
+             <b>还没有故事</b>
+-            <span className="s-muted">Start with an idea, or turn a chat you've had into a book. The bible, the structure and the prose follow.</span>
++            <span className="s-muted">从一个想法开始，或把你的一段聊天改编成故事。随后逐步生成故事设定、结构和正文。</span>
+             <div><button type="button" className="s-btn-primary" onClick={newStory}>新建故事</button></div>
+           </div>
+         ) : narrow ? (
+diff --git a/web_ui/src/pages/StoryDirectorPage.tsx b/web_ui/src/pages/StoryDirectorPage.tsx
+index 14a2f3d..83aa77f 100644
+--- a/web_ui/src/pages/StoryDirectorPage.tsx
++++ b/web_ui/src/pages/StoryDirectorPage.tsx
+@@ -93,7 +93,7 @@ export function StoryDirectorPage() {
+     <StudioShell id={id} project={p} section="director" status={status} error={error} onStop={stop}>
+       {failure && <p className="s-error">{failure}</p>}
+       <section className="s-card">
+-        <span className="s-key">What should change?</span>
++        <span className="s-key">希望修改什么？</span>
+         <textarea className="s-textarea" rows={3} data-testid="director-directive" aria-label="What should change?"
+           placeholder="e.g. Teodor should be hiding that he set the wagon fire. Plant hints before 3.3 and let Mara find out in Sequence 5."
+           value={text} onChange={(e) => type(e.target.value)} onBlur={remember} />
+@@ -102,7 +102,7 @@ export function StoryDirectorPage() {
+             <span className={`s-tog${protect ? ' on' : ''}${running ? ' dis' : ''}`}>
+               <input type="checkbox" checked={protect} disabled={running} onChange={(e) => setProtect(e.target.checked)} />
+             </span>
+-            <span className="s-grow">Protect written prose (only touch unwritten scenes)</span>
++            <span className="s-grow">保护已写好的正文（只修改尚未写作的场景）</span>
+           </label>
+           <button type="button" className="s-btn-primary" data-testid="director-plan"
+             disabled={noActs || running || !text.trim()} onClick={planChanges}>
+@@ -110,7 +110,7 @@ export function StoryDirectorPage() {
+           </button>
+         </div>
+         {noActs && (
+-          <span className="s-muted s-small">The Director needs a structure to work on. Build the story bible and acts first.</span>
++          <span className="s-muted s-small">导演需要先有故事结构才能开始工作。请先建立故事设定集和幕结构。</span>
+         )}
+       </section>
+ 
+@@ -127,7 +127,7 @@ export function StoryDirectorPage() {
+           <span className="s-grow s-muted s-small" data-testid="director-last-applied">
+             Last applied: “{applied.directive}” · {formatRelativeTime(applied.applied_at)} · {changes(applied.change_count)}
+           </span>
+-          <button type="button" className="s-btn-ghost" data-testid="director-undo" disabled={running} onClick={undo}>Undo that plan</button>
++          <button type="button" className="s-btn-ghost" data-testid="director-undo" disabled={running} onClick={undo}>撤销该计划</button>
+         </div>
+       )}
+       {notice && <p className="s-muted s-small" role="status">{notice}</p>}
+diff --git a/web_ui/src/pages/StoryLorePage.tsx b/web_ui/src/pages/StoryLorePage.tsx
+index f9762c1..3505cd0 100644
+--- a/web_ui/src/pages/StoryLorePage.tsx
++++ b/web_ui/src/pages/StoryLorePage.tsx
+@@ -73,10 +73,10 @@ export function StoryLorePage() {
+       <div className="s-row">
+         <Segmented testid="lore-tabs" options={TABS} selected={tab} onSelect={(v) => setTab(v as Tab)} />
+         <button type="button" className="s-btn-quiet" data-testid="lore-add-fact" onClick={() => setOpen({ kind: 'fact', index: null })}>+ Add fact</button>
+-        <button type="button" className="s-btn-quiet" data-testid="lore-add-file" onClick={() => picker.current?.click()}>Add lore file</button>
++        <button type="button" className="s-btn-quiet" data-testid="lore-add-file" onClick={() => picker.current?.click()}>添加设定文件</button>
+         <input ref={picker} type="file" accept=".txt,.md,text/plain,text/markdown" multiple hidden data-testid="lore-file" onChange={(e) => { void addFiles(e); }} />
+         <button type="button" className="s-btn-quiet" data-testid="lore-search" disabled={p.lore.length === 0}
+-          onClick={() => setOpen({ kind: 'search' })}>Test search</button>
++          onClick={() => setOpen({ kind: 'search' })}>测试搜索</button>
+       </div>
+       {notice && <p className="s-muted s-small" role="status">{notice}</p>}
+       {failure && <p className="s-error">{failure}</p>}
+diff --git a/web_ui/src/pages/StoryRunLogPage.tsx b/web_ui/src/pages/StoryRunLogPage.tsx
+index 0c2c7ce..6bf1115 100644
+--- a/web_ui/src/pages/StoryRunLogPage.tsx
++++ b/web_ui/src/pages/StoryRunLogPage.tsx
+@@ -57,7 +57,7 @@ export function StoryRunLogPage() {
+ 
+       {entries.length > 0 && (
+         <section className="s-card" data-testid="runlog-time">
+-          <span className="s-key">Time by job</span>
++          <span className="s-key">各任务耗时</span>
+           {jobTimes(entries).map((j) => <span key={j.role} className="s-mono s-small" style={{ display: 'block' }}>{jobTimeLine(j)}</span>)}
+           {slowChecksNote(entries) && (
+             <span className="s-small" style={{ color: 'var(--studio-honey)' }} data-testid="runlog-slow">{slowChecksNote(entries)}</span>
+@@ -83,7 +83,7 @@ export function StoryRunLogPage() {
+         </section>
+       )}
+       {filter === 'failures' && entries.length > 0 && shown.length === 0 && (
+-        <span className="s-muted s-small">No failed calls.</span>
++        <span className="s-muted s-small">没有失败的调用。</span>
+       )}
+ 
+       {opened && <RunDialog entry={opened} onClose={() => setOpened(null)} />}
+diff --git a/web_ui/src/pages/StoryStructurePage.tsx b/web_ui/src/pages/StoryStructurePage.tsx
+index ab64366..9e52c42 100644
+--- a/web_ui/src/pages/StoryStructurePage.tsx
++++ b/web_ui/src/pages/StoryStructurePage.tsx
+@@ -118,7 +118,7 @@ export function StoryStructurePage() {
+     <StudioShell id={id} project={p} section="structure" status={status} error={error} onStop={stop}>
+       <div className="s-row">
+         <button type="button" className="s-btn-primary" data-testid="story-continue" disabled={running || p.acts.length === 0}
+-          onClick={continueWriting}>Continue writing</button>
++          onClick={continueWriting}>继续写作</button>
+         <button type="button" className="s-btn-quiet" data-testid="story-autopilot" disabled={running || p.acts.length === 0}
+           onClick={() => ask(autopilotCopy(p), () => { void run('autopilot'); })}>Autopilot…</button>
+         <span className="s-spacer" />
+@@ -128,7 +128,7 @@ export function StoryStructurePage() {
+ 
+       {p.acts.length === 0 ? (
+         <section className="s-card" data-testid="story-empty-structure">
+-          <div className="s-bold">No structure yet</div>
++          <div className="s-bold">尚未建立结构</div>
+           <div className="s-muted">
+             {p.cast.length === 0
+               ? 'Build the bible first; the acts follow from it.'
+@@ -136,7 +136,7 @@ export function StoryStructurePage() {
+           </div>
+           {p.cast.length > 0 && (
+             <button type="button" className="s-btn-primary" data-testid="story-build-acts" disabled={running}
+-              onClick={() => { void run('act-structure'); }}>Build acts</button>
++              onClick={() => { void run('act-structure'); }}>生成幕结构</button>
+           )}
+         </section>
+       ) : (
+diff --git a/web_ui/src/pages/StoryWriterPage.tsx b/web_ui/src/pages/StoryWriterPage.tsx
+index ff43072..4a0f442 100644
+--- a/web_ui/src/pages/StoryWriterPage.tsx
++++ b/web_ui/src/pages/StoryWriterPage.tsx
+@@ -70,9 +70,9 @@ export function StoryWriterPage() {
+   if (!sc) {
+     return shell(
+       <section className="s-card" data-testid="story-nothing-to-write">
+-        <div className="s-bold">Nothing to write yet</div>
+-        <div className="s-muted s-body">Build the structure first; Write follows the scene you pick there.</div>
+-        <button type="button" className="s-btn-primary" onClick={() => navigate(studioPath(id, 'structure'))}>Go to Structure</button>
++        <div className="s-bold">还没有可写的内容</div>
++        <div className="s-muted s-body">请先建立故事结构；「写作」会跟随你在结构中选择的场景。</div>
++        <button type="button" className="s-btn-primary" onClick={() => navigate(studioPath(id, 'structure'))}>前往故事结构</button>
+       </section>,
+     );
+   }
+@@ -178,9 +178,9 @@ export function StoryWriterPage() {
+         {notice && <span className="s-muted s-small" role="status">{notice}</span>}
+         {empty ? (
+           <section className="s-card" data-testid="story-empty-beats">
+-            <div className="s-bold">No beats yet</div>
+-            <div className="s-muted s-body">Plan the beats for this scene, then write them one at a time or all at once.</div>
+-            <button type="button" className="s-btn-primary" data-testid="story-plan-beats" disabled={running} onClick={planBeats}>Plan beats</button>
++            <div className="s-bold">尚无情节点</div>
++            <div className="s-muted s-body">先规划这个场景的情节点，然后逐个或一次性写出正文。</div>
++            <button type="button" className="s-btn-primary" data-testid="story-plan-beats" disabled={running} onClick={planBeats}>规划情节点</button>
+           </section>
+         ) : beats.map((beat, b) => {
+           const text = textOf(b);
+@@ -204,7 +204,7 @@ export function StoryWriterPage() {
+         <button type="button" className="s-btn-quiet" data-testid="story-rewrite-beat" disabled={busy || written === 0}
+           onClick={() => setOpen({ kind: 'note', beat: written - 1 })}>{rewriteWithNoteLabel(written, beats.length)}</button>
+         {lensesOn && (
+-          <button type="button" className="s-btn-quiet" data-testid="story-change-lens" onClick={() => setOpen({ kind: 'lens' })}>Change lens</button>
++          <button type="button" className="s-btn-quiet" data-testid="story-change-lens" onClick={() => setOpen({ kind: 'lens' })}>更改叙述视角</button>
+         )}
+         <button type="button" className="s-btn-primary" data-testid="story-write-next" disabled={busy || done}
+           onClick={() => writeBeat(written)}>{done ? 'Scene written' : 'Write next beat'}</button>
+diff --git a/web_ui/src/pages/WorldFromWikiPage.tsx b/web_ui/src/pages/WorldFromWikiPage.tsx
+index 13ba5e8..857fedc 100644
+--- a/web_ui/src/pages/WorldFromWikiPage.tsx
++++ b/web_ui/src/pages/WorldFromWikiPage.tsx
+@@ -282,9 +282,9 @@ export function WorldFromWikiPage() {
+               <textarea value={premise} onChange={(e) => setPremise(e.target.value)} rows={3} />
+             </label>
+             <fieldset className="cg-field">
+-              <legend className="cg-field-label">Wiki</legend>
++              <legend className="cg-field-label">维基</legend>
+               {(status?.savedWikis ?? []).length === 0 && (
+-                <p className="muted small">Save a Fandom or Tiddly URL in Porch Life first.</p>
++                <p className="muted small">请先在 Porch Life 中保存 Fandom 或 Tiddly 的网址。</p>
+               )}
+               {(status?.savedWikis ?? []).map((url) => (
+                 <label key={url} className="cg-toggle">
+@@ -304,7 +304,7 @@ export function WorldFromWikiPage() {
+                 checked={lorebooksOn}
+                 onChange={(e) => setLorebooksOn(e.target.checked)}
+               />
+-              <span>Lorebooks — they scout a shelf; you sign which cards to write</span>
++              <span>世界书——它们会扫描资料库，再由你选择要写入哪些卡片</span>
+             </label>
+             <label className="cg-field cg-toggle">
+               <input
+diff --git a/web_ui/src/pages/WorldsPage.tsx b/web_ui/src/pages/WorldsPage.tsx
+index 4fe5a2d..9c44916 100644
+--- a/web_ui/src/pages/WorldsPage.tsx
++++ b/web_ui/src/pages/WorldsPage.tsx
+@@ -286,7 +286,7 @@ export function WorldsPage() {
+             </span>
+             <span className="wsg-stat-text">
+               <span className="wsg-stat-value">{totalEntries}</span>
+-              <span className="wsg-stat-label">Lore Entries</span>
++              <span className="wsg-stat-label">设定条目</span>
+             </span>
+           </div>
+           <div className="wsg-stat wsg-stat--linked">
+@@ -295,14 +295,14 @@ export function WorldsPage() {
+             </span>
+             <span className="wsg-stat-text">
+               <span className="wsg-stat-value">{climateCount}</span>
+-              <span className="wsg-stat-label">Custom climates</span>
++              <span className="wsg-stat-label">自定义气候</span>
+             </span>
+           </div>
+         </div>
+       )}
+ 
+       {worlds.length === 0 && !edit && (
+-        <p className="muted">No places yet. Create one or import a .fpworld file.</p>
++        <p className="muted">还没有地点。请创建一个地点，或导入 .fpworld 文件。</p>
+       )}
+ 
+       {worlds.length > 0 && (
+diff --git a/web_ui/src/pages/chat/ChatModelSwitcher.tsx b/web_ui/src/pages/chat/ChatModelSwitcher.tsx
+index 6841c02..2359872 100644
+--- a/web_ui/src/pages/chat/ChatModelSwitcher.tsx
++++ b/web_ui/src/pages/chat/ChatModelSwitcher.tsx
+@@ -238,7 +238,7 @@ function ModelSwitchSheet({
+         onClick={(e) => e.stopPropagation()}
+       >
+         <div className="model-switch-head">
+-          <span className="model-switch-title">Model</span>
++          <span className="model-switch-title">模型</span>
+           <button type="button" className="ghost" onClick={requestDismiss}>
+             Close
+           </button>
+@@ -315,7 +315,7 @@ function ModelSwitchSheet({
+             </>
+           ) : switching ? (
+             <>
+-              <p className="muted small">A custom provider address is set in Settings.</p>
++              <p className="muted small">已在设置中配置自定义服务提供方地址。</p>
+               <Link to="/settings" replace className="model-switch-settings">
+                 Open Settings
+               </Link>
+diff --git a/web_ui/src/pages/stoop/StoopCardSections.tsx b/web_ui/src/pages/stoop/StoopCardSections.tsx
+index eb8e631..3fa22bc 100644
+--- a/web_ui/src/pages/stoop/StoopCardSections.tsx
++++ b/web_ui/src/pages/stoop/StoopCardSections.tsx
+@@ -112,7 +112,7 @@ function IdentityExtras({ card }: { card: CardMap }) {
+           <h4>Pockets &amp; Wardrobe ({wardrobe.worn.length + wardrobe.carrying.length})</h4>
+           {wardrobe.worn.length > 0 && (
+             <>
+-              <h5 className="stoop-sublabel">Wearing</h5>
++              <h5 className="stoop-sublabel">穿着</h5>
+               <ul className="stoop-ambitions">
+                 {wardrobe.worn.map((a, i) => (
+                   <li key={i}>🧥 {a}</li>
+@@ -122,7 +122,7 @@ function IdentityExtras({ card }: { card: CardMap }) {
+           )}
+           {wardrobe.carrying.length > 0 && (
+             <>
+-              <h5 className="stoop-sublabel">Carrying</h5>
++              <h5 className="stoop-sublabel">携带</h5>
+               <ul className="stoop-ambitions">
+                 {wardrobe.carrying.map((a, i) => (
+                   <li key={i}>🎒 {a}</li>
+diff --git a/web_ui/src/pages/stoop/StoopPolicyGate.tsx b/web_ui/src/pages/stoop/StoopPolicyGate.tsx
+index 4f33299..a014408 100644
+--- a/web_ui/src/pages/stoop/StoopPolicyGate.tsx
++++ b/web_ui/src/pages/stoop/StoopPolicyGate.tsx
+@@ -63,7 +63,7 @@ export function StoopPolicyGate() {
+         </label>
+         {error && <p className="error">{error}</p>}
+         <div className="modal-actions">
+-          <button onClick={() => void signOut()}>Decline &amp; sign out</button>
++          <button onClick={() => void signOut()}>拒绝并退出登录</button>
+           <button className="primary" disabled={!agreed || busy} onClick={accept}>
+             {busy ? 'Working…' : 'Agree & continue'}
+           </button>
+diff --git a/web_ui/src/pages/story/ReaderBar.tsx b/web_ui/src/pages/story/ReaderBar.tsx
+index 3c3ef3a..5b42f06 100644
+--- a/web_ui/src/pages/story/ReaderBar.tsx
++++ b/web_ui/src/pages/story/ReaderBar.tsx
+@@ -84,7 +84,7 @@ export function ReaderStatus({ chrome, narration }: {
+       {chrome.problem && (
+         <div className="s-read-status" role="alert">
+           <span className="s-error">{chrome.problem}</span>
+-          <button type="button" className="s-btn-ghost" onClick={chrome.onDismissProblem}>Dismiss</button>
++          <button type="button" className="s-btn-ghost" onClick={chrome.onDismissProblem}>关闭</button>
+         </div>
+       )}
+     </>
+diff --git a/web_ui/src/pages/story/StudioHeader.tsx b/web_ui/src/pages/story/StudioHeader.tsx
+index 118d45e..67ae22f 100644
+--- a/web_ui/src/pages/story/StudioHeader.tsx
++++ b/web_ui/src/pages/story/StudioHeader.tsx
+@@ -97,7 +97,7 @@ export function StudioHeader({
+       {problem && (
+         <div className="studio-problem s-row" role="alert">
+           <span className="s-error">{problem}</span>
+-          <button type="button" className="s-btn-ghost" onClick={dismiss}>Dismiss</button>
++          <button type="button" className="s-btn-ghost" onClick={dismiss}>关闭</button>
+         </div>
+       )}
+       {renaming && (
+diff --git a/web_ui/src/pages/story/cast/CastCard.tsx b/web_ui/src/pages/story/cast/CastCard.tsx
+index 287a646..ba99d77 100644
+--- a/web_ui/src/pages/story/cast/CastCard.tsx
++++ b/web_ui/src/pages/story/cast/CastCard.tsx
+@@ -56,9 +56,9 @@ export function CastCard({ member: m, portrait, studio, running, painting, canPa
+ 
+       {interview ? (
+         <>
+-          <span className="s-key">From their interview</span>
++          <span className="s-key">来自角色访谈</span>
+           <p className="s-prose sm">“{interviewExcerpt(interview)}”</p>
+-          <button type="button" className="s-btn-ghost" onClick={actions.readInterview}>Read the whole interview</button>
++          <button type="button" className="s-btn-ghost" onClick={actions.readInterview}>阅读完整访谈</button>
+         </>
+       ) : studio && (
+         <div className="s-row">
+diff --git a/web_ui/src/pages/story/director/PlanCard.tsx b/web_ui/src/pages/story/director/PlanCard.tsx
+index 1baf408..ffd66f7 100644
+--- a/web_ui/src/pages/story/director/PlanCard.tsx
++++ b/web_ui/src/pages/story/director/PlanCard.tsx
+@@ -25,7 +25,7 @@ export function PlanCard({ p, plan, running, onToggle, onRefine, onDiscard, onAp
+     <section className="s-card" data-testid="director-plan-card">
+       <div className="s-row nowrap">
+         <span className="s-key s-grow">{planHeading(plan)}</span>
+-        {plan.review === 'consistent' && <Chip tone="teal">Reviewed: consistent</Chip>}
++        {plan.review === 'consistent' && <Chip tone="teal">审核通过：内容一致</Chip>}
+         {plan.review && plan.review !== 'consistent' && (
+           <Chip tone="honey clip" title={plan.review}>Review: {plan.review}</Chip>
+         )}
+@@ -41,8 +41,8 @@ export function PlanCard({ p, plan, running, onToggle, onRefine, onDiscard, onAp
+             <span className={`s-plan-text${a.locked ? ' s-faint' : ''}`}>
+               {target && <span className="s-muted">{target}: </span>}{a.summary}
+             </span>
+-            {a.locked && <Chip tone="bad">locked — written</Chip>}
+-            {a.result?.startsWith('failed') && <Chip tone="bad" title={a.result}>could not apply</Chip>}
++            {a.locked && <Chip tone="bad">已锁定 — 已写入正文</Chip>}
++            {a.result?.startsWith('failed') && <Chip tone="bad" title={a.result}>无法应用</Chip>}
+           </div>
+         );
+       })}
+diff --git a/web_ui/src/pages/story/overview/BibleCard.tsx b/web_ui/src/pages/story/overview/BibleCard.tsx
+index 4c90fc6..6bb016b 100644
+--- a/web_ui/src/pages/story/overview/BibleCard.tsx
++++ b/web_ui/src/pages/story/overview/BibleCard.tsx
+@@ -58,8 +58,8 @@ export function BibleCard({ p, running, onRegenerate, onRewriteArc, onSave }: {
+       {twists !== '' && (
+         <>
+           <div className="s-row nowrap">
+-            <b className="s-grow">Twists planned</b>
+-            <Chip tone="honey">hidden from the reader</Chip>
++            <b className="s-grow">已规划的反转</b>
++            <Chip tone="honey">对读者隐藏</Chip>
+           </div>
+           <div className="s-body s-pre">{p.twists}</div>
+         </>
+diff --git a/web_ui/src/pages/story/overview/SideCards.tsx b/web_ui/src/pages/story/overview/SideCards.tsx
+index 42b9b45..16a1413 100644
+--- a/web_ui/src/pages/story/overview/SideCards.tsx
++++ b/web_ui/src/pages/story/overview/SideCards.tsx
+@@ -19,7 +19,7 @@ export function CastCard({ id, p, onOpen }: { id: string; p: StoryProject; onOpe
+         <button type="button" className="s-btn-ghost" onClick={onOpen}>打开 →</button>
+       </CardHead>
+       {p.cast.length === 0 ? (
+-        <div className="s-muted s-body">The bible invents the cast.</div>
++        <div className="s-muted s-body">故事设定集会创建角色阵容。</div>
+       ) : (
+         <div className="s-row">
+           <div className="s-chips">
+diff --git a/web_ui/src/pages/story/setup/ChatSourcePicker.tsx b/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
+index 54b89f4..027cb2d 100644
+--- a/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
++++ b/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
+@@ -98,7 +98,7 @@ export function ChatSourcePicker({ onPick, onClose }: {
+                       {[r.session_name, formatRelativeTime(r.date), `${r.message_count} messages`].filter(Boolean).join(' · ')}
+                     </span>
+                   </span>
+-                  {r.short && <Chip tone="honey" title="Fewer than 20 messages. There may not be enough here for a story.">short chat</Chip>}
++                  {r.short && <Chip tone="honey" title="消息少于 20 条，内容可能不足以生成故事。">短对话</Chip>}
+                 </button>
+               );
+             })}
+diff --git a/web_ui/src/pages/story/setup/EngineStep.tsx b/web_ui/src/pages/story/setup/EngineStep.tsx
+index 4b4ddb4..b00ad4b 100644
+--- a/web_ui/src/pages/story/setup/EngineStep.tsx
++++ b/web_ui/src/pages/story/setup/EngineStep.tsx
+@@ -37,8 +37,8 @@ export function EngineStep({ draft, set, laneLabels }: {
+         <div className="s-grid2" style={{ alignItems: 'start' }}>
+           <div className={`s-card tap ${quick ? 'sel on' : 'raise'}`} role="button" tabIndex={0} aria-pressed={quick}
+             data-testid="story-engine-quick" onClick={() => setMode('quick')} onKeyDown={press('quick')}>
+-            <div className="s-row"><b>快速</b><Chip>fewer calls</Chip></div>
+-            <Note>Plans and writes in one pass. No reviewers. Good for a fast first draft.</Note>
++            <div className="s-row"><b>快速</b><Chip>更少的调用</Chip></div>
++            <Note>一次完成规划和写作，不经过审核步骤，适合快速生成初稿。</Note>
+             <div className="s-row" style={{ opacity: quick ? 1 : 0.5 }}>
+               <Note>幕</Note>
+               <Segmented testid="story-acts" options={ACTS} selected={String(draft.actCount)}
+@@ -69,8 +69,8 @@ export function EngineStep({ draft, set, laneLabels }: {
+             </div>
+           ))}
+         </div>
+-        <Note>Planning plans and checks. Prose writes. Review reads planning's work and sends it back when it slips.</Note>
+-        <Note>Review also checks every beat as it is written. A model that thinks before it answers can take a minute or more per check, which makes the whole story slow. A quick model suits this job.</Note>
++        <Note>「规划」负责计划与检查，「正文」负责写作。「审核」会检查规划结果，发现偏差时将其退回修改。</Note>
++        <Note>审核还会在每个情节点写成后立即检查。如果模型回答前会进行思考，每次检查可能需要一分钟甚至更久，拖慢整个故事进度。因此这项工作更适合使用响应较快的模型。</Note>
+       </div>
+ 
+       <div className="s-card">
+@@ -78,7 +78,7 @@ export function EngineStep({ draft, set, laneLabels }: {
+           <span className="s-grow"><KeyLabel>提示词风格</KeyLabel></span>
+           <Segmented testid="story-tier" options={TIERS} selected={draft.tier} onSelect={(tier) => set({ ...draft, tier })} />
+         </div>
+-        <Note>Full detail is written for frontier models. Rich trims for large local models; Simplified for small ones.</Note>
++        <Note>「完整」适用于高性能前沿模型；「丰富」适合较大的本地模型；「简化」适合较小的模型。</Note>
+       </div>
+ 
+       {picked && (
+diff --git a/web_ui/src/pages/story/setup/IdeaStep.tsx b/web_ui/src/pages/story/setup/IdeaStep.tsx
+index aa8dc09..f7adfeb 100644
+--- a/web_ui/src/pages/story/setup/IdeaStep.tsx
++++ b/web_ui/src/pages/story/setup/IdeaStep.tsx
+@@ -77,7 +77,7 @@ export function IdeaStep({ draft, set, chars, userName }: {
+             <button key={`${i}-${a.value}`} type="button" className="s-chip pick" onClick={() => applySpark(a.value)}>{sparkText(a)}</button>
+           ))}
+         </div>
+-        <Note>Tapping a spark fills an empty box. If you've written something, it asks before replacing it.</Note>
++        <Note>点击灵感提示会填入空白输入框。如果输入框已有内容，替换前会先询问。</Note>
+       </div>
+ 
+       <div className="s-card">
+diff --git a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+index 8d8f07f..40da463 100644
+--- a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
++++ b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+@@ -173,7 +173,7 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+         ) : (
+           <>
+             <div className="s-row nowrap">
+-              <span className="s-grow"><Note>Model</Note></span>
++              <span className="s-grow"><Note>模型</Note></span>
+               <button type="button" className="s-btn-ghost" disabled={fetching} data-testid="story-host-refresh" onClick={() => void refresh()}>
+                 {fetching ? 'Fetching…' : '↻ Refresh list'}
+               </button>
+@@ -189,7 +189,7 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+         {h.local && (
+           <div className="s-row nowrap" style={{ alignItems: 'flex-start', marginTop: 4 }}>
+             <Chip tone="honey">与聊天模型切换使用</Chip>
+-            <Note>Each switch unloads one model and loads the other. Reviews are grouped so it happens once per stage, not once per try.</Note>
++            <Note>每次切换都会卸载一个模型并加载另一个模型。审核按阶段合并执行，而不是每次尝试都执行一次。</Note>
+           </div>
+         )}
+       </>
+diff --git a/web_ui/src/pages/story/write/WriteDialogs.tsx b/web_ui/src/pages/story/write/WriteDialogs.tsx
+index 7d5ca03..d95e8b0 100644
+--- a/web_ui/src/pages/story/write/WriteDialogs.tsx
++++ b/web_ui/src/pages/story/write/WriteDialogs.tsx
+@@ -77,7 +77,7 @@ export function PhrasesDialog({ own, auto, onSave, onCancel }: {
+         <button type="button" className="s-btn-primary" data-testid="story-dialog-confirm" onClick={() => onSave(value)}>保存</button>
+       </>
+     )}>
+-      <div className="body">One per line. The engine adds its own as it notices repeats; yours stay for the whole story.</div>
++      <div className="body">每行填写一条。引擎发现重复内容时会自动添加规则；你填写的规则会在整个故事期间保留。</div>
+       <textarea className="s-textarea" rows={5} autoFocus aria-label="Phrases to avoid, one per line"
+         data-testid="story-banned-text" value={value} onChange={(e) => setValue(e.target.value)} />
+       {auto.length > 0 && <div className="body">Noticed lately: {auto.join(', ')}</div>}
