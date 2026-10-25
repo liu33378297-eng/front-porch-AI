@@ -1,0 +1,37 @@
+diff --git a/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart b/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
+--- a/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
++++ b/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
+@@ -22,4 +22,4 @@
+ import 'package:front_porch_ai/services/chat/chat.dart' show AmbitionService;
+ import 'package:front_porch_ai/ui/theme/app_colors.dart';
+-import '../zh_cn_display_labels.dart';
++import '../../zh_cn_display_labels.dart';
+ 
+diff --git a/lib/ui/chat_components/sidebar/character_state/bond_bars.dart b/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
+--- a/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
++++ b/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
+@@ -24,4 +24,4 @@
+ import 'package:front_porch_ai/ui/theme/tier_colors.dart';
+ import 'package:front_porch_ai/ui/widgets/widgets.dart';
+-import '../zh_cn_display_labels.dart';
++import '../../zh_cn_display_labels.dart';
+ 
+diff --git a/lib/ui/chat_components/sidebar/character_state/character_state_group.dart b/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
+--- a/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
++++ b/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
+@@ -37,4 +37,4 @@
+ import 'time_strip.dart';
+ import 'presence_word.dart';
+-import '../zh_cn_display_labels.dart';
++import '../../zh_cn_display_labels.dart';
+ 
+diff --git a/lib/ui/chat_components/sidebar/character_state/time_strip.dart b/lib/ui/chat_components/sidebar/character_state/time_strip.dart
+--- a/lib/ui/chat_components/sidebar/character_state/time_strip.dart
++++ b/lib/ui/chat_components/sidebar/character_state/time_strip.dart
+@@ -27,5 +27,5 @@
+ import 'package:front_porch_ai/ui/theme/app_colors.dart';
+ 
+ import 'weather_chip.dart';
+-import '../zh_cn_display_labels.dart';
++import '../../zh_cn_display_labels.dart';
+ 
