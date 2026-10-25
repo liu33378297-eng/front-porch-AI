@@ -1,0 +1,920 @@
+diff --git a/web_ui/src/components/ConversationsDrawer.tsx b/web_ui/src/components/ConversationsDrawer.tsx
+index c6acabe..cf30303 100644
+--- a/web_ui/src/components/ConversationsDrawer.tsx
++++ b/web_ui/src/components/ConversationsDrawer.tsx
+@@ -90,8 +90,8 @@ export function ConversationsDrawer({
+                 <button
+                   type="button"
+                   className="icon-btn conv-delete"
+-                  aria-label="Delete chat"
+-                  title="Delete chat"
++                  aria-label="删除聊天"
++                  title="删除聊天"
+                   onClick={() => setPending(s)}
+                 >
+                   🗑
+@@ -103,7 +103,7 @@ export function ConversationsDrawer({
+       </div>
+       {pending && (
+         <ConfirmDialog
+-          title="Delete Chat?"
++          title="删除这段聊天？"
+           message={`This will permanently delete this chat and all its messages.\n\n"${pending.session_name || pending.preview}"`}
+           confirmLabel="Delete"
+           danger
+diff --git a/web_ui/src/components/MessageActions.tsx b/web_ui/src/components/MessageActions.tsx
+index 7d5edf2..2ad85ab 100644
+--- a/web_ui/src/components/MessageActions.tsx
++++ b/web_ui/src/components/MessageActions.tsx
+@@ -123,7 +123,7 @@ export function MessageActions({
+       <div className={`msg-actions${m.isUser ? ' user' : ''}`}>
+       {canSwipe && (
+         <span className="swipe">
+-          <button className="icon-btn" title="Previous" disabled={busy}
++          <button className="icon-btn" title="上一条" disabled={busy}
+             onClick={() => isGreet ? cycleGreet(-1) : onSwipe(m.index, -1)}>◀</button>
+           <span className="swipe-count">
+             {isGreet ? `${greetingIndex + 1}/${greetCount}` : `${idx}/${Math.max(count, idx)}`}
+@@ -144,29 +144,29 @@ export function MessageActions({
+       )}
+       {!m.isUser && !isImage && isLast && m.index !== 0 && (
+         <>
+-          <button className="icon-btn" title="Regenerate" disabled={busy} onClick={openCritique}>⟳</button>
+-          <button className="icon-btn" title="Continue" disabled={busy} onClick={onContinue}>⏩</button>
++          <button className="icon-btn" title="重新生成" disabled={busy} onClick={openCritique}>⟳</button>
++          <button className="icon-btn" title="继续生成" disabled={busy} onClick={onContinue}>⏩</button>
+         </>
+       )}
+       {!m.isUser && !isImage && isLast && m.index === 0 && (
+-        <button className="icon-btn" title="Continue" disabled={busy} onClick={onContinue}>⏩</button>
++        <button className="icon-btn" title="继续生成" disabled={busy} onClick={onContinue}>⏩</button>
+       )}
+       {/* When the last message is the user's (e.g. the AI reply was deleted),
+           offer a Generate-reply button — same backend regenerate() call, which
+           now generates a fresh response from the trailing prompt. Desktop parity
+           for #85. */}
+       {m.isUser && isLast && (
+-        <button className="icon-btn" title="Generate reply" disabled={busy} onClick={() => onRegenerate()}>⟳</button>
++        <button className="icon-btn" title="生成回复" disabled={busy} onClick={() => onRegenerate()}>⟳</button>
+       )}
+       {canSpeak && !m.isUser && m.text.trim() !== '' && <SpeakButton text={m.text} />}
+       {!m.isUser && m.hasContext && (
+-        <button className="icon-btn" title="Inspect prompt" onClick={() => setInspecting(true)}>📊</button>
++        <button className="icon-btn" title="查看提示词" onClick={() => setInspecting(true)}>📊</button>
+       )}
+       {!m.isUser && m.hasTokenAlts && (
+-        <button className="icon-btn" title="Other words" onClick={() => setOtherWords(true)}>🔀</button>
++        <button className="icon-btn" title="换一种表达" onClick={() => setOtherWords(true)}>🔀</button>
+       )}
+       {m.sender !== 'System' && (
+-        <button className="icon-btn" title="Fork from here" disabled={busy} onClick={onFork}>⑂</button>
++        <button className="icon-btn" title="从此处分支对话" disabled={busy} onClick={onFork}>⑂</button>
+       )}
+       <button className="icon-btn" title="编辑" disabled={busy} onClick={onEdit}>✎</button>
+       <button className="icon-btn" title="删除" disabled={busy && isLast} onClick={onDelete}>🗑</button>
+@@ -211,12 +211,12 @@ export function MessageActions({
+               autoFocus
+               value={draft}
+               onChange={(e) => setDraft(e.target.value)}
+-              placeholder="why this take was wrong — optional"
++              placeholder="这次生成哪里不对（选填）"
+             />
+             {showLookup && (
+               <div className="regen-lookup">
+                 {lookupWeb ? (
+-                  <div className="regen-lookup-toggle" role="group" aria-label="Where to look">
++                  <div className="regen-lookup-toggle" role="group" aria-label="查找范围">
+                     <button
+                       type="button"
+                       data-testid="regen-lookup-web"
+@@ -244,7 +244,7 @@ export function MessageActions({
+                   maxLength={256}
+                   value={lookupQuery}
+                   onChange={(e) => setLookupQuery(e.target.value)}
+-                  placeholder="the exact words to look up — optional"
++                  placeholder="要查找的确切文字（选填）"
+                 />
+               </div>
+             )}
+diff --git a/web_ui/src/components/ModelPicker.tsx b/web_ui/src/components/ModelPicker.tsx
+index 259bdbc..cd1287a 100644
+--- a/web_ui/src/components/ModelPicker.tsx
++++ b/web_ui/src/components/ModelPicker.tsx
+@@ -131,8 +131,8 @@ export function ModelPicker({
+           className="ghost mp-refresh"
+           onClick={() => void fetchModels()}
+           disabled={loading}
+-          title="Refresh model list"
+-          aria-label="Refresh model list"
++          title="刷新模型列表"
++          aria-label="刷新模型列表"
+         >
+           {loading ? '…' : '⟳'}
+         </button>
+@@ -142,7 +142,7 @@ export function ModelPicker({
+         <div className="model-picker-menu" role="listbox">
+           <input
+             className="mp-filter"
+-            placeholder="Filter models…"
++            placeholder="筛选模型……"
+             value={filter}
+             onChange={(e) => setFilter(e.target.value)}
+             autoFocus
+diff --git a/web_ui/src/components/aichargen/AutomatedConfig.tsx b/web_ui/src/components/aichargen/AutomatedConfig.tsx
+index 91f9891..c044afc 100644
+--- a/web_ui/src/components/aichargen/AutomatedConfig.tsx
++++ b/web_ui/src/components/aichargen/AutomatedConfig.tsx
+@@ -34,54 +34,54 @@ export function AutomatedConfig({
+       </div>
+ 
+       <AreaField
+-        label="Concept"
++        label="角色概念"
+         value={form.aConcept}
+         onChange={(v) => set({ aConcept: v })}
+-        placeholder="Pick an archetype above or write your own core concept…"
++        placeholder="选择上方的角色原型，或写下自己的核心设定……"
+         rows={3}
+       />
+-      <Field label="Personality keywords" hint="(optional)" value={form.aKeywords} onChange={(v) => set({ aKeywords: v })} placeholder="witty, guarded, loyal" />
++      <Field label="性格关键词" hint="（选填）" value={form.aKeywords} onChange={(v) => set({ aKeywords: v })} placeholder="机智、谨慎、忠诚" />
+       <div className="cg-grid2">
+-        <Field label="Age" value={form.age} onChange={(v) => set({ age: v })} placeholder="e.g. 27" />
+-        <Field label="Sex" value={form.sex} onChange={(v) => set({ sex: v })} placeholder="e.g. Female" />
++        <Field label="年龄" value={form.age} onChange={(v) => set({ age: v })} placeholder="例如：27" />
++        <Field label="性别" value={form.sex} onChange={(v) => set({ sex: v })} placeholder="例如：女性" />
+       </div>
+ 
+       <h4 className="cg-subhead">外观</h4>
+-      <ChipSelect label="Race / Species" value={form.race} options={RACE_OPTIONS} onChange={(v) => set({ race: v })} />
+-      <Field label="Custom race" hint="(overrides the choice above)" value={form.customRace} onChange={(v) => set({ customRace: v })} />
+-      <ChipSelect label="Body type" value={form.bodyType} options={BODY_TYPES} onChange={(v) => set({ bodyType: v })} />
+-      <ChipSelect label="Hair length" value={form.hairLength} options={HAIR_LENGTHS} onChange={(v) => set({ hairLength: v })} />
+-      <ChipSelect label="Hair style" value={form.hairStyle} options={HAIR_STYLES} onChange={(v) => set({ hairStyle: v })} />
+-      <ChipSelect label="Skin tone" value={form.skinTone} options={SKIN_TONES} onChange={(v) => set({ skinTone: v })} />
+-      <MultiChipSelect label="Notable features" values={form.notableFeatures} options={NOTABLE_FEATURES} onChange={(v) => set({ notableFeatures: v })} />
++      <ChipSelect label="种族" value={form.race} options={RACE_OPTIONS} onChange={(v) => set({ race: v })} />
++      <Field label="自定义种族" hint="（将覆盖上方的选择）" value={form.customRace} onChange={(v) => set({ customRace: v })} />
++      <ChipSelect label="体型" value={form.bodyType} options={BODY_TYPES} onChange={(v) => set({ bodyType: v })} />
++      <ChipSelect label="头发长度" value={form.hairLength} options={HAIR_LENGTHS} onChange={(v) => set({ hairLength: v })} />
++      <ChipSelect label="发型" value={form.hairStyle} options={HAIR_STYLES} onChange={(v) => set({ hairStyle: v })} />
++      <ChipSelect label="肤色" value={form.skinTone} options={SKIN_TONES} onChange={(v) => set({ skinTone: v })} />
++      <MultiChipSelect label="显著特征" values={form.notableFeatures} options={NOTABLE_FEATURES} onChange={(v) => set({ notableFeatures: v })} />
+ 
+       <h4 className="cg-subhead">尺寸数据 <span className="muted small">（可选）</span></h4>
+-      <ChipSelect label="Core / abs" value={form.absCore} options={ABS_OPTIONS} onChange={(v) => set({ absCore: v })} />
+-      <ChipSelect label="Thighs" value={form.thighs} options={THIGH_OPTIONS} onChange={(v) => set({ thighs: v })} />
+-      <ChipSelect label="Hips" value={form.hips} options={HIP_OPTIONS} onChange={(v) => set({ hips: v })} />
+-      <ChipSelect label="Shoulders" value={form.shoulders} options={SHOULDER_OPTIONS} onChange={(v) => set({ shoulders: v })} />
+-      <ChipSelect label="Waist" value={form.waist} options={WAIST_OPTIONS} onChange={(v) => set({ waist: v })} />
++      <ChipSelect label="腹部 / 腹肌" value={form.absCore} options={ABS_OPTIONS} onChange={(v) => set({ absCore: v })} />
++      <ChipSelect label="大腿" value={form.thighs} options={THIGH_OPTIONS} onChange={(v) => set({ thighs: v })} />
++      <ChipSelect label="臀部" value={form.hips} options={HIP_OPTIONS} onChange={(v) => set({ hips: v })} />
++      <ChipSelect label="肩部" value={form.shoulders} options={SHOULDER_OPTIONS} onChange={(v) => set({ shoulders: v })} />
++      <ChipSelect label="腰部" value={form.waist} options={WAIST_OPTIONS} onChange={(v) => set({ waist: v })} />
+ 
+       <h4 className="cg-subhead">背景故事</h4>
+-      <ChipSelect label="Origin" value={form.backstoryOrigin} options={BACKSTORY_ORIGINS} onChange={(v) => set({ backstoryOrigin: v })} />
+-      <ChipSelect label="Tone" value={form.backstoryTone} options={BACKSTORY_TONES} onChange={(v) => set({ backstoryTone: v })} />
+-      <ChipSelect label="Era / setting" value={form.backstoryEra} options={BACKSTORY_ERAS} onChange={(v) => set({ backstoryEra: v })} />
+-      <Field label="Backstory notes" value={form.backstoryNotes} onChange={(v) => set({ backstoryNotes: v })} placeholder="Anything specific you want included" />
++      <ChipSelect label="出身背景" value={form.backstoryOrigin} options={BACKSTORY_ORIGINS} onChange={(v) => set({ backstoryOrigin: v })} />
++      <ChipSelect label="基调" value={form.backstoryTone} options={BACKSTORY_TONES} onChange={(v) => set({ backstoryTone: v })} />
++      <ChipSelect label="时代 / 背景设定" value={form.backstoryEra} options={BACKSTORY_ERAS} onChange={(v) => set({ backstoryEra: v })} />
++      <Field label="背景故事补充" value={form.backstoryNotes} onChange={(v) => set({ backstoryNotes: v })} placeholder="希望特别写入的内容" />
+ 
+       <h4 className="cg-subhead">与你的关系</h4>
+-      <MultiChipSelect label="Presets" values={form.relationships} options={RELATIONSHIP_PRESETS} onChange={(v) => set({ relationships: v })} />
+-      <Field label="Custom relationship" value={form.customRelationship} onChange={(v) => set({ customRelationship: v })} />
++      <MultiChipSelect label="预设关系" values={form.relationships} options={RELATIONSHIP_PRESETS} onChange={(v) => set({ relationships: v })} />
++      <Field label="自定义关系" value={form.customRelationship} onChange={(v) => set({ customRelationship: v })} />
+ 
+       {form.nsfw && (
+         <>
+           <h4 className="cg-subhead">亲密（成人向）</h4>
+-          <ChipSelect label="Chest" value={form.chestSize} options={CHEST_SIZES} onChange={(v) => set({ chestSize: v })} />
+-          <ChipSelect label="Butt" value={form.buttSize} options={BUTT_SIZES} onChange={(v) => set({ buttSize: v })} />
+-          <ChipSelect label="Experience" value={form.experience} options={EXPERIENCE_OPTIONS} onChange={(v) => set({ experience: v })} />
+-          <ChipSelect label="Dominance" value={form.dominance} options={DOMINANCE_OPTIONS} onChange={(v) => set({ dominance: v })} />
+-          <MultiChipSelect label="Kinks" values={form.kinks} options={KINK_OPTIONS} onChange={(v) => set({ kinks: v })} />
+-          <Field label="Also into" value={form.customKinks} onChange={(v) => set({ customKinks: v })} />
+-          <ChipSelect label="Outfit vibe" value={form.outfitVibe} options={OUTFIT_VIBES} onChange={(v) => set({ outfitVibe: v })} />
++          <ChipSelect label="胸部" value={form.chestSize} options={CHEST_SIZES} onChange={(v) => set({ chestSize: v })} />
++          <ChipSelect label="臀部" value={form.buttSize} options={BUTT_SIZES} onChange={(v) => set({ buttSize: v })} />
++          <ChipSelect label="经验" value={form.experience} options={EXPERIENCE_OPTIONS} onChange={(v) => set({ experience: v })} />
++          <ChipSelect label="支配倾向" value={form.dominance} options={DOMINANCE_OPTIONS} onChange={(v) => set({ dominance: v })} />
++          <MultiChipSelect label="性偏好" values={form.kinks} options={KINK_OPTIONS} onChange={(v) => set({ kinks: v })} />
++          <Field label="其他偏好" value={form.customKinks} onChange={(v) => set({ customKinks: v })} />
++          <ChipSelect label="服装风格" value={form.outfitVibe} options={OUTFIT_VIBES} onChange={(v) => set({ outfitVibe: v })} />
+         </>
+       )}
+     </div>
+diff --git a/web_ui/src/components/aichargen/FactsCard.tsx b/web_ui/src/components/aichargen/FactsCard.tsx
+index 642320f..70eb3a5 100644
+--- a/web_ui/src/components/aichargen/FactsCard.tsx
++++ b/web_ui/src/components/aichargen/FactsCard.tsx
+@@ -51,7 +51,7 @@ export function FactsCard({
+   return (
+     <section
+       className={`cg-g-card cg-p-facts${dim ? ' dim' : ''}`}
+-      aria-label="Also written from the interview"
++      aria-label="也记录自访谈内容"
+       aria-busy={dim}
+       data-testid="facts-card"
+     >
+@@ -81,7 +81,7 @@ export function FactsCard({
+           <span className="cg-p-hours">
+             <input
+               value={facts.hours}
+-              placeholder="No set hours"
++              placeholder="时间不固定"
+               disabled={dim}
+               onChange={(e) => set({ hours: e.target.value })}
+             />
+@@ -108,14 +108,14 @@ export function FactsCard({
+               <Chips
+                 values={facts.intimateInto}
+                 disabled={dim}
+-                label="Into"
++                label="喜欢"
+                 onChange={(v) => set({ intimateInto: v })}
+               />
+               <span className="cg-p-sub-label">不喜欢</span>
+               <Chips
+                 values={facts.intimateNotInto}
+                 disabled={dim}
+-                label="Not into"
++                label="不喜欢"
+                 onChange={(v) => set({ intimateNotInto: v })}
+               />
+             </div>
+diff --git a/web_ui/src/components/aichargen/GeneratingPanel.tsx b/web_ui/src/components/aichargen/GeneratingPanel.tsx
+index be0d2cf..c3e2ae2 100644
+--- a/web_ui/src/components/aichargen/GeneratingPanel.tsx
++++ b/web_ui/src/components/aichargen/GeneratingPanel.tsx
+@@ -23,7 +23,7 @@ export function GeneratingPanel({ steps, onStop }: { steps: string[]; onStop?: (
+       <div
+         className="cg-gen-bar"
+         role="progressbar"
+-        aria-label="Writing the character"
++        aria-label="正在撰写角色资料"
+         aria-valuetext={status}
+       >
+         <span />
+diff --git a/web_ui/src/components/aichargen/GreetingCard.tsx b/web_ui/src/components/aichargen/GreetingCard.tsx
+index f937607..1282fa4 100644
+--- a/web_ui/src/components/aichargen/GreetingCard.tsx
++++ b/web_ui/src/components/aichargen/GreetingCard.tsx
+@@ -106,7 +106,7 @@ export function GreetingCard({
+             type="button"
+             className="cg-g-icon"
+             aria-label={`Open ${title.toLowerCase()} in the full editor`}
+-            title="Open the full editor"
++            title="打开完整编辑器"
+             onClick={() => setFull(true)}
+           >
+             <ExpandIcon />
+@@ -146,7 +146,7 @@ export function GreetingCard({
+       <div className="cg-g-steer-row">
+         <input
+           className="cg-g-steer"
+-          aria-label="Steer the rewrite (optional)"
++          aria-label="指定重写方向（选填）"
+           placeholder={
+             isPhone ? 'Steer it (optional)' : 'Steer it (optional), e.g. start at the harbor at dawn'
+           }
+diff --git a/web_ui/src/components/aichargen/GreetingsStep.tsx b/web_ui/src/components/aichargen/GreetingsStep.tsx
+index d8f0053..ec7494d 100644
+--- a/web_ui/src/components/aichargen/GreetingsStep.tsx
++++ b/web_ui/src/components/aichargen/GreetingsStep.tsx
+@@ -344,7 +344,7 @@ export const GreetingsStep = forwardRef<
+       </div>
+       {changed && !rewritingAll && (
+         <CreatorHint
+-          title="The profile changed"
++          title="角色资料已更改"
+           body="These greetings were written from the old Description and Personality. Nothing was changed for you."
+           action="Rewrite the greetings from it"
+           onAction={() => void rewriteAll()}
+@@ -368,7 +368,7 @@ export const GreetingsStep = forwardRef<
+         <button
+           type="button"
+           className="cg-g-add-btn"
+-          title="Writes a new one right away"
++          title="立即生成新的开场白"
+           disabled={busy || g.alts.length >= MAX_ALTERNATES}
+           onClick={() => void begin(addIndex, () => startAdd(id))}
+         >
+diff --git a/web_ui/src/components/aichargen/GuidedConfig.tsx b/web_ui/src/components/aichargen/GuidedConfig.tsx
+index 32d9dc1..bada8ba 100644
+--- a/web_ui/src/components/aichargen/GuidedConfig.tsx
++++ b/web_ui/src/components/aichargen/GuidedConfig.tsx
+@@ -19,45 +19,45 @@ export function GuidedConfig({
+   return (
+     <div className="cg-config">
+       <AreaField
+-        label="Your vision"
++        label="你的构想"
+         value={form.vision}
+         onChange={(v) => set({ vision: v })}
+-        placeholder="Describe the character in your own words — a few sentences is plenty…"
++        placeholder="用自己的话描述角色，几句话就足够……"
+         rows={4}
+       />
+       <div className="cg-grid2">
+-        <Field label="Age" value={form.age} onChange={(v) => set({ age: v })} placeholder="e.g. 27" />
+-        <Field label="Sex" value={form.sex} onChange={(v) => set({ sex: v })} placeholder="e.g. Female" />
++        <Field label="年龄" value={form.age} onChange={(v) => set({ age: v })} placeholder="例如：27" />
++        <Field label="性别" value={form.sex} onChange={(v) => set({ sex: v })} placeholder="例如：女性" />
+       </div>
+ 
+       <h4 className="cg-subhead">外观</h4>
+-      <ChipInput label="Physical build" value={form.gBuild} onChange={(v) => set({ gBuild: v })} suggestions={SUGG_BUILD} />
+-      <ChipInput label="Hair" value={form.gHair} onChange={(v) => set({ gHair: v })} suggestions={SUGG_HAIR} />
+-      <ChipInput label="Distinguishing features" value={form.gFeatures} onChange={(v) => set({ gFeatures: v })} suggestions={SUGG_FEATURES} />
+-      <ChipInput label="Race / Species" value={form.gRace} onChange={(v) => set({ gRace: v })} suggestions={SUGG_RACE} />
++      <ChipInput label="体格" value={form.gBuild} onChange={(v) => set({ gBuild: v })} suggestions={SUGG_BUILD} />
++      <ChipInput label="头发" value={form.gHair} onChange={(v) => set({ gHair: v })} suggestions={SUGG_HAIR} />
++      <ChipInput label="辨识特征" value={form.gFeatures} onChange={(v) => set({ gFeatures: v })} suggestions={SUGG_FEATURES} />
++      <ChipInput label="种族" value={form.gRace} onChange={(v) => set({ gRace: v })} suggestions={SUGG_RACE} />
+ 
+       <h4 className="cg-subhead">性格与说话方式</h4>
+       <ChipInput label="性格" value={form.gPersonality} onChange={(v) => set({ gPersonality: v })} suggestions={SUGG_PERSONALITY} />
+-      <ChipInput label="Speech style" value={form.gSpeech} onChange={(v) => set({ gSpeech: v })} suggestions={SUGG_SPEECH} />
+-      <Field label="Hidden depth" hint="(a secret, fear, or contradiction)" value={form.gSecret} onChange={(v) => set({ gSecret: v })} />
++      <ChipInput label="说话风格" value={form.gSpeech} onChange={(v) => set({ gSpeech: v })} suggestions={SUGG_SPEECH} />
++      <Field label="隐藏的一面" hint="（秘密、恐惧或内在矛盾）" value={form.gSecret} onChange={(v) => set({ gSecret: v })} />
+ 
+       <h4 className="cg-subhead">世界观与关系</h4>
+-      <ChipInput label="Background" value={form.gOrigin} onChange={(v) => set({ gOrigin: v })} suggestions={SUGG_ORIGIN} />
++      <ChipInput label="背景" value={form.gOrigin} onChange={(v) => set({ gOrigin: v })} suggestions={SUGG_ORIGIN} />
+       <ChipInput label="设定" value={form.gSetting} onChange={(v) => set({ gSetting: v })} suggestions={SUGG_SETTING} />
+-      <ChipInput label="Tone" value={form.gTone} onChange={(v) => set({ gTone: v })} suggestions={SUGG_TONE} />
++      <ChipInput label="基调" value={form.gTone} onChange={(v) => set({ gTone: v })} suggestions={SUGG_TONE} />
+       <ChipInput label="与你的关系" value={form.gRel} onChange={(v) => set({ gRel: v })} suggestions={SUGG_REL} />
+-      <Field label="Opening scenario" value={form.gRelScenario} onChange={(v) => set({ gRelScenario: v })} placeholder="Where/how the first scene begins" />
++      <Field label="开场情境" value={form.gRelScenario} onChange={(v) => set({ gRelScenario: v })} placeholder="第一个场景开始的地点或方式" />
+ 
+       {form.nsfw && (
+         <>
+           <h4 className="cg-subhead">亲密（成人向）</h4>
+           <div className="cg-grid2">
+-            <Field label="Intimate body details" value={form.gnBody} onChange={(v) => set({ gnBody: v })} />
+-            <Field label="Sexual experience" value={form.gnExp} onChange={(v) => set({ gnExp: v })} />
+-            <Field label="Dominance" value={form.gnDom} onChange={(v) => set({ gnDom: v })} />
+-            <Field label="Turn-ons / kinks" value={form.gnKinks} onChange={(v) => set({ gnKinks: v })} />
+-            <Field label="Clothing aesthetic" value={form.gnClothing} onChange={(v) => set({ gnClothing: v })} />
+-            <Field label="Sexual personality" value={form.gnPersonality} onChange={(v) => set({ gnPersonality: v })} />
++            <Field label="私密身体特征" value={form.gnBody} onChange={(v) => set({ gnBody: v })} />
++            <Field label="性经验" value={form.gnExp} onChange={(v) => set({ gnExp: v })} />
++            <Field label="支配倾向" value={form.gnDom} onChange={(v) => set({ gnDom: v })} />
++            <Field label="性偏好" value={form.gnKinks} onChange={(v) => set({ gnKinks: v })} />
++            <Field label="服装审美" value={form.gnClothing} onChange={(v) => set({ gnClothing: v })} />
++            <Field label="亲密关系中的性格" value={form.gnPersonality} onChange={(v) => set({ gnPersonality: v })} />
+           </div>
+         </>
+       )}
+diff --git a/web_ui/src/components/aichargen/InterviewCard.tsx b/web_ui/src/components/aichargen/InterviewCard.tsx
+index 24afb59..e8354bb 100644
+--- a/web_ui/src/components/aichargen/InterviewCard.tsx
++++ b/web_ui/src/components/aichargen/InterviewCard.tsx
+@@ -230,7 +230,7 @@ export function InterviewCard({ form, set }: { form: ChargenForm; set: (p: Parti
+     <button
+       type="button"
+       className="cg-iv-reset"
+-      aria-label="Reset to the standard questions"
++      aria-label="恢复标准问题"
+       onClick={() => set({ interviewQuestions: null, interviewSkipped: false })}
+     >
+       {isPhone ? 'Reset' : 'Reset to the standard questions'}
+@@ -357,7 +357,7 @@ function QuestionRow({
+         type="button"
+         className="cg-iv-handle"
+         aria-label={`Move question ${n}`}
+-        title="Drag to reorder"
++        title="拖动以重新排序"
+         disabled={locked}
+         onPointerDown={onHandleDown}
+         onKeyDown={onHandleKey}
+diff --git a/web_ui/src/components/aichargen/OutputSettings.tsx b/web_ui/src/components/aichargen/OutputSettings.tsx
+index e2a8561..bf06de6 100644
+--- a/web_ui/src/components/aichargen/OutputSettings.tsx
++++ b/web_ui/src/components/aichargen/OutputSettings.tsx
+@@ -44,14 +44,14 @@ export function OutputSettings({
+       </label>
+ 
+       <MultiChipSelect
+-        label="Greeting tones (one per greeting)"
++        label="开场白语气（每条开场白对应一个）"
+         values={form.greetingTones}
+         options={TONE_OPTIONS}
+         onChange={(v) => set({ greetingTones: v.length ? v : ['Neutral'] })}
+       />
+ 
+       <ChipSelect
+-        label="Description detail"
++        label="描述细节程度"
+         value={form.generationDetail}
+         options={Object.keys(GENERATION_DETAIL)}
+         onChange={(v) => set({ generationDetail: v || 'Standard' })}
+@@ -91,11 +91,11 @@ export function OutputSettings({
+ 
+       {form.narrativePerspective === 'third' && (
+         <Field
+-          label="Sex"
++          label="性别"
+           hint="(for he/she/they — blank defaults to they/them)"
+           value={form.sex}
+           onChange={(v) => set({ sex: v })}
+-          placeholder="e.g. Female, Male, they/them"
++          placeholder="例如：女性、男性、ta/他们"
+         />
+       )}
+ 
+@@ -111,13 +111,13 @@ export function OutputSettings({
+       {form.generateLorebook && (
+         <>
+           <MultiChipSelect
+-            label="Lore categories"
++            label="世界设定分类"
+             values={form.loreCategories}
+             options={LORE_CATEGORIES}
+             onChange={(v) => set({ loreCategories: v })}
+           />
+           <ChipSelect
+-            label="Lore depth"
++            label="世界设定深度"
+             value={form.loreDepth}
+             options={LORE_DEPTHS}
+             onChange={(v) => set({ loreDepth: v || 'Standard' })}
+diff --git a/web_ui/src/components/aichargen/ProfileFieldCard.tsx b/web_ui/src/components/aichargen/ProfileFieldCard.tsx
+index e5787dd..66b1dc7 100644
+--- a/web_ui/src/components/aichargen/ProfileFieldCard.tsx
++++ b/web_ui/src/components/aichargen/ProfileFieldCard.tsx
+@@ -66,7 +66,7 @@ export function ProfileFieldCard({
+           type="button"
+           className="cg-g-icon"
+           aria-label={`Open ${title.toLowerCase()} in the full editor`}
+-          title="Open the full editor"
++          title="打开完整编辑器"
+           disabled={rewriting}
+           onClick={() => setFull(true)}
+         >
+diff --git a/web_ui/src/components/aichargen/ProfileStep.tsx b/web_ui/src/components/aichargen/ProfileStep.tsx
+index c848b99..75ff3da 100644
+--- a/web_ui/src/components/aichargen/ProfileStep.tsx
++++ b/web_ui/src/components/aichargen/ProfileStep.tsx
+@@ -254,7 +254,7 @@ export const ProfileStep = forwardRef<
+ 
+       <ProfileFieldCard
+         title="描述"
+-        subtitle="Who they are, as the card will carry it"
++        subtitle="角色卡将记录的身份与基本信息"
+         value={view.description}
+         onChange={(description) => set({ description })}
+         rewriting={writing}
+@@ -263,7 +263,7 @@ export const ProfileStep = forwardRef<
+       />
+       <ProfileFieldCard
+         title="性格"
+-        subtitle="How they act and speak"
++        subtitle="角色的行为与说话方式"
+         value={view.personality}
+         onChange={(personality) => set({ personality })}
+         rewriting={writing}
+@@ -272,7 +272,7 @@ export const ProfileStep = forwardRef<
+       />
+       <ProfileFieldCard
+         title="场景"
+-        subtitle="Where the first chat starts"
++        subtitle="第一段聊天从哪里开始"
+         value={view.scenario}
+         onChange={(scenario) => set({ scenario })}
+         rewriting={writing}
+@@ -281,7 +281,7 @@ export const ProfileStep = forwardRef<
+         scenario
+       />
+ 
+-      <section className="cg-g-card cg-p-rewrite" aria-label="Rewrite the profile">
++      <section className="cg-g-card cg-p-rewrite" aria-label="重写角色资料">
+         <label className="cg-p-hidden-label" htmlFor="cg-profile-steer">
+           What is wrong or missing
+         </label>
+diff --git a/web_ui/src/components/aichargen/QuickConfig.tsx b/web_ui/src/components/aichargen/QuickConfig.tsx
+index 1d59b66..10d27c2 100644
+--- a/web_ui/src/components/aichargen/QuickConfig.tsx
++++ b/web_ui/src/components/aichargen/QuickConfig.tsx
+@@ -15,25 +15,25 @@ export function QuickConfig({
+   return (
+     <div className="cg-config">
+       <AreaField
+-        label="Concept"
++        label="角色概念"
+         value={form.quickConcept}
+         onChange={(v) => set({ quickConcept: v })}
+-        placeholder="A wandering bard with a sharp tongue and a hidden past…"
++        placeholder="例如：言辞犀利、背负隐秘过往的流浪吟游诗人……"
+         rows={4}
+       />
+       <Field
+-        label="Personality keywords"
++        label="性格关键词"
+         hint="(optional)"
+         value={form.quickKeywords}
+         onChange={(v) => set({ quickKeywords: v })}
+-        placeholder="witty, guarded, loyal"
++        placeholder="机智、谨慎、忠诚"
+       />
+       <ChipInput
+-        label="Opening scenario"
++        label="开场情境"
+         value={form.quickScenario}
+         onChange={(v) => set({ quickScenario: v })}
+         suggestions={SCENARIO_SEEDS}
+-        placeholder="How do you first meet?"
++        placeholder="你们初次相遇的情景是什么？"
+       />
+     </div>
+   );
+diff --git a/web_ui/src/pages/story/BookReader.tsx b/web_ui/src/pages/story/BookReader.tsx
+index 2c0e5d6..b78ae92 100644
+--- a/web_ui/src/pages/story/BookReader.tsx
++++ b/web_ui/src/pages/story/BookReader.tsx
+@@ -187,10 +187,10 @@ export function BookReader({ id, project, chrome }: { id: string; project: Story
+           <i style={{ width: `${totalPages > 1 ? Math.round((page / (totalPages - 1)) * 100) : 100}%` }} />
+         </div>
+         <div className="s-pager-pill">
+-          <button type="button" className="s-btn-ico ghost" data-testid="reader-prev-page" aria-label="Previous page"
++          <button type="button" className="s-btn-ico ghost" data-testid="reader-prev-page" aria-label="上一页"
+             disabled={page <= 0} onClick={() => goTo(page - 1)}><ChevronLeftIcon /></button>
+           <span className="s-pager-ind">Page {page + 1} / {totalPages}</span>
+-          <button type="button" className="s-btn-ico ghost" data-testid="reader-next-page" aria-label="Next page"
++          <button type="button" className="s-btn-ico ghost" data-testid="reader-next-page" aria-label="下一页"
+             disabled={page >= totalPages - 1} onClick={() => goTo(page + 1)}><ChevronRightIcon /></button>
+         </div>
+       </div>
+diff --git a/web_ui/src/pages/story/ReaderBar.tsx b/web_ui/src/pages/story/ReaderBar.tsx
+index 5b42f06..7d41be4 100644
+--- a/web_ui/src/pages/story/ReaderBar.tsx
++++ b/web_ui/src/pages/story/ReaderBar.tsx
+@@ -41,7 +41,7 @@ export function ReaderBar({ chrome, where, reading, canRead, onRead, onStop, onC
+   return (
+     <div className="s-read-bar" data-testid="reader-bar">
+       <button type="button" className="s-btn-ico ghost" data-testid="reader-sidebar-toggle"
+-        aria-label="Show or hide the studio sidebar" title="Show or hide the studio sidebar"
++        aria-label="显示或隐藏工作室侧边栏" title="显示或隐藏工作室侧边栏"
+         onClick={chrome.onToggleSidebar}><MenuIcon /></button>
+       <span className="s-read-title s-ell">{chrome.title}</span>
+       <Segmented testid="reader-mode" options={{ book: 'Book', scroll: 'Scroll' }} selected={chrome.mode}
+@@ -56,7 +56,7 @@ export function ReaderBar({ chrome, where, reading, canRead, onRead, onStop, onC
+             onClick={onRead}><PlayIcon /> 朗读</button>
+         )}
+         <button type="button" className="s-btn-ghost" data-testid="reader-contents" onClick={onContents}>目录</button>
+-        <MenuButton label="Reader menu" testid="reader-menu" entries={[
++        <MenuButton label="阅读器菜单" testid="reader-menu" entries={[
+           { label: ambient.on ? 'Ambient sound off' : 'Ambient sound on', disabled: !ambient.available, onSelect: ambient.toggle },
+           { label: 'Export text…', divider: true, onSelect: chrome.onExport },
+         ]} />
+diff --git a/web_ui/src/pages/story/StudioShell.tsx b/web_ui/src/pages/story/StudioShell.tsx
+index cf9cc2c..6c31fe7 100644
+--- a/web_ui/src/pages/story/StudioShell.tsx
++++ b/web_ui/src/pages/story/StudioShell.tsx
+@@ -66,11 +66,11 @@ export function StudioShell({
+   return (
+     <div className="studio-scope studio">
+       <StudioHeader id={id} project={p} shelf={shelf} status={status} onStop={onStop} />
+-      <div className={`studio-progress${shelf?.done ? ' done' : ''}`} role="progressbar" aria-label="Story progress"
++      <div className={`studio-progress${shelf?.done ? ' done' : ''}`} role="progressbar" aria-label="故事进度"
+         aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(fraction * 100)}>
+         <i style={{ width: `${fraction * 100}%` }} />
+       </div>
+-      <nav className="studio-side" aria-label="Story screens">
++      <nav className="studio-side" aria-label="故事页面">
+         {['Story', 'World', 'Engine'].map((group) => (
+           <div key={group} style={{ display: 'contents' }}>
+             <div className="h">{group}</div>
+diff --git a/web_ui/src/pages/story/lore/FactDialogs.tsx b/web_ui/src/pages/story/lore/FactDialogs.tsx
+index 3f6dc36..b8e992a 100644
+--- a/web_ui/src/pages/story/lore/FactDialogs.tsx
++++ b/web_ui/src/pages/story/lore/FactDialogs.tsx
+@@ -37,11 +37,11 @@ export function FactDialog({ fact, onSave, onCancel }: {
+       <div className="s-chips">
+         {FACT_CATEGORIES.map((c) => <PickChip key={c} on={c === category} onClick={() => setCategory(c)}>{c}</PickChip>)}
+       </div>
+-      <input type="text" className="s-field" placeholder="What (e.g. Teodor's left hand)" aria-label="What" data-testid="fact-key"
++      <input type="text" className="s-field" placeholder="内容（例如：Teodor 的左手）" aria-label="内容" data-testid="fact-key"
+         autoFocus value={key} onChange={(e) => setKey(e.target.value)} onKeyDown={enter} />
+-      <input type="text" className="s-field" placeholder="Is (e.g. burned, bandaged)" aria-label="Is" data-testid="fact-value"
++      <input type="text" className="s-field" placeholder="状态（例如：烧伤、包扎中）" aria-label="状态" data-testid="fact-value"
+         value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={enter} />
+-      <input type="text" className="s-field" placeholder="Who or where it belongs to" aria-label="Who or where it belongs to" data-testid="fact-entity"
++      <input type="text" className="s-field" placeholder="所属人物或地点" aria-label="所属人物或地点" data-testid="fact-entity"
+         value={entity} onChange={(e) => setEntity(e.target.value)} onKeyDown={enter} />
+     </Dialog>
+   );
+diff --git a/web_ui/src/pages/story/lore/LoreTabs.tsx b/web_ui/src/pages/story/lore/LoreTabs.tsx
+index 5b348de..602fc88 100644
+--- a/web_ui/src/pages/story/lore/LoreTabs.tsx
++++ b/web_ui/src/pages/story/lore/LoreTabs.tsx
+@@ -23,7 +23,7 @@ export function FactsTab({ p, onEdit, onRetire, onForget }: {
+   const facts = p.continuity ?? [];
+   if (facts.length === 0) {
+     return (
+-      <EmptyState testid="lore-empty-facts" title="No facts yet" detail={p.engine_mode === 'studio'
++      <EmptyState testid="lore-empty-facts" title="还没有事实条目" detail={p.engine_mode === 'studio'
+         ? 'Studio records hard facts after every scene: scars, objects, promises, places. Add one yourself with Add fact.'
+         : 'The Quick engine does not keep a ledger. Switch the story to Studio under Setup, or add facts yourself.'} />
+     );
+@@ -56,7 +56,7 @@ export function FactsTab({ p, onEdit, onRetire, onForget }: {
+ 
+ export function LoreTab({ p, onRemove }: { p: StoryProject; onRemove: (index: number) => void }) {
+   if (p.lore.length === 0) {
+-    return <EmptyState testid="lore-empty-lore" title="No lore yet" detail="Add a file, or let the story bible create some." />;
++    return <EmptyState testid="lore-empty-lore" title="还没有世界设定" detail="添加文件，或让故事设定集自动生成内容。" />;
+   }
+   return (
+     <section className="s-card" data-testid="lore-entries">
+@@ -85,7 +85,7 @@ export function SoFarTab({ p }: { p: StoryProject }) {
+   const blocks = soFarBlocks(p);
+   if (blocks.length === 0) {
+     return (
+-      <EmptyState testid="lore-empty-sofar" title="Nothing written yet"
++      <EmptyState testid="lore-empty-sofar" title="还没有写入内容"
+         detail="Each sequence gets a summary once its scenes are written." />
+     );
+   }
+diff --git a/web_ui/src/pages/story/lore/SearchDialog.tsx b/web_ui/src/pages/story/lore/SearchDialog.tsx
+index 832b5cb..c31b8fa 100644
+--- a/web_ui/src/pages/story/lore/SearchDialog.tsx
++++ b/web_ui/src/pages/story/lore/SearchDialog.tsx
+@@ -37,11 +37,11 @@ export function SearchDialog({ id, onClose }: { id: string; onClose: () => void
+   };
+ 
+   return (
+-    <Dialog title="What would the writer see?" testid="lore-search-dialog" onClose={onClose} actions={(
++    <Dialog title="作者会看到什么？" testid="lore-search-dialog" onClose={onClose} actions={(
+       <button type="button" className="s-btn-ghost" onClick={onClose}>关闭</button>
+     )}>
+       <div className="s-w520">
+-        <textarea className="s-textarea" rows={2} autoFocus aria-label="Describe a beat" data-testid="lore-search-query"
++        <textarea className="s-textarea" rows={2} autoFocus aria-label="描述一个情节点" data-testid="lore-search-query"
+           placeholder={'Describe a beat, e.g. "Mara haggles at the salt market"'}
+           value={query} onChange={(e) => setQuery(e.target.value)} />
+       </div>
+diff --git a/web_ui/src/pages/story/overview/BibleCard.tsx b/web_ui/src/pages/story/overview/BibleCard.tsx
+index 6bb016b..5b39b82 100644
+--- a/web_ui/src/pages/story/overview/BibleCard.tsx
++++ b/web_ui/src/pages/story/overview/BibleCard.tsx
+@@ -35,7 +35,7 @@ export function BibleCard({ p, running, onRegenerate, onRewriteArc, onSave }: {
+   const lore = p.lore.length;
+   return (
+     <section className="s-card" data-testid="studio-bible">
+-      <CardHead label="Story bible">
++      <CardHead label="故事设定集">
+         {onRewriteArc && (
+           <button type="button" className="s-btn-ghost" data-testid="story-rewrite-arc" disabled={running} onClick={onRewriteArc}>⌁ Rewrite arc…</button>
+         )}
+diff --git a/web_ui/src/pages/story/overview/SideCards.tsx b/web_ui/src/pages/story/overview/SideCards.tsx
+index 16a1413..33cef1e 100644
+--- a/web_ui/src/pages/story/overview/SideCards.tsx
++++ b/web_ui/src/pages/story/overview/SideCards.tsx
+@@ -15,7 +15,7 @@ import { CardHead } from './CardHead';
+ export function CastCard({ id, p, onOpen }: { id: string; p: StoryProject; onOpen: () => void }) {
+   return (
+     <section className="s-card" data-testid="studio-cast-card">
+-      <CardHead label="Cast">
++      <CardHead label="角色阵容">
+         <button type="button" className="s-btn-ghost" onClick={onOpen}>打开 →</button>
+       </CardHead>
+       {p.cast.length === 0 ? (
+@@ -45,7 +45,7 @@ export function ChatCard({ p, running, onRedistill }: { p: StoryProject; running
+   const events = timelineEvents(p);
+   return (
+     <section className="s-card" data-testid="studio-chat-card">
+-      <CardHead label="From the chat">
++      <CardHead label="来自聊天">
+         <button type="button" className="s-btn-ghost" data-testid="story-redistill" disabled={running} onClick={onRedistill}>↻ Redistill…</button>
+       </CardHead>
+       <div className="s-body">
+@@ -57,7 +57,7 @@ export function ChatCard({ p, running, onRedistill }: { p: StoryProject; running
+         <button type="button" className="s-btn-ghost" onClick={() => setViewing(true)}>查看时间线</button>
+       )}
+       {viewing && (
+-        <Dialog title="Timeline" wide onClose={() => setViewing(false)}
++        <Dialog title="时间线" wide onClose={() => setViewing(false)}
+           actions={<button type="button" className="s-btn-ghost" onClick={() => setViewing(false)}>关闭</button>}>
+           <div className="s-body s-pre">{p.distilled_timeline}</div>
+         </Dialog>
+diff --git a/web_ui/src/pages/story/overview/UpNextCard.tsx b/web_ui/src/pages/story/overview/UpNextCard.tsx
+index 1f888fb..e36139f 100644
+--- a/web_ui/src/pages/story/overview/UpNextCard.tsx
++++ b/web_ui/src/pages/story/overview/UpNextCard.tsx
+@@ -19,7 +19,7 @@ export function UpNextCard({ up, running, onAction, onAutopilot }: {
+   }[up.action];
+   return (
+     <section className="s-card sel" data-testid="studio-up-next">
+-      <CardHead label="Up next">{up.sequence && <Chip>{up.sequence}</Chip>}</CardHead>
++      <CardHead label="接下来">{up.sequence && <Chip>{up.sequence}</Chip>}</CardHead>
+       <div className="s-upnext">
+         <div className="s-upnext-text">
+           <div className="s-bold">{up.title}</div>
+diff --git a/web_ui/src/pages/story/setup/CastStep.tsx b/web_ui/src/pages/story/setup/CastStep.tsx
+index 1968699..193f22b 100644
+--- a/web_ui/src/pages/story/setup/CastStep.tsx
++++ b/web_ui/src/pages/story/setup/CastStep.tsx
+@@ -78,8 +78,8 @@ export function CastStep({ draft, set, chars, personaName }: {
+ 
+       {chat && (
+         <div className="s-card">
+-          <ToggleRow on={draft.useChatHistory} label="Use the chat as canon"
+-            detail={`The chat with ${chat.characterName} is distilled into a timeline the bible must respect`}
++          <ToggleRow on={draft.useChatHistory} label="将聊天内容作为故事正史"
++            detail={`与 ${chat.characterName} 的聊天将被整理成时间线，故事设定必须遵守这条时间线`}
+             onChange={(on) => set({ ...draft, useChatHistory: on })} />
+         </div>
+       )}
+@@ -87,7 +87,7 @@ export function CastStep({ draft, set, chars, personaName }: {
+       <Note>之后可以在“角色阵容”页面添加或移除角色。</Note>
+ 
+       {adding && (
+-        <Dialog title="Add from library" wide onClose={() => setAdding(false)}
++        <Dialog title="从角色库添加" wide onClose={() => setAdding(false)}
+           actions={<button type="button" className="s-btn-ghost" onClick={() => setAdding(false)}>取消</button>}>
+           {available.length === 0
+             ? <div className="body">所有角色都已加入阵容。</div>
+diff --git a/web_ui/src/pages/story/setup/ChatSourcePicker.tsx b/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
+index 027cb2d..c521354 100644
+--- a/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
++++ b/web_ui/src/pages/story/setup/ChatSourcePicker.tsx
+@@ -69,15 +69,15 @@ export function ChatSourcePicker({ onPick, onClose }: {
+   const shown = found.slice(0, PAGE_SIZE);
+ 
+   return (
+-    <Dialog title="Start from a chat" wide onClose={onClose} testid="story-chat-picker"
++    <Dialog title="从聊天开始" wide onClose={onClose} testid="story-chat-picker"
+       actions={<button type="button" className="s-btn-ghost" onClick={onClose}>取消</button>}>
+       {error ? <div className="s-error">{error}</div>
+         : rows === null ? <div className="body">正在加载聊天记录…</div>
+         : rows.length === 0 ? <div className="body">还没有聊天记录。先与角色聊天，再回到这里。</div>
+         : (
+           <div className="s-col" style={{ gap: 2 }}>
+-            <input type="text" autoFocus placeholder="Search by character or chat name" value={query}
+-              data-testid="story-chat-search" aria-label="Search chats" style={{ marginBottom: 6 }}
++            <input type="text" autoFocus placeholder="按角色名或聊天名称搜索" value={query}
++              data-testid="story-chat-search" aria-label="搜索聊天" style={{ marginBottom: 6 }}
+               onChange={(e) => setQuery(e.target.value)} />
+             {found.length === 0 && <div className="body s-muted">没有符合搜索条件的聊天。</div>}
+             {shown.map((r) => {
+@@ -95,7 +95,7 @@ export function ChatSourcePicker({ onPick, onClose }: {
+                   <span className="s-grow">
+                     <b className="s-ell" style={{ display: 'block' }}>{r.character_name}</b>
+                     <span className="s-muted s-small s-ell" style={{ display: 'block' }}>
+-                      {[r.session_name, formatRelativeTime(r.date), `${r.message_count} messages`].filter(Boolean).join(' · ')}
++                      {[r.session_name, formatRelativeTime(r.date), `${r.message_count} 条消息`].filter(Boolean).join(' · ')}
+                     </span>
+                   </span>
+                   {r.short && <Chip tone="honey" title="消息少于 20 条，内容可能不足以生成故事。">短对话</Chip>}
+diff --git a/web_ui/src/pages/story/setup/EngineStep.tsx b/web_ui/src/pages/story/setup/EngineStep.tsx
+index b00ad4b..ac51f24 100644
+--- a/web_ui/src/pages/story/setup/EngineStep.tsx
++++ b/web_ui/src/pages/story/setup/EngineStep.tsx
+@@ -50,9 +50,9 @@ export function EngineStep({ draft, set, laneLabels }: {
+             data-testid="story-engine-studio" onClick={() => setMode('studio')} onKeyDown={press('studio')}>
+             <div className="s-row"><b>工作室</b><Chip tone="amber">推荐</Chip></div>
+             <Note>Interviews the cast, checks every step, tracks continuity and relationships. 3 acts, 8 sequences.</Note>
+-            <ToggleRow testid="story-review" on={draft.reviewEnabled} label="Check each step before moving on"
++            <ToggleRow testid="story-review" on={draft.reviewEnabled} label="每一步继续前都先确认"
+               onChange={quick ? undefined : (on) => set({ ...draft, reviewEnabled: on })} />
+-            <ToggleRow testid="story-lenses" on={draft.lensesEnabled} label="A writing lens per scene"
++            <ToggleRow testid="story-lenses" on={draft.lensesEnabled} label="每个场景使用独立写作视角"
+               onChange={quick ? undefined : (on) => set({ ...draft, lensesEnabled: on })} />
+           </div>
+         </div>
+diff --git a/web_ui/src/pages/story/setup/IdeaStep.tsx b/web_ui/src/pages/story/setup/IdeaStep.tsx
+index f7adfeb..86aac42 100644
+--- a/web_ui/src/pages/story/setup/IdeaStep.tsx
++++ b/web_ui/src/pages/story/setup/IdeaStep.tsx
+@@ -58,14 +58,14 @@ export function IdeaStep({ draft, set, chars, userName }: {
+   return (
+     <>
+       <div className="s-card">
+-        <Field label="Title">
++        <Field label="标题">
+           <input type="text" data-testid="story-title" value={draft.title}
+-            placeholder="Leave blank and the bible will suggest one"
++            placeholder="留空则由故事设定集建议标题"
+             onChange={(e) => set({ ...draft, title: e.target.value })} />
+         </Field>
+-        <Field label="What is the story?">
++        <Field label="故事讲什么？">
+           <textarea className="s-textarea" rows={4} data-testid="story-concept" value={draft.concept}
+-            placeholder="A courier on a drowned coast owes a smuggler forty silver by the spring caravan…"
++            placeholder="例如：一名海岸沉没后的信使欠走私者四十枚银币，必须在春季商队到来前偿还……"
+             onChange={(e) => set({ ...draft, concept: e.target.value })} />
+         </Field>
+         <div className="s-row nowrap">
+@@ -115,7 +115,7 @@ export function IdeaStep({ draft, set, chars, userName }: {
+ 
+       {picking && <ChatSourcePicker onPick={choose} onClose={() => setPicking(false)} />}
+       {pendingSpark !== null && (
+-        <ConfirmDialog title="Replace your idea?" body="The spark replaces what you've written in the box."
++        <ConfirmDialog title="替换当前构想？" body="灵感内容将替换你在输入框中写下的内容。"
+           confirmLabel="Replace"
+           onCancel={() => setPendingSpark(null)}
+           onConfirm={() => { set({ ...draft, concept: pendingSpark }); setPendingSpark(null); }} />
+diff --git a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+index 40da463..8abd0b5 100644
+--- a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
++++ b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+@@ -161,12 +161,12 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+           <>
+             <div className="s-col" style={{ gap: 4 }}>
+               <Note>模型文件</Note>
+-              <PickField value={choice.model ? basename(choice.model) : ''} placeholder="Choose a .gguf" testid="story-host-file"
++              <PickField value={choice.model ? basename(choice.model) : ''} placeholder="选择 .gguf 模型文件" testid="story-host-file"
+                 onClick={() => pickFile('Model file', opts?.koboldModels ?? [], (model) => ({ model }))} />
+             </div>
+             <div className="s-col" style={{ gap: 4 }}>
+               <Note>启动预设</Note>
+-              <PickField value={choice.kcpps ? basename(choice.kcpps) : ''} placeholder="Same as chat" testid="story-host-preset"
++              <PickField value={choice.kcpps ? basename(choice.kcpps) : ''} placeholder="与聊天使用相同的模型" testid="story-host-preset"
+                 onClick={() => pickFile('Launch preset', opts?.kcpps ?? [], (kcpps) => ({ kcpps }))} />
+             </div>
+           </>
+@@ -178,9 +178,9 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+                 {fetching ? 'Fetching…' : '↻ Refresh list'}
+               </button>
+             </div>
+-            <PickField value={choice.model} placeholder="Choose a model" testid="story-host-model" onClick={() => void pickRemoteModel()} />
++            <PickField value={choice.model} placeholder="选择模型" testid="story-host-model" onClick={() => void pickRemoteModel()} />
+             {needsKey ? (
+-              <input type="password" data-testid="story-host-key" placeholder="API key for this host" value={key}
++              <input type="password" data-testid="story-host-key" placeholder="此服务端的 API 密钥" value={key}
+                 onChange={(e) => setKey(e.target.value)} />
+             ) : h.needsKey && <Note>Using the saved key for {h.label}.</Note>}
+           </>
+@@ -212,14 +212,14 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+           : opts === null ? <div className="body">正在加载模型…</div>
+           : (
+             <div className="s-col" style={{ gap: 0 }}>
+-              <RadioRow testid="story-lane-chat" selected={choice.lane === 'main'} title="Same as chat" detail={opts.chat.detail}
++              <RadioRow testid="story-lane-chat" selected={choice.lane === 'main'} title="与聊天相同" detail={opts.chat.detail}
+                 onSelect={() => setChoice({ lane: 'main', backend: '', url: '', model: '', kcpps: '' })} />
+               {opts.worker && (
+-                <RadioRow testid="story-lane-worker" selected={choice.lane === 'worker'} title="Worker model" detail={opts.worker.detail}
++                <RadioRow testid="story-lane-worker" selected={choice.lane === 'worker'} title="工作模型" detail={opts.worker.detail}
+                   onSelect={() => setChoice({ lane: 'worker', backend: '', url: '', model: '', kcpps: '' })} />
+               )}
+               {hosts.length > 0 && (
+-                <RadioRow testid="story-lane-host" selected={isHost} title="Another host" onSelect={() => pickHost(hosts[0])} />
++                <RadioRow testid="story-lane-host" selected={isHost} title="其他服务端" onSelect={() => pickHost(hosts[0])} />
+               )}
+               {isHost && (
+                 <div className="s-col" style={{ paddingLeft: 26, gap: 8 }}>
+diff --git a/web_ui/src/pages/story/structure/ActSection.tsx b/web_ui/src/pages/story/structure/ActSection.tsx
+index 2aff7bd..4190905 100644
+--- a/web_ui/src/pages/story/structure/ActSection.tsx
++++ b/web_ui/src/pages/story/structure/ActSection.tsx
+@@ -48,7 +48,7 @@ export function ActSection({ p, act, open, running, lenses, onToggle, onEdit, on
+           </>
+         ) : written === scenes.length ? <Chip tone="teal">✓ {written} scenes written</Chip>
+           : <Chip tone="amber">{written} of {scenes.length} written</Chip>}
+-        <button type="button" className="s-btn-ico ghost" aria-label="Edit act" title="Edit act" disabled={running}
++        <button type="button" className="s-btn-ico ghost" aria-label="编辑幕" title="编辑幕" disabled={running}
+           onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎</button>
+         <button type="button" className="s-btn-ico ghost" aria-label={open ? 'Collapse' : 'Expand'} aria-expanded={open} title={open ? 'Collapse' : 'Expand'}
+           onClick={(e) => { e.stopPropagation(); onToggle(); }}>{open ? '▴' : '▾'}</button>
+diff --git a/web_ui/src/pages/story/structure/SceneRow.tsx b/web_ui/src/pages/story/structure/SceneRow.tsx
+index 7b455c1..f03eca0 100644
+--- a/web_ui/src/pages/story/structure/SceneRow.tsx
++++ b/web_ui/src/pages/story/structure/SceneRow.tsx
+@@ -62,7 +62,7 @@ export function SceneRow({ p, act, index, running, isNext, lenses, actions }: {
+         {studio && <TensionBars tension={sc.tension ?? 0} />}
+         {studio && type && <Chip>{type}</Chip>}
+         <SceneStatus beats={beats} written={written} />
+-        <MenuButton label="Scene menu" testid={`story-scene-menu-${act}-${index}`} entries={[
++        <MenuButton label="场景菜单" testid={`story-scene-menu-${act}-${index}`} entries={[
+           { label: 'Write this scene', disabled: running, onSelect: actions.write },
+           { label: beats === 0 ? 'Plan beats' : 'Plan beats again…', disabled: running, onSelect: actions.planBeats },
+           { label: 'Edit title & summary…', disabled: running, onSelect: actions.edit },
+diff --git a/web_ui/src/pages/story/write/LensDialog.tsx b/web_ui/src/pages/story/write/LensDialog.tsx
+index 67fedea..a2fe330 100644
+--- a/web_ui/src/pages/story/write/LensDialog.tsx
++++ b/web_ui/src/pages/story/write/LensDialog.tsx
+@@ -47,12 +47,12 @@ export function CustomLensDialog({ onSave, onCancel }: {
+   onCancel: () => void;
+ }) {
+   return (
+-    <FieldsDialog title="Your own lens" wide confirmLabel="Save lens" required="name"
++    <FieldsDialog title="自定义写作视角" wide confirmLabel="保存写作视角" required="name"
+       fields={[
+-        { key: 'name', hint: 'Name', testid: 'story-lens-name' },
+-        { key: 'context', hint: 'When to use it (one line)', testid: 'story-lens-context' },
++        { key: 'name', hint: '名称', testid: 'story-lens-name' },
++        { key: 'context', hint: '使用场景（一句话）', testid: 'story-lens-context' },
+         {
+-          key: 'prompt', hint: 'How to write in it: sentence rhythm, what the narration notices, how people talk…',
++          key: 'prompt', hint: '写作方式：句子节奏、叙述关注点、人物说话方式……',
+           multiline: true, rows: 4, testid: 'story-lens-prompt',
+         },
+       ]}
