@@ -1,0 +1,904 @@
+diff --git a/lib/services/chat/body_clock.dart b/lib/services/chat/body_clock.dart
+index dfadac6..f15158e 100644
+--- a/lib/services/chat/body_clock.dart
++++ b/lib/services/chat/body_clock.dart
+@@ -227,7 +227,7 @@ int? minutesRecordedForClockRewind(Map<String, dynamic>? meta) {
+ const String kNeedsUnaffectedMeta = 'needs_unaffected';
+ 
+ /// Copy on the chip. Keep in lockstep with `web_ui` ChipsRow.
+-const String kNeedsUnaffectedLabel = 'No needs affected';
++const String kNeedsUnaffectedLabel = '需求没有变化';
+ 
+ /// Stamped on the reply before awake wear. Regen starts from this, not from
+ /// the bars the beat already wore down.
+diff --git a/lib/services/chat/realism_evals.dart b/lib/services/chat/realism_evals.dart
+index 6cbd6a8..8e38518 100644
+--- a/lib/services/chat/realism_evals.dart
++++ b/lib/services/chat/realism_evals.dart
+@@ -48,11 +48,9 @@ const String kFeelingsUnscoredMeta = 'feelings_unscored';
+ 
+ /// Copy on the chip and its hover. The phone's ChipsRow gets both from the
+ /// chip feed (`chat_facade.dart`) and keeps a copy only as a fallback.
+-const String kFeelingsUnscoredLabel = 'Feelings not scored this time';
++const String kFeelingsUnscoredLabel = '本次未能评估情感';
+ const String kFeelingsUnscoredTip =
+-    "The model's answer couldn't be read, so bond and trust stayed where "
+-    'they were. To try again and keep this reply, tap Manual Reprocess and '
+-    'pick Feelings.';
++    '无法读取模型的评估结果，因此羁绊和信任保持不变。若要重试并保留这条回复，请点击“手动重新评估”并选择“情感”。';
+ 
+ /// The five realism evaluation calls (relationship, emotional state,
+ /// physical state, narrative, one-shot): prompt builders, orchestration,
+diff --git a/lib/ui/chat_components/bubbles/message_bubble.actions.dart b/lib/ui/chat_components/bubbles/message_bubble.actions.dart
+index ca58a01..5071e57 100644
+--- a/lib/ui/chat_components/bubbles/message_bubble.actions.dart
++++ b/lib/ui/chat_components/bubbles/message_bubble.actions.dart
+@@ -278,10 +278,10 @@ class MessageActionRow extends StatelessWidget {
+                 ),
+                 const SizedBox(width: 4),
+                 Tooltip(
+-                  message: 'Select variant',
++                  message: '选择版本',
+                   child: InkWell(
+                     onTap: () => openVariantPicker(
+-                      title: 'Select variant',
++                      title: '选择版本',
+                       onSelect: (i) => chatService.selectSwipe(index, i),
+                     ),
+                     borderRadius: BorderRadius.circular(12),
+@@ -364,7 +364,7 @@ class SuggestActionsColumn extends StatelessWidget {
+                         ),
+                       const SizedBox(width: 5),
+                       Text(
+-                        isGenerating ? 'Thinking...' : 'Suggest actions',
++                        isGenerating ? '正在思考…' : '建议行动',
+                         style: TextStyle(
+                           fontSize: 11,
+                           color:
+diff --git a/lib/ui/chat_components/bubbles/message_bubble.realism.dart b/lib/ui/chat_components/bubbles/message_bubble.realism.dart
+index b36dc1b..d8718e8 100644
+--- a/lib/ui/chat_components/bubbles/message_bubble.realism.dart
++++ b/lib/ui/chat_components/bubbles/message_bubble.realism.dart
+@@ -24,6 +24,7 @@ import 'package:front_porch_ai/services/services.dart';
+ import 'package:front_porch_ai/ui/theme/theme.dart';
+ 
+ import 'message_bubble.realism_chips.dart';
++import '../zh_cn_display_labels.dart';
+ import 'message_bubble.realism_layout.dart';
+ 
+ /// Parses a message's realism/needs metadata into the chip widgets shown
+@@ -172,7 +173,7 @@ class MessageRealismIndicator extends StatelessWidget {
+ 
+         IconData icon;
+         Color color;
+-        String label = need[0].toUpperCase() + need.substring(1);
++        String label = zhCnNeedLabel(need);
+ 
+         switch (need) {
+           case 'hunger':
+@@ -279,8 +280,8 @@ class MessageRealismIndicator extends StatelessWidget {
+             ? Icons.favorite
+             : Icons.heart_broken,
+         label: bondUnchanged
+-            ? 'Bond unchanged'
+-            : 'Bond: ${bondDelta > 0 ? '+$bondDelta' : '$bondDelta'}',
++            ? '羁绊无变化'
++            : '羁绊：${bondDelta > 0 ? '+$bondDelta' : '$bondDelta'}',
+         color: bondColor,
+         hasReason: bondReason.isNotEmpty,
+       );
+@@ -302,7 +303,7 @@ class MessageRealismIndicator extends StatelessWidget {
+           realismDeltaChip(
+             context,
+             icon: Icons.psychology,
+-            label: 'Mood: $emotionLabel',
++            label: '心情：${zhCnMoodLabel(emotionLabel)}',
+             color: AppColors.emotionAccentOf(context),
+             hasReason: moodTip.isNotEmpty,
+           ),
+@@ -320,7 +321,7 @@ class MessageRealismIndicator extends StatelessWidget {
+                 ? Icons.local_fire_department
+                 : Icons.ac_unit,
+             label:
+-                'Lust: ${arousalDelta > 0 ? '+$arousalDelta' : '$arousalDelta'}',
++                '欲望：${arousalDelta > 0 ? '+$arousalDelta' : '$arousalDelta'}',
+             color: arousalDelta > 0
+                 ? RealismColors.lustUpOf(context)
+                 : RealismColors.lustDownOf(context),
+@@ -345,8 +346,8 @@ class MessageRealismIndicator extends StatelessWidget {
+             ? Icons.handshake
+             : Icons.gavel,
+         label: trustUnchanged
+-            ? 'Trust unchanged'
+-            : 'Trust: ${trustDelta > 0 ? '+$trustDelta' : '$trustDelta'}',
++            ? '信任无变化'
++            : '信任：${trustDelta > 0 ? '+$trustDelta' : '$trustDelta'}',
+         color: trustColor,
+         hasReason: trustReason.isNotEmpty,
+       );
+diff --git a/lib/ui/chat_components/bubbles/message_bubble.realism_layout.dart b/lib/ui/chat_components/bubbles/message_bubble.realism_layout.dart
+index 0d3e081..498291b 100644
+--- a/lib/ui/chat_components/bubbles/message_bubble.realism_layout.dart
++++ b/lib/ui/chat_components/bubbles/message_bubble.realism_layout.dart
+@@ -172,7 +172,7 @@ class MessageRealismChipLayout extends StatelessWidget {
+       if (canReprocess) ...[
+         const SizedBox(height: 6),
+         Tooltip(
+-          message: 'Redo the Needs or the Feelings for this reply',
++          message: '重新评估这条回复的需求或情感',
+           preferBelow: false,
+           textStyle: RealismColors.tooltipText(context),
+           decoration: RealismColors.tooltipDecoration(context),
+@@ -207,7 +207,7 @@ class MessageRealismChipLayout extends StatelessWidget {
+                     ),
+                     const SizedBox(width: 6),
+                     Text(
+-                      'Manual Reprocess',
++                      '手动重新评估',
+                       style: TextStyle(
+                         fontSize: 10,
+                         fontWeight: FontWeight.w600,
+@@ -225,7 +225,7 @@ class MessageRealismChipLayout extends StatelessWidget {
+         const SizedBox(height: 4),
+         Tooltip(
+           message:
+-              'Restore previous Needs deltas and live state before the last reprocess',
++              '恢复上次重新评估之前的需求变化和实时状态',
+           preferBelow: false,
+           textStyle: RealismColors.tooltipText(context),
+           decoration: RealismColors.tooltipDecoration(context),
+diff --git a/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart b/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
+index f0503f5..c73e7e8 100644
+--- a/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
++++ b/lib/ui/chat_components/sidebar/character_state/ambitions_row.dart
+@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
+ 
+ import 'package:front_porch_ai/services/chat/chat.dart' show AmbitionService;
+ import 'package:front_porch_ai/ui/theme/app_colors.dart';
++import '../zh_cn_display_labels.dart';
+ 
+ /// Sidebar Ambitions rows (Living Time §6) — 🧭 text, stage word, and a thin
+ /// stage bar per ambition, visible from the FIRST frame of a fresh chat so
+@@ -63,10 +64,10 @@ class AmbitionsRow extends StatelessWidget {
+             padding: const EdgeInsets.only(bottom: 6),
+             child: Tooltip(
+               message: [
+-                '${a.text} — ${AmbitionService.stageWord(a.progress)}.',
++                '${a.text} — ${zhCnAmbitionStage(AmbitionService.stageWord(a.progress))}。',
+                 if (steps[a.text] != null)
+-                  'Working on it now: ${steps[a.text]}',
+-                'Progress moves when quests that serve it complete.',
++                  '当前正在推进：${steps[a.text]}',
++                '完成相关任务后，目标进度就会推进。',
+               ].join('\n'),
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+@@ -89,7 +90,7 @@ class AmbitionsRow extends StatelessWidget {
+                       ),
+                       const SizedBox(width: 6),
+                       Text(
+-                        AmbitionService.stageWord(a.progress),
++                        zhCnAmbitionStage(AmbitionService.stageWord(a.progress)),
+                         style: TextStyle(
+                           fontSize: 10,
+                           fontStyle: FontStyle.italic,
+diff --git a/lib/ui/chat_components/sidebar/character_state/bond_bars.dart b/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
+index 21a0f09..ac0ef3e 100644
+--- a/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
++++ b/lib/ui/chat_components/sidebar/character_state/bond_bars.dart
+@@ -22,6 +22,7 @@ import 'package:front_porch_ai/services/services.dart';
+ import 'package:front_porch_ai/ui/theme/app_colors.dart';
+ import 'package:front_porch_ai/ui/theme/tier_colors.dart';
+ import 'package:front_porch_ai/ui/widgets/widgets.dart';
++import '../zh_cn_display_labels.dart';
+ 
+ /// The 1:1 relationship bars — Short-Term Bond, Long-Term Bond, Trust, and
+ /// (when NSFW enhancements are on) Lust — all rendered through the ONE shared
+@@ -54,25 +55,23 @@ class BondBars extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         RealismProgressRow(
+-          label: 'Short-Term Bond',
++          label: '短期羁绊',
+           value: rel.affectionScore,
+           tier: rel.relationshipTier,
+-          tierName: rel.shortTermTierName,
++          tierName: zhCnRealismTierLabel(rel.shortTermTierName),
+           color: TierColors.tierColor(context, rel.relationshipTier),
+           icon: rel.relationshipTier < 0 ? Icons.heart_broken : Icons.favorite,
+           maxValue: rel.shortTermProgressTarget,
+           progress: rel.shortTermProgressPercent,
+           tooltip:
+-              'Short-term Dynamic: The immediate "tension in the room" or how '
+-              'they feel about you right now. Evolves quickly based on recent '
+-              'events.',
++              '短期关系：角色此刻对你的感受，以及当下的相处氛围。会随着近期发生的事情快速变化。',
+         ),
+         const SizedBox(height: 8),
+         RealismProgressRow(
+-          label: 'Long-Term Bond',
++          label: '长期羁绊',
+           value: rel.longTermScore,
+           tier: rel.longTermTier,
+-          tierName: rel.longTermTierName,
++          tierName: zhCnRealismTierLabel(rel.longTermTierName),
+           color: TierColors.tierColor(context, rel.longTermTier),
+           icon: rel.longTermTier < 0
+               ? Icons.heart_broken_sharp
+@@ -80,31 +79,28 @@ class BondBars extends StatelessWidget {
+           maxValue: rel.longTermProgressTarget,
+           progress: rel.longTermProgressPercent,
+           tooltip:
+-              'Long-term Relationship: Your deep, overarching history '
+-              'together. Evolves slowly and sets the foundation for your '
+-              'interactions.',
++              '长期关系：你们共同积累的深层关系与经历。变化较慢，并为之后的互动奠定基础。',
+         ),
+         const SizedBox(height: 8),
+         RealismProgressRow(
+-          label: 'Trust',
++          label: '信任',
+           value: rel.trustLevel,
+           tier: rel.trustTier,
+-          tierName: rel.trustTierName,
++          tierName: zhCnRealismTierLabel(rel.trustTierName),
+           color: AppColors.trustAccentOf(context),
+           icon: rel.trustLevel < 0 ? Icons.vpn_key_off : Icons.vpn_key,
+           maxValue: rel.trustProgressTarget,
+           progress: rel.trustProgressPercent,
+           tooltip:
+-              'Trust: Paranoia vs absolute faith. Dictates whether the '
+-              'character questions your motives or readily believes you.',
++              '信任：从多疑到完全信赖，决定角色会质疑你的动机，还是轻易相信你。',
+         ),
+         if (nsfw.nsfwCooldownEnabled) ...[
+           const SizedBox(height: 8),
+           RealismProgressRow(
+-            label: 'Lust',
++            label: '欲望',
+             value: nsfw.arousalLevel.clamp(-100, 100),
+             tier: arousalTier,
+-            tierName: nsfw.arousalTierName,
++            tierName: zhCnRealismTierLabel(nsfw.arousalTierName),
+             color: lustColor,
+             icon: arousalTier >= 6
+                 ? Icons.local_fire_department
+@@ -113,7 +109,7 @@ class BondBars extends StatelessWidget {
+                 : Icons.favorite_border,
+             maxValue: 100,
+             progress: (nsfw.arousalLevel.abs() / 100).clamp(0.0, 1.0),
+-            tooltip: 'Arousal: Physical/sexual tension level.',
++            tooltip: '唤起程度：身体或性张力的水平。',
+           ),
+           if (nsfw.refractoryMinutesRemaining > 0) ...[
+             const SizedBox(height: 4),
+diff --git a/lib/ui/chat_components/sidebar/character_state/character_state_group.dart b/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
+index cf90dc3..9b06c79 100644
+--- a/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
++++ b/lib/ui/chat_components/sidebar/character_state/character_state_group.dart
+@@ -35,6 +35,7 @@ import 'bond_bars.dart';
+ import 'character_state_settings.dart';
+ import 'time_strip.dart';
+ import 'presence_word.dart';
++import '../zh_cn_display_labels.dart';
+ 
+ /// 🎭 Character State — the first warm-porch accordion: everything about who
+ /// the character *is right now* in one card. 1:1 shows the unified
+@@ -86,12 +87,13 @@ class CharacterStateGroupState extends State<CharacterStateGroup> {
+     if (widget.isGroup) {
+       final active = chat.isGroupRealismActive;
+       final time = TimeStrip.timeLabel(chat.timeService.timeOfDay);
+-      return active ? time : 'Realism off · $time';
++      return active ? time : '拟真模式已关闭 · $time';
+     }
+-    if (!chat.realismEnabled) return 'Realism off';
++    if (!chat.realismEnabled) return '拟真模式已关闭';
+     final rel = chat.relationshipService;
+     final fixated = rel.activeFixation.isNotEmpty ? ' · 🧠' : '';
+-    return '${rel.shortTermTierName} · ${rel.trustTierName} · '
++    return '${zhCnRealismTierLabel(rel.shortTermTierName)} · '
++        '${zhCnRealismTierLabel(rel.trustTierName)} · '
+         '${TimeStrip.timeLabel(chat.timeService.timeOfDay)}$fixated';
+   }
+ 
+@@ -118,7 +120,7 @@ class CharacterStateGroupState extends State<CharacterStateGroup> {
+       key: _accordionKey,
+       id: 'character_state',
+       emoji: '🎭',
+-      title: 'Character State',
++      title: '角色状态',
+       subtitle: _subtitle(chat),
+       accent: AppColors.porchTerracottaOf(context),
+       initiallyExpanded: widget.initiallyExpanded,
+@@ -147,7 +149,7 @@ class CharacterStateGroupState extends State<CharacterStateGroup> {
+           IconButton(
+             visualDensity: VisualDensity.compact,
+             iconSize: 15,
+-            tooltip: 'Simulation settings',
++            tooltip: '模拟设置',
+             icon: const Icon(Icons.tune),
+             color: _showSettings
+                 ? AppColors.porchTerracottaOf(context)
+@@ -165,8 +167,7 @@ class CharacterStateGroupState extends State<CharacterStateGroup> {
+         children: [
+           if (!realismOn && !widget.isGroup)
+             Text(
+-              'Realism Mode is off — flip the switch to track bond, trust, '
+-              'mood, and scene time for this character.',
++              '拟真模式已关闭——打开开关即可追踪该角色的关系、信任、心情和场景时间。',
+               style: TextStyle(
+                 fontSize: 11,
+                 color: AppColors.textTertiary(context),
+diff --git a/lib/ui/chat_components/sidebar/character_state/character_state_settings.dart b/lib/ui/chat_components/sidebar/character_state/character_state_settings.dart
+index ad52231..ddef4bd 100644
+--- a/lib/ui/chat_components/sidebar/character_state/character_state_settings.dart
++++ b/lib/ui/chat_components/sidebar/character_state/character_state_settings.dart
+@@ -71,12 +71,9 @@ class CharacterStateSettings extends StatelessWidget {
+           _toggleRow(
+             context,
+             icon: Icons.battery_std,
+-            label: 'Needs Simulation',
++            label: '需求模拟',
+             caption:
+-                'Tracks satisfaction levels (hunger, bladder, energy, social, '
+-                'fun, hygiene, comfort). Higher = more sated / less urgent '
+-                '(100 = full, 0 = critical). Affects prompts & behavior when '
+-                'low.',
++                '追踪饥饿、膀胱、精力、社交、娱乐、卫生和舒适度。数值越高代表需求越满足、越不紧急（100 = 完全满足，0 = 危急）。需求较低时会影响提示词和角色行为。',
+             value: chat.needsSimEnabled,
+             accent: AppColors.porchTerracottaOf(context),
+             onChanged: chat.isGenerating
+@@ -107,11 +104,10 @@ class CharacterStateSettings extends StatelessWidget {
+           _toggleRow(
+             context,
+             icon: Icons.local_fire_department,
+-            label: 'NSFW Enhancements',
++            label: '成人内容增强',
+             caption:
+-                'Tracks arousal (the Lust bar above) with post-climax '
+-                'refractory cooldowns.'
+-                '${isGroup ? ' Applies to every group member.' : ''}',
++                '追踪性唤起程度（上方的欲望条），并在高潮后应用恢复冷却时间。'
++                '${isGroup ? ' 对群聊中的每位成员生效。' : ''}',
+             value: nsfwOn,
+             accent: AppColors.lustAccentOf(context),
+             onChanged: chat.isGenerating
+diff --git a/lib/ui/chat_components/sidebar/character_state/pockets_row.dart b/lib/ui/chat_components/sidebar/character_state/pockets_row.dart
+index d3370e3..b44880c 100644
+--- a/lib/ui/chat_components/sidebar/character_state/pockets_row.dart
++++ b/lib/ui/chat_components/sidebar/character_state/pockets_row.dart
+@@ -83,7 +83,7 @@ class PocketsRow extends StatelessWidget {
+           mainAxisSize: MainAxisSize.min,
+           children: [
+             Text(
+-              'Pockets & Wardrobe',
++              '随身物品与衣橱',
+               style: TextStyle(
+                 fontSize: 11,
+                 color: AppColors.textSecondary(context),
+@@ -113,24 +113,24 @@ class PocketsRow extends StatelessWidget {
+         if (pockets.worn.isNotEmpty || onAdd != null)
+           _group(
+             context,
+-            'Wearing',
++            '穿着',
+             pockets.worn,
+             section: PocketSection.worn,
+             emptyAction: pockets.worn.isEmpty && onAdd != null
+-                ? 'Put clothes on'
++                ? '穿上衣服'
+                 : null,
+           ),
+         if (pockets.carrying.isNotEmpty)
+           _group(
+             context,
+-            'Carrying',
++            '携带物品',
+             pockets.carrying,
+             section: PocketSection.carrying,
+           ),
+         if (aside.isNotEmpty)
+           _group(
+             context,
+-            'Set aside',
++            '暂时放置',
+             aside,
+             section: PocketSection.setAside,
+             dimmed: true,
+diff --git a/lib/ui/chat_components/sidebar/character_state/presence_word.dart b/lib/ui/chat_components/sidebar/character_state/presence_word.dart
+index 0c46806..c96c61c 100644
+--- a/lib/ui/chat_components/sidebar/character_state/presence_word.dart
++++ b/lib/ui/chat_components/sidebar/character_state/presence_word.dart
+@@ -30,9 +30,9 @@ class PresenceWord extends StatelessWidget {
+   });
+ 
+   String get label => switch (where) {
+-    PresenceWhere.withYou => 'With you',
+-    PresenceWhere.away => 'Away',
+-    PresenceWhere.atWork => 'At work',
++    PresenceWhere.withYou => '在你身边',
++    PresenceWhere.away => '暂时离开',
++    PresenceWhere.atWork => '正在工作',
+   };
+ 
+   /// Compact cards dim when they are not in this scene.
+@@ -61,7 +61,7 @@ class PresenceWord extends StatelessWidget {
+       child: toggle == null
+           ? word
+           : Tooltip(
+-              message: onScene ? 'Mark as away' : 'Bring back',
++              message: onScene ? '标记为暂时离开' : '让角色回来',
+               child: _ToggleWord(
+                 word: word,
+                 icon: onScene ? Icons.logout : Icons.login,
+diff --git a/lib/ui/chat_components/sidebar/character_state/time_strip.dart b/lib/ui/chat_components/sidebar/character_state/time_strip.dart
+index 024e03d..3d89132 100644
+--- a/lib/ui/chat_components/sidebar/character_state/time_strip.dart
++++ b/lib/ui/chat_components/sidebar/character_state/time_strip.dart
+@@ -25,6 +25,7 @@ import 'package:front_porch_ai/ui/dialogs/story_calendar_dialog.dart';
+ import 'package:front_porch_ai/ui/theme/app_colors.dart';
+ 
+ import 'weather_chip.dart';
++import '../zh_cn_display_labels.dart';
+ 
+ /// THE one scene-time widget: time-of-day emoji + label + story clock,
+ /// tappable date (opens the Story Calendar), manual nudge chevrons, and the
+@@ -84,14 +85,14 @@ class TimeStrip extends StatelessWidget {
+                     if (canNudge)
+                       _nudgeChevron(
+                         context: context,
+-                        tooltip: 'Back 30 minutes',
++                        tooltip: '时间倒退 30 分钟',
+                         icon: Icons.chevron_left,
+                         delta: -1,
+                       ),
+                     if (canNudge)
+                       _nudgeChevron(
+                         context: context,
+-                        tooltip: 'Forward 30 minutes',
++                        tooltip: '时间前进 30 分钟',
+                         icon: Icons.chevron_right,
+                         delta: 1,
+                       ),
+@@ -101,7 +102,7 @@ class TimeStrip extends StatelessWidget {
+                   onTap: () =>
+                       StoryCalendarDialog.show(context, chatService: chat),
+                   child: Text(
+-                    '${chat.timeService.displayShortDate} · Day $day',
++                    '${zhCnShortDate(chat.timeService.displayShortDate)} · 第 $day 天',
+                     style: TextStyle(
+                       fontSize: 11,
+                       fontWeight: FontWeight.w600,
+@@ -211,17 +212,17 @@ class TimeStrip extends StatelessWidget {
+   static String timeLabel(String time) {
+     switch (time) {
+       case 'dawn':
+-        return 'Dawn';
++        return '黎明';
+       case 'morning':
+-        return 'Morning';
++        return '早晨';
+       case 'late_morning':
+-        return 'Late Morning';
++        return '上午';
+       case 'afternoon':
+-        return 'Afternoon';
++        return '下午';
+       case 'evening':
+-        return 'Evening';
++        return '傍晚';
+       case 'night':
+-        return 'Night';
++        return '夜晚';
+       default:
+         return time;
+     }
+@@ -230,17 +231,17 @@ class TimeStrip extends StatelessWidget {
+   static String _timeDotLabel(String period) {
+     switch (period) {
+       case 'dawn':
+-        return 'D';
++        return '黎';
+       case 'morning':
+-        return 'M';
++        return '早';
+       case 'late_morning':
+-        return 'LM';
++        return '上';
+       case 'afternoon':
+-        return 'A';
++        return '午';
+       case 'evening':
+-        return 'E';
++        return '晚';
+       case 'night':
+-        return 'N';
++        return '夜';
+       default:
+         return '';
+     }
+diff --git a/lib/ui/chat_components/sidebar/chat_main_settings.dart b/lib/ui/chat_components/sidebar/chat_main_settings.dart
+index adaa7c6..7f4b603 100644
+--- a/lib/ui/chat_components/sidebar/chat_main_settings.dart
++++ b/lib/ui/chat_components/sidebar/chat_main_settings.dart
+@@ -28,7 +28,7 @@ class ChatMainSettingsButton extends StatelessWidget {
+     super.key,
+     required this.onSelected,
+     required this.items,
+-    this.label = 'Main Settings',
++    this.label = '主要设置',
+   });
+ 
+   final ValueChanged<String> onSelected;
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/journal_memory_group.dart b/lib/ui/chat_components/sidebar/journal_memory/journal_memory_group.dart
+index 31bab62..b2f95b4 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/journal_memory_group.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/journal_memory_group.dart
+@@ -95,7 +95,7 @@ class JournalMemoryGroupState extends State<JournalMemoryGroup> {
+       key: _accordionKey,
+       id: 'journal_memory',
+       emoji: '📖',
+-      title: 'Journal & Memory',
++      title: '日志与记忆',
+       subtitle: subtitle,
+       accent: AppColors.journalAccentOf(context),
+       initiallyExpanded: widget.initiallyExpanded,
+diff --git a/lib/ui/chat_components/sidebar/sidebar_body.dart b/lib/ui/chat_components/sidebar/sidebar_body.dart
+index 34e1d2e..6038723 100644
+--- a/lib/ui/chat_components/sidebar/sidebar_body.dart
++++ b/lib/ui/chat_components/sidebar/sidebar_body.dart
+@@ -245,7 +245,7 @@ class _SidebarBodyState extends State<SidebarBody> {
+                 headerKey: _objectivesHeaderKey,
+                 id: 'objectives',
+                 emoji: '🎯',
+-                title: 'Objectives',
++                title: '目标',
+                 subtitle: () {
+                   final goal = chat.primaryObjective?.objective.trim() ?? '';
+                   return goal.isNotEmpty ? goal : 'auto · expand to steer';
+diff --git a/lib/ui/chat_components/sidebar/story_tools/objective_panel.dart b/lib/ui/chat_components/sidebar/story_tools/objective_panel.dart
+index 20dbc14..8c402b5 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/objective_panel.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/objective_panel.dart
+@@ -68,7 +68,7 @@ class _ObjectivePanelState extends State<ObjectivePanel> {
+             // Header
+             SidebarSubHeader(
+               icon: Icons.flag,
+-              label: 'Objectives',
++              label: '目标',
+               accent: AppColors.porchHoneyOf(context),
+               trailing: pObj != null
+                   ? Text(
+diff --git a/lib/ui/chat_components/zh_cn_display_labels.dart b/lib/ui/chat_components/zh_cn_display_labels.dart
+new file mode 100644
+index 0000000..c1ceaea
+--- /dev/null
++++ b/lib/ui/chat_components/zh_cn_display_labels.dart
+@@ -0,0 +1,150 @@
++/// Simplified Chinese labels for the chat UI. These helpers are presentation-only:
++/// stored values and model-facing terminology remain unchanged.
++String zhCnNeedLabel(String value) {
++  switch (value.toLowerCase()) {
++    case 'hunger':
++      return '饥饿';
++    case 'bladder':
++      return '膀胱';
++    case 'energy':
++      return '精力';
++    case 'social':
++      return '社交';
++    case 'fun':
++      return '娱乐';
++    case 'hygiene':
++      return '卫生';
++    case 'comfort':
++      return '舒适';
++    default:
++      return value;
++  }
++}
++
++String zhCnRealismTierLabel(String value) {
++  const labels = <String, String>{
++    'Soulmate / Devoted': '灵魂伴侣／忠贞不渝',
++    'Life Partner': '人生伴侣',
++    'Devoted': '忠贞不渝',
++    'Deeply Attached': '深深依恋',
++    'Inseparable': '形影不离',
++    'Intimate': '亲密',
++    'Close': '亲近',
++    'Amiable': '和善',
++    'Friendly': '友好',
++    'Warm': '热情',
++    'Receptive': '愿意接纳',
++    'Cordial': '友善有礼',
++    'Neutral': '中立',
++    'Reserved': '有所保留',
++    'Cool': '冷淡',
++    'Unimpressed': '不为所动',
++    'Annoyed': '恼怒',
++    'Disliked': '反感',
++    'Hostile': '敌对',
++    'Adversarial': '针锋相对',
++    'Disdain': '轻蔑',
++    'Contempt': '蔑视',
++    'Vitriolic': '刻薄敌意',
++    'Disappointed': '失望',
++    'Fractured': '关系破裂',
++    'Broken Trust': '信任破裂',
++    'Deep Resentment': '深切怨恨',
++    'Blind Trust': '盲目信任',
++    'Implicit Trust': '完全信赖',
++    'Deeply Trusting': '深度信任',
++    'Confident Trust': '充分信任',
++    'Trusting': '信任',
++    'Leaning Positive': '开始信任',
++    'Learning Positive': '开始信任',
++    'Warming': '逐渐亲近',
++    'Cautious': '谨慎',
++    'Guarded': '戒备',
++    'Skeptical': '怀疑',
++    'Wary': '警惕',
++    'Suspicious': '猜疑',
++    'Distrustful': '不信任',
++    'Paranoid': '多疑',
++    'Unknown': '未知',
++  };
++  return labels[value] ?? value;
++}
++
++String zhCnMoodLabel(String value) {
++  const labels = <String, String>{
++    'contemplative': '沉思',
++    'curious': '好奇',
++    'happy': '开心',
++    'joyful': '愉悦',
++    'sad': '悲伤',
++    'angry': '愤怒',
++    'anxious': '焦虑',
++    'nervous': '紧张',
++    'affectionate': '充满爱意',
++    'amused': '觉得有趣',
++    'confident': '自信',
++    'confused': '困惑',
++    'embarrassed': '尴尬',
++    'excited': '兴奋',
++    'frustrated': '沮丧',
++    'hopeful': '抱有希望',
++    'lonely': '孤独',
++    'melancholy': '忧郁',
++    'peaceful': '平静',
++    'playful': '俏皮',
++    'relieved': '如释重负',
++    'romantic': '浪漫',
++    'shy': '害羞',
++    'surprised': '惊讶',
++    'tender': '温柔',
++    'worried': '担忧',
++    'neutral': '平静',
++  };
++  return labels[value.trim().toLowerCase()] ?? value;
++}
++
++String zhCnAmbitionStage(String value) {
++  const labels = <String, String>{
++    'achieved': '已达成',
++    'nearly there': '即将达成',
++    'halfway there': '已完成一半',
++    'gaining ground': '逐步推进',
++    'just beginning': '刚刚起步',
++  };
++  return labels[value] ?? value;
++}
++
++String zhCnShortDate(String value) {
++  const weekdays = <String, String>{
++    'Mon': '周一',
++    'Tue': '周二',
++    'Wed': '周三',
++    'Thu': '周四',
++    'Fri': '周五',
++    'Sat': '周六',
++    'Sun': '周日',
++  };
++  const months = <String, String>{
++    'Jan': '1月',
++    'Feb': '2月',
++    'Mar': '3月',
++    'Apr': '4月',
++    'May': '5月',
++    'Jun': '6月',
++    'Jul': '7月',
++    'Aug': '8月',
++    'Sep': '9月',
++    'Oct': '10月',
++    'Nov': '11月',
++    'Dec': '12月',
++  };
++  final match = RegExp(
++    r'^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+([A-Z][a-z]{2})\s+(\d{1,2})$',
++  ).firstMatch(value.trim());
++  if (match == null) return value;
++  final weekday = weekdays[match.group(1)]!;
++  final month = months[match.group(2)];
++  final day = match.group(3);
++  if (month == null) return value;
++  return '$month$day日 $weekday';
++}
+diff --git a/lib/ui/pages/chat_page.sidebar_widgets.dart b/lib/ui/pages/chat_page.sidebar_widgets.dart
+index 3a3b10a..8c40d31 100644
+--- a/lib/ui/pages/chat_page.sidebar_widgets.dart
++++ b/lib/ui/pages/chat_page.sidebar_widgets.dart
+@@ -420,14 +420,14 @@ class ChatSidebarMainSettings extends StatelessWidget {
+           value: 'expressions',
+           child: SettingsMenuItem(
+             icon: Icons.photo_library_outlined,
+-            label: 'Avatar Gallery',
++            label: '头像库',
+           ),
+         ),
+         PopupMenuItem(
+           value: 'ui',
+           child: SettingsMenuItem(
+             icon: Icons.tune_outlined,
+-            label: 'UI Settings',
++            label: '界面设置',
+           ),
+         ),
+         PopupMenuDivider(height: 1),
+@@ -435,21 +435,21 @@ class ChatSidebarMainSettings extends StatelessWidget {
+           value: 'chat',
+           child: SettingsMenuItem(
+             icon: Icons.chat_bubble_outline,
+-            label: 'Chat Settings',
++            label: '聊天设置',
+           ),
+         ),
+         PopupMenuItem(
+           value: 'model',
+           child: SettingsMenuItem(
+             icon: Icons.memory_outlined,
+-            label: 'Model Settings',
++            label: '模型设置',
+           ),
+         ),
+         PopupMenuItem(
+           value: 'tts',
+           child: SettingsMenuItem(
+             icon: Icons.volume_up_outlined,
+-            label: 'TTS Settings',
++            label: '语音合成设置',
+           ),
+         ),
+       ],
+diff --git a/lib/ui/widgets/group_member_card/group_member_card_look.dart b/lib/ui/widgets/group_member_card/group_member_card_look.dart
+index f361e6d..a16b75d 100644
+--- a/lib/ui/widgets/group_member_card/group_member_card_look.dart
++++ b/lib/ui/widgets/group_member_card/group_member_card_look.dart
+@@ -28,6 +28,7 @@ import 'package:front_porch_ai/ui/theme/group_member_card_palette.dart';
+ import 'package:front_porch_ai/ui/theme/tier_colors.dart';
+ import 'package:front_porch_ai/ui/widgets/widgets.dart';
+ import 'package:front_porch_ai/ui/chat_components/sidebar/character_state/character_state.dart';
++import 'package:front_porch_ai/ui/chat_components/zh_cn_display_labels.dart';
+ 
+ /// Per-build snapshot of one group member's state, and the expanded
+ /// (1:1-parity) and compact children built from it. NeedsGrid stays shared.
+@@ -108,7 +109,7 @@ class GroupMemberCardLook {
+               ),
+               const SizedBox(width: 6),
+               Text(
+-                'Feelings toward you held',
++                '对你的情感暂时保持不变',
+                 style: TextStyle(
+                   fontSize: 11,
+                   color: GroupMemberCardPalette.directorPaused,
+@@ -122,10 +123,10 @@ class GroupMemberCardLook {
+ 
+       // Short-Term Bond (exact 1:1 treatment)
+       RealismProgressRow(
+-        label: 'Short-Term Bond',
++        label: '短期羁绊',
+         value: affection,
+         tier: bondTier,
+-        tierName: bondName,
++        tierName: zhCnRealismTierLabel(bondName),
+         color: bondColor,
+         // Fill toward the NEXT tier, then drain and refill — the
+         // same bar the 1:1 sidebar draws. The group card used the
+@@ -139,10 +140,10 @@ class GroupMemberCardLook {
+       // Long-Term Bond. This row was fed `affection` — the SHORT
+       // term score — so the card drew the same number twice.
+       RealismProgressRow(
+-        label: 'Long-Term Bond',
++        label: '长期羁绊',
+         value: longTerm,
+         tier: longTermTier,
+-        tierName: longTermName,
++        tierName: zhCnRealismTierLabel(longTermName),
+         progress: RelationshipService.bondScalePercent(longTerm),
+         color: TierColors.tierColor(context, longTermTier),
+         icon: longTerm < 0 ? Icons.heart_broken_sharp : Icons.monitor_heart,
+@@ -151,11 +152,11 @@ class GroupMemberCardLook {
+ 
+       // Trust
+       RealismProgressRow(
+-        label: 'Trust',
++        label: '信任',
+         value: trust,
+         progress: RelationshipService.trustScalePercent(trust),
+         tier: trustTier,
+-        tierName: trustName,
++        tierName: zhCnRealismTierLabel(trustName),
+         color: trustColor,
+         icon: trust < 0 ? Icons.vpn_key_off : Icons.vpn_key,
+         maxValue: 100,
+@@ -165,10 +166,10 @@ class GroupMemberCardLook {
+       // Lust (the merged arousal bar — same treatment as 1:1)
+       if (lustOn) ...[
+         RealismProgressRow(
+-          label: 'Lust',
++          label: '欲望',
+           value: arousal,
+           tier: arousalTier,
+-          tierName: arousalName,
++          tierName: zhCnRealismTierLabel(arousalName),
+           color: arousalColor,
+           icon: arousalTier >= 6
+               ? Icons.local_fire_department
+@@ -266,7 +267,7 @@ class GroupMemberCardLook {
+             const Icon(Icons.flag, size: 13, color: AppColors.taskAccent),
+             const SizedBox(width: 4),
+             Text(
+-              '${memberObjectives.where((o) => o.active).length} active objectives',
++              '${memberObjectives.where((o) => o.active).length} 个进行中的目标',
+               style: const TextStyle(fontSize: 11, color: AppColors.taskAccent),
+             ),
+             const Spacer(),
+@@ -275,7 +276,7 @@ class GroupMemberCardLook {
+               style: TextButton.styleFrom(
+                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+               ),
+-              child: const Text('Manage', style: TextStyle(fontSize: 11)),
++              child: const Text('管理', style: TextStyle(fontSize: 11)),
+             ),
+           ],
+         ),
+diff --git a/lib/ui/widgets/needs_bar.dart b/lib/ui/widgets/needs_bar.dart
+index 0e40867..26b4d3a 100644
+--- a/lib/ui/widgets/needs_bar.dart
++++ b/lib/ui/widgets/needs_bar.dart
+@@ -19,6 +19,7 @@
+ import 'package:flutter/material.dart';
+ import 'package:front_porch_ai/services/services.dart';
+ import 'package:front_porch_ai/ui/theme/theme.dart';
++import 'package:front_porch_ai/ui/chat_components/zh_cn_display_labels.dart';
+ 
+ /// Single-need progress bar with icon, label, band coloring, and optional reason tooltip.
+ ///
+@@ -141,7 +142,7 @@ class NeedsBar extends StatelessWidget {
+                   const SizedBox(width: 4),
+                   Expanded(
+                     child: Text(
+-                      need[0].toUpperCase() + need.substring(1),
++                      zhCnNeedLabel(need),
+                       style: TextStyle(
+                         fontSize: 11,
+                         color: AppColors.textSecondary(context),
+diff --git a/lib/ui/widgets/realism_progress_row.dart b/lib/ui/widgets/realism_progress_row.dart
+index aadfca1..1e07f41 100644
+--- a/lib/ui/widgets/realism_progress_row.dart
++++ b/lib/ui/widgets/realism_progress_row.dart
+@@ -83,10 +83,10 @@ class RealismProgressRow extends StatelessWidget {
+           message:
+               tooltip ??
+               (label.toLowerCase().contains('bond')
+-                  ? 'Bond: Current relationship strength.'
++                  ? '羁绊：当前关系的亲密程度。'
+                   : (label.toLowerCase().contains('trust')
+-                        ? 'Trust: How much the character believes and relies on you.'
+-                        : 'Arousal: Physical/sexual tension level.')),
++                        ? '信任：角色对你的信赖程度。'
++                        : '唤起程度：身体或性张力的水平。')),
+           preferBelow: false,
+           child: Row(
+             children: [
