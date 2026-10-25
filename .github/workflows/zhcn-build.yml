@@ -27,6 +27,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           git apply zhCN-extra.patch
           if ($LASTEXITCODE -ne 0) { exit 1 }
+          git apply --check zhCN-round3.patch
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          git apply zhCN-round3.patch
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
