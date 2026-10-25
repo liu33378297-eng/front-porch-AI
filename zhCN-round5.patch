@@ -1,0 +1,3489 @@
+diff --git a/lib/ui/character_creator/creator_options.dart b/lib/ui/character_creator/creator_options.dart
+index d1194fe..4c90bd0 100644
+--- a/lib/ui/character_creator/creator_options.dart
++++ b/lib/ui/character_creator/creator_options.dart
+@@ -18,6 +18,75 @@
+ 
+ import 'package:front_porch_ai/services/chargen/chargen.dart';
+ 
++
++/// Chinese labels for built-in creator choices. The original English values
++/// are retained in the form and prompt; only their visible labels are localized.
++String creatorOptionDisplayLabel(String value) {
++  const labels = <String, String>{
++  'Tsundere': '傲娇（Tsundere）',
++  'Kuudere': '冷娇（Kuudere）',
++  'Yandere': '病娇（Yandere）',
++  'Femme Fatale': '蛇蝎美人',
++  'Dark Lord': '黑暗领主',
++  'Mentor': '导师',
++  'Rival': '竞争对手',
++  'Best Friend': '挚友',
++  'The Healer': '治愈者',
++  'Rogue': '游侠',
++  'Chosen One': '天选之人',
++  'The Ex': '前任',
++  'Dandere': '沉默害羞型（Dandere）',
++  'Genki': '元气型（Genki）',
++  'Ojou-sama': '大小姐',
++  'Petite': '娇小', 'Slim': '纤瘦', 'Athletic': '健美',
++  'Average': '匀称', 'Curvy': '曲线丰满', 'Muscular': '肌肉发达',
++  'Plus-size': '大码身材', 'Tall & Lanky': '高挑纤长',
++  'Human': '人类', 'Elven': '精灵', 'Elf': '精灵', 'Dark Elf': '暗精灵',
++  'Beastkin': '兽人', 'Demon': '恶魔', 'Angel': '天使', 'Vampire': '吸血鬼',
++  'Lycan': '狼人', 'Dragon-blood': '龙裔', 'Fae': '妖精', 'Merfolk': '人鱼',
++  'Spirit': '灵体', 'Undead': '亡灵', 'Elemental': '元素生物', 'Android': '仿生人',
++  'Alien': '外星人', 'Monster': '怪物',
++  'Bald/Shaved': '光头 / 剃发', 'Pixie/Short': '精灵短发', 'Medium': '中等',
++  'Long': '长发', 'Very Long': '超长发', 'Short': '短发', 'Flowing': '飘逸',
++  'Straight': '直发', 'Wavy': '波浪卷', 'Curly': '卷发', 'Braided': '编发',
++  'Ponytail': '马尾', 'Messy/Wild': '凌乱蓬松', 'Twin Tails': '双马尾', 'Wild': '狂野',
++  'Pale': '苍白', 'Fair': '白皙', 'Olive': '橄榄色', 'Tan': '小麦色', 'Brown': '棕色',
++  'Dark': '深色', 'Fantasy': '幻想色', 'Glasses': '眼镜', 'Freckles': '雀斑',
++  'Scars': '伤疤', 'Tattoos': '纹身', 'Piercings': '穿孔饰品', 'Heterochromia': '异色瞳',
++  'Fangs': '尖牙', 'Horns': '角', 'Wings': '翅膀', 'Tail': '尾巴', 'Elf Ears': '精灵耳', 'Cat Ears': '猫耳',
++  'Soft': '柔和', 'Toned': '紧实', 'Defined': '线条分明', 'Ripped': '肌肉明显',
++  'Thick': '粗壮', 'Thunder': '雷霆大腿', 'Narrow': '窄', 'Wide': '宽', 'Extra Wide': '很宽',
++  'Broad': '宽阔', 'V-Shape': 'V 字型', 'Wasp': '蜂腰', 'Flat': '平坦', 'Small': '小',
++  'Large': '大', 'Huge': '非常大', 'Innocent': '天真', 'Virgin': '处子', 'Curious': '好奇',
++  'Experienced': '经验丰富', 'Insatiable': '欲求不满', 'Submissive': '被动 / 顺从',
++  'Switch': '双向', 'Dominant': '主导', 'Praise': '赞美', 'Degradation': '贬低羞辱',
++  'Biting/Marking': '咬痕 / 标记', 'Bondage': '束缚', 'Exhibitionism': '暴露癖',
++  'Voyeurism': '窥视癖', 'Facesitting': '坐脸', 'Smothering': '窒息感玩法',
++  'Breath Play': '呼吸控制', 'Breeding': '繁育主题', 'Jealousy/Possession': '嫉妒 / 占有欲',
++  'Revealing': '暴露风格', 'Lingerie': '内衣', 'Uniform': '制服', 'Leather': '皮革', 'Barely There': '极少布料',
++  'Orphan': '孤儿', 'Noble Birth': '贵族出身', 'Nobility': '贵族', 'Self-Made': '白手起家',
++  'Self-made': '白手起家', 'Exile/Outcast': '流亡者 / 被排斥者', 'Military/Warrior': '军人 / 战士',
++  'Military': '军人', 'Scholar/Academic': '学者 / 学术界', 'Criminal Past': '犯罪过往',
++  'Criminal past': '犯罪过往', 'Mysterious/Unknown': '神秘 / 未知', 'Mysterious origins': '神秘身世',
++  'Supernatural Origin': '超自然起源', 'Common Folk': '平民出身', 'Small-town': '小镇出身', 'Royalty': '王室成员',
++  'Tragic': '悲剧', 'Heroic': '英雄主义', 'Comedic': '喜剧', 'Dark/Gritty': '黑暗 / 粗粝',
++  'Wholesome': '温馨治愈', 'Mysterious': '神秘', 'Redemptive': '救赎', 'Ancient': '远古',
++  'Medieval': '中世纪', 'Victorian': '维多利亚时代', 'Modern': '现代', 'Futuristic': '未来',
++  'Timeless/Fantasy': '超越时代 / 奇幻', 'Post-apocalyptic': '后末日', 'Urban fantasy': '都市奇幻',
++  'Sarcastic': '讽刺毒舌', 'Gentle': '温柔', 'Intense': '强烈', 'Playful': '爱玩俏皮',
++  'Cold': '冷淡', 'Chaotic': '混乱不羁', 'Nurturing': '善于照顾人', 'Formal': '正式',
++  'Casual': '随意', 'Poetic': '诗意', 'Blunt': '直率', 'Soft-spoken': '轻声细语', 'Loud': '大嗓门',
++  'Flirty': '爱调情', 'Strangers': '陌生人', 'Childhood friends': '青梅竹马', 'Rivals': '宿敌',
++  'Roommates': '室友', 'Love interest': '恋爱对象', 'Mentor/Student': '导师 / 学生', 'Exes': '前任',
++  'Online friends': '网友', 'Bittersweet': '苦乐参半',
++  'Anime': '动漫风', 'Realistic': '写实风', 'Painterly': '绘画风',
++  'Pixel Art': '像素风', 'Comic Book': '漫画风', 'Watercolor': '水彩风',
++  'Fantasy Illustration': '奇幻插画风', 'Simple': '简洁', 'Rich': '丰富',
++  'Full Detail': '完整细节', 'Standard': '标准', 'Detailed': '详细',
++};
++  return labels[value] ?? value;
++}
++
+ /// Static option data for the AI character creator's chip rows, presets, and
+ /// placeholders. Lifted verbatim from the pre-refactor god file so the
+ /// Automated / Guided / Quick steps offer the exact same choices as before.
+diff --git a/lib/ui/character_creator/steps/automated_config_step.dart b/lib/ui/character_creator/steps/automated_config_step.dart
+index 1f6c4bb..01c523d 100644
+--- a/lib/ui/character_creator/steps/automated_config_step.dart
++++ b/lib/ui/character_creator/steps/automated_config_step.dart
+@@ -54,18 +54,18 @@ class AutomatedConfigStep extends StatelessWidget {
+             children: [
+               CreatorConfigHeader(
+                 state: state,
+-                title: 'Bring Your Character to Life',
++                title: '让你的角色鲜活起来',
+                 intro:
+-                    'Give us a name and a concept — the AI will do the rest. '
+-                    'It will generate a complete character card with personality, '
+-                    'backstory, dialogue examples, and a custom avatar.',
++                    '填写名称和核心构想，剩下的交给 AI。'
++                    'AI 将生成完整的角色卡，包含性格、'
++                    '背景故事、对话示例和专属头像。',
+               ),
+               const SizedBox(height: 16),
+ 
+               NsfwToggle(
+                 value: state.nsfwEnabled,
+                 accentColor: nsfw,
+-                subtitle: 'Unlock spicy appearance & relationship options',
++                subtitle: '解锁更丰富的外观与关系选项',
+                 onChanged: (val) {
+                   state.nsfwEnabled = val;
+                   _save();
+@@ -78,8 +78,8 @@ class AutomatedConfigStep extends StatelessWidget {
+ 
+               // ── The Basics ──
+               CreatorSectionCard(
+-                title: 'The Basics',
+-                subtitle: 'Name, age, gender, and personality keywords.',
++                title: '基本信息',
++                subtitle: '姓名、年龄、性别和性格关键词。',
+                 icon: Icons.badge_outlined,
+                 accentColor: amber,
+                 initiallyExpanded: true,
+@@ -98,7 +98,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                         ),
+                       );
+                     },
+-                    tooltip: 'Generate a random character name',
++                    tooltip: '随机生成角色名称',
+                     onChanged: (_) => _saveSoon(),
+                   ),
+                   const SizedBox(height: 16),
+@@ -108,12 +108,12 @@ class AutomatedConfigStep extends StatelessWidget {
+                     onChanged: _saveSoon,
+                   ),
+                   const SizedBox(height: 16),
+-                  const CreatorInputLabel('Personality Keywords'),
++                  const CreatorInputLabel('性格关键词'),
+                   const SizedBox(height: 8),
+                   CreatorHintField(
+                     state: state,
+                     controller: state.keywordsController,
+-                    hint: 'e.g. witty, secretive, bookish, brave, loyal...',
++                    hint: '例如：机智、神秘、博学、勇敢、忠诚…',
+                   ),
+                 ],
+               ),
+@@ -123,8 +123,8 @@ class AutomatedConfigStep extends StatelessWidget {
+ 
+               // ── Relationship ──
+               CreatorSectionCard(
+-                title: 'Relationship to {{user}}',
+-                subtitle: 'How do they know {{user}}?',
++                title: '与你（{{user}}）的关系',
++                subtitle: '角色与你是什么关系？',
+                 icon: Icons.favorite_border,
+                 accentColor: amber,
+                 initiallyExpanded: true,
+@@ -144,12 +144,12 @@ class AutomatedConfigStep extends StatelessWidget {
+               // ── Description ──
+               CreatorSectionCard(
+                 title: '描述',
+-                subtitle: 'Detail level + the AI-generated description.',
++                subtitle: '描述详细程度与 AI 生成的角色描述。',
+                 icon: Icons.auto_fix_high,
+                 accentColor: amber,
+                 initiallyExpanded: true,
+                 children: [
+-                  const CreatorInputLabel('Description Detail'),
++                  const CreatorInputLabel('描述详细程度'),
+                   const SizedBox(height: 4),
+                   DescriptionDetailChipRow(
+                     options: CreatorOptions.generationDetailOptions.keys
+@@ -157,8 +157,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                     selectedDetail: state.generationDetail,
+                     accentColor: amber,
+                     subtitle:
+-                        'Controls how detailed the character description '
+-                        'will be',
++                        '控制角色描述的详细程度。',
+                     onChanged: (label) {
+                       state.generationDetail = label;
+                       _save();
+@@ -174,18 +173,17 @@ class AutomatedConfigStep extends StatelessWidget {
+ 
+               // ── Greetings & Output ──
+               CreatorSectionCard(
+-                title: 'Greetings & Output',
++                title: '开场白与输出',
+                 subtitle:
+-                    'Persona, greeting tones, message length, and avatar art.',
++                    '用户人设、开场白语气、消息长度和头像画风。',
+                 icon: Icons.tune,
+                 accentColor: amber,
+                 initiallyExpanded: true,
+                 children: [
+-                  const CreatorInputLabel('{{user}} Persona for Greetings'),
++                  const CreatorInputLabel('用于生成开场白的用户人设'),
+                   const SizedBox(height: 4),
+                   Text(
+-                    'Select a persona to tailor greetings, or "None" for '
+-                    'public cards.',
++                    '选择一个用户人设来定制开场白；公开角色卡请选择“无”。',
+                     style: TextStyle(
+                       color: StudioColors.mutedOf(context),
+                       fontSize: 11,
+@@ -200,7 +198,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                     },
+                   ),
+                   const SizedBox(height: 24),
+-                  const CreatorInputLabel('Greeting Tones'),
++                  const CreatorInputLabel('开场白语气'),
+                   const SizedBox(height: 4),
+                   GreetingToneSelector(
+                     selectedTones: state.selectedTones.toList(),
+@@ -208,11 +206,11 @@ class AutomatedConfigStep extends StatelessWidget {
+                     nsfwEnabled: state.nsfwEnabled,
+                     accentColor: amber,
+                     subtitle: state.altGreetingCount == 0
+-                        ? 'Tone for the first message.'
+-                        : 'Select up to ${state.altGreetingCount + 1} — '
+-                              'one per greeting (first message + '
++                        ? '首条消息的语气。'
++                        : '最多选择 ${state.altGreetingCount + 1} 种语气——'
++                              '每条开场白对应一种语气（首条消息 + '
+                               '${state.altGreetingCount} '
+-                              'alternate${state.altGreetingCount == 1 ? '' : 's'}).',
++                              '条备用开场白）。',
+                     onChanged: (tones) {
+                       state.selectedTones = tones.toSet();
+                       _save();
+@@ -226,7 +224,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+-                            const CreatorInputLabel('First Message Length'),
++                            const CreatorInputLabel('首条消息长度'),
+                             const SizedBox(height: 8),
+                             FirstMessageLengthDropdown(
+                               value: state.greetingLength,
+@@ -245,7 +243,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+-                            const CreatorInputLabel('Alternate Greetings'),
++                            const CreatorInputLabel('备用开场白数量'),
+                             const SizedBox(height: 8),
+                             AlternateGreetingsSlider(
+                               value: state.altGreetingCount,
+@@ -267,11 +265,10 @@ class AutomatedConfigStep extends StatelessWidget {
+                     ],
+                   ),
+                   const SizedBox(height: 24),
+-                  const CreatorInputLabel('Greeting voice'),
++                  const CreatorInputLabel('叙述方式'),
+                   const SizedBox(height: 4),
+                   Text(
+-                    'Perspective and tense for the first message, alternates, '
+-                    'and example dialogue.',
++                    '设置首条消息、备用开场白和对话示例的叙述视角与时态。',
+                     style: TextStyle(
+                       color: StudioColors.mutedOf(context),
+                       fontSize: 11,
+@@ -292,7 +289,7 @@ class AutomatedConfigStep extends StatelessWidget {
+                     },
+                   ),
+                   const SizedBox(height: 24),
+-                  const CreatorInputLabel('Avatar Art Style'),
++                  const CreatorInputLabel('头像画风'),
+                   const SizedBox(height: 8),
+                   AvatarArtStyleSelector(
+                     selectedStyle: state.artStyle,
+@@ -310,8 +307,8 @@ class AutomatedConfigStep extends StatelessWidget {
+ 
+               // ── World Lore ──
+               CreatorSectionCard(
+-                title: 'World Lore',
+-                subtitle: 'Optional setting and lore notes for the AI.',
++                title: '世界观设定',
++                subtitle: '可选：补充背景设定和世界观资料，供 AI 参考。',
+                 icon: Icons.menu_book,
+                 accentColor: amber,
+                 initiallyExpanded: true,
+diff --git a/lib/ui/character_creator/steps/greetings_step.dart b/lib/ui/character_creator/steps/greetings_step.dart
+index 9396d1e..bff3847 100644
+--- a/lib/ui/character_creator/steps/greetings_step.dart
++++ b/lib/ui/character_creator/steps/greetings_step.dart
+@@ -47,8 +47,8 @@ class GreetingsStep extends StatelessWidget {
+       return GreetingCard(
+         key: box == null ? const ValueKey('greeting-adding') : ObjectKey(box),
+         index: index,
+-        title: index == 0 ? 'First message' : 'Alternate $index',
+-        subtitle: index == 0 ? 'Opens every new chat' : null,
++        title: index == 0 ? '首条消息' : 'Alternate $index',
++        subtitle: index == 0 ? '每次新聊天都会显示' : null,
+         box: box,
+         steer: box == null ? null : g.steerFor(box),
+         writing: writing,
+diff --git a/lib/ui/character_creator/steps/guided_config_step.dart b/lib/ui/character_creator/steps/guided_config_step.dart
+index 29ee9a9..a8e0e11 100644
+--- a/lib/ui/character_creator/steps/guided_config_step.dart
++++ b/lib/ui/character_creator/steps/guided_config_step.dart
+@@ -84,22 +84,22 @@ class GuidedConfigStep extends StatelessWidget {
+             children: [
+               CreatorConfigHeader(
+                 state: state,
+-                title: 'Guided Character Creator',
++                title: '引导式角色创建器',
+                 intro:
+-                    'Write your vision in your own words. The AI fleshes out the rest.',
++                    '用你自己的话描述构想，剩下的由 AI 帮你完善。',
+               ),
+               const SizedBox(height: 16),
+ 
+               // ── Basic info ──
+               _sectionHeading(
+                 context,
+-                "What's your character like?",
+-                "Don't worry about perfect writing — a few sentences, a scene, bullet points, whatever comes naturally.",
++                '你的角色是什么样的人？',
++                '不必追求完美文笔；几句话、一个场景、几个要点，想到什么就写什么。',
+               ),
+               const SizedBox(height: 16),
+               CharacterNameInput(
+                 controller: state.nameController,
+-                tooltip: 'Generate a random name',
++                tooltip: '随机生成名称',
+                 onRandomize: () {
+                   state.randomizeName(
+                     llmProvider: Provider.of<LLMProvider>(
+@@ -118,7 +118,7 @@ class GuidedConfigStep extends StatelessWidget {
+               AgeGenderRow(
+                 ageController: state.ageController,
+                 genderController: state.sexController,
+-                genderLabel: 'Sex',
++                genderLabel: '性别',
+                 onChanged: _saveSoon,
+               ),
+               const SizedBox(height: 4),
+@@ -126,41 +126,41 @@ class GuidedConfigStep extends StatelessWidget {
+               // ── Appearance ──
+               CreatorSectionCard(
+                 title: '外观',
+-                subtitle: 'Already described their look above? Skip this.',
++                subtitle: '已经在上面描述过外观？可以跳过此项。',
+                 icon: Icons.person_outline,
+                 accentColor: guidedAccent,
+                 children: [
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Build / Body Type',
++                    label: '体型',
+                     controller: state.guidedAppearanceController,
+-                    hint: "Or describe: 'tall and lanky with long legs'",
++                    hint: "也可以描述：身材高挑纤长、双腿修长",
+                     suggestions: CreatorOptions.guidedBuildSuggestions,
+                     maxLines: 2,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Hair',
++                    label: '发型',
+                     controller: state.guidedHairController,
+-                    hint: "e.g. 'waist-length silver hair, usually messy'",
++                    hint: "例如：银色及腰长发，平时有些凌乱",
+                     suggestions: CreatorOptions.guidedHairSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Distinguishing Features',
++                    label: '显著特征',
+                     controller: state.guidedFeaturesController,
+                     hint:
+-                        "e.g. 'a jagged scar across their left eye, pointed elf ears'",
++                        "例如：左眼有一道锯齿状伤疤、尖尖的精灵耳",
+                     suggestions: CreatorOptions.guidedFeatureSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Race / Species',
++                    label: '种族 / 物种',
+                     controller: state.guidedRaceController,
+-                    hint: "e.g. 'half-dragon shapeshifter'",
++                    hint: "例如：半龙血统的变形者",
+                     suggestions: CreatorOptions.guidedRaceSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+@@ -169,8 +169,8 @@ class GuidedConfigStep extends StatelessWidget {
+ 
+               // ── Personality & Vibe ──
+               CreatorSectionCard(
+-                title: 'Personality & Vibe',
+-                subtitle: "What's it like to spend time with them?",
++                title: '性格与气质',
++                subtitle: "与角色相处是什么感觉？",
+                 icon: Icons.psychology,
+                 accentColor: guidedAccent,
+                 children: [
+@@ -179,26 +179,26 @@ class GuidedConfigStep extends StatelessWidget {
+                     label: '性格',
+                     controller: state.guidedPersonalityController,
+                     hint:
+-                        "What are they like? e.g. 'Sharp wit, never shows vulnerability, but secretly writes poetry'",
++                        "角色是什么样的人？例如：机智敏锐，从不示弱，却偷偷写诗",
+                     suggestions: CreatorOptions.guidedPersonalitySuggestions,
+                     maxLines: 3,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'How They Talk',
++                    label: '说话方式',
+                     controller: state.guidedSpeechController,
+                     hint:
+-                        "e.g. 'Formal and old-fashioned' or 'Lots of slang, drops F-bombs'",
++                        "例如：正式而古板，或满口俚语、说话粗俗",
+                     suggestions: CreatorOptions.guidedSpeechSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Secret / Hidden Depth',
++                    label: '秘密 / 隐藏的一面',
+                     controller: state.guidedSecretController,
+                     hint:
+-                        "What's beneath the surface? e.g. 'Seems cold but is terrified of being alone'",
++                        "表面之下隐藏着什么？例如：看似冷漠，其实极度害怕孤独",
+                     onChanged: _saveSoon,
+                   ),
+                 ],
+@@ -208,35 +208,35 @@ class GuidedConfigStep extends StatelessWidget {
+               CreatorSectionCard(
+                 title: '背景故事',
+                 subtitle:
+-                    'Even a sentence helps the AI build a richer history.',
++                    '即使只有一句话，也能帮助 AI 构建更丰富的背景故事。',
+                 icon: Icons.auto_stories,
+                 accentColor: guidedAccent,
+                 children: [
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Origin / Background',
++                    label: '出身 / 背景',
+                     controller: state.guidedOriginController,
+                     hint:
+-                        "e.g. 'Grew up on the streets after their parents disappeared'",
++                        "例如：父母失踪后，在街头长大",
+                     suggestions: CreatorOptions.guidedOriginSuggestions,
+                     maxLines: 2,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Setting / Era',
++                    label: '世界设定 / 时代',
+                     controller: state.guidedSettingController,
+                     hint:
+-                        "When and where? e.g. 'Cyberpunk megacity' or 'Medieval fantasy kingdom'",
++                        "故事发生在何时何地？例如：赛博朋克巨型都市，或中世纪奇幻王国",
+                     suggestions: CreatorOptions.guidedSettingSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Tone',
++                    label: '基调',
+                     controller: state.guidedToneController,
+                     hint:
+-                        "Overall feel? e.g. 'Dark and gritty but with moments of warmth'",
++                        "整体氛围如何？例如：黑暗粗粝，但偶尔流露温情",
+                     suggestions: CreatorOptions.guidedToneSuggestions,
+                     onChanged: _saveSoon,
+                   ),
+@@ -245,27 +245,27 @@ class GuidedConfigStep extends StatelessWidget {
+ 
+               // ── Relationship ──
+               CreatorSectionCard(
+-                title: 'Relationship to {{user}}',
+-                subtitle: 'How do they know {{user}}?',
++                title: '与你（{{user}}）的关系',
++                subtitle: '角色与你是什么关系？',
+                 icon: Icons.favorite_border,
+                 accentColor: guidedAccent,
+                 children: [
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Dynamic',
++                    label: '关系动态',
+                     controller: state.guidedRelDynamicController,
+                     hint:
+-                        "e.g. 'Coworkers who secretly like each other' or 'They're my bodyguard'",
++                        "例如：暗中互相喜欢的同事，或“他们是我的保镖”",
+                     suggestions: CreatorOptions.guidedRelSuggestions,
+                     maxLines: 2,
+                     onChanged: _saveSoon,
+                   ),
+                   SuggestionChipField(
+                     accent: guidedAccent,
+-                    label: 'Opening Scenario',
++                    label: '初始场景',
+                     controller: state.guidedRelScenarioController,
+                     hint:
+-                        "Where does the story start? e.g. 'First day at a new school'",
++                        "故事从哪里开始？例如：转学到新学校的第一天",
+                     onChanged: _saveSoon,
+                   ),
+                 ],
+@@ -279,7 +279,7 @@ class GuidedConfigStep extends StatelessWidget {
+               NsfwToggle(
+                 value: state.nsfwEnabled,
+                 accentColor: nsfwAccent,
+-                subtitle: 'Unlock intimate character details',
++                subtitle: '解锁角色的亲密特征设定',
+                 onChanged: (val) {
+                   state.nsfwEnabled = val;
+                   _save();
+@@ -287,47 +287,47 @@ class GuidedConfigStep extends StatelessWidget {
+               ),
+               if (state.nsfwEnabled)
+                 CreatorSectionCard(
+-                  title: 'Intimate Details',
+-                  subtitle: 'Guided prompts for romantic and sexual traits.',
++                  title: '亲密特征',
++                  subtitle: '通过引导问题设定浪漫与性方面的特征。',
+                   icon: Icons.local_fire_department,
+                   accentColor: nsfwAccent,
+                   children: [
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Body (intimate details)',
++                      label: '身体特征（亲密细节）',
+                       controller: state.guidedNsfwBodyController,
+                       hint:
+-                          "Describe specifics if you want: 'modest chest, wide hips, thick thighs'",
++                          "可按需描述具体特征：胸部较小、胯宽、大腿丰满",
+                       suggestions: CreatorOptions.guidedNsfwBodySuggestions,
+                       isNsfw: true,
+                       onChanged: _saveSoon,
+                     ),
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Experience Level',
++                      label: '经验程度',
+                       controller: state.guidedNsfwExpController,
+                       hint:
+-                          "How experienced are they? e.g. 'First time, nervous but eager'",
++                          "角色有多少经验？例如：第一次尝试，紧张但期待",
+                       suggestions: CreatorOptions.guidedNsfwExpSuggestions,
+                       isNsfw: true,
+                       onChanged: _saveSoon,
+                     ),
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Dominance',
++                      label: '主导倾向',
+                       controller: state.guidedNsfwDomController,
+                       hint:
+-                          "Who takes the lead? e.g. 'Dominant in public, submissive behind closed doors'",
++                          "谁更主动？例如：在外强势，私下顺从",
+                       suggestions: CreatorOptions.guidedNsfwDomSuggestions,
+                       isNsfw: true,
+                       onChanged: _saveSoon,
+                     ),
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Turn-ons & Kinks',
++                      label: '偏好与癖好',
+                       controller: state.guidedNsfwKinksController,
+                       hint:
+-                          "What are they into? e.g. 'Loves being praised, goes weak when you grab their hair'",
++                          "角色喜欢什么？例如：喜欢被夸奖，被抓住头发时会变得软弱",
+                       suggestions: CreatorOptions.guidedNsfwKinkSuggestions,
+                       maxLines: 2,
+                       isNsfw: true,
+@@ -335,20 +335,20 @@ class GuidedConfigStep extends StatelessWidget {
+                     ),
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Clothing / Aesthetic',
++                      label: '服装 / 美学风格',
+                       controller: state.guidedNsfwClothingController,
+                       hint:
+-                          "What do they wear? e.g. 'Always wears thigh-highs and an oversized shirt at home'",
++                          "角色平时穿什么？例如：在家总穿过膝袜和宽松大衬衫",
+                       suggestions: CreatorOptions.guidedNsfwClothingSuggestions,
+                       isNsfw: true,
+                       onChanged: _saveSoon,
+                     ),
+                     SuggestionChipField(
+                       accent: guidedAccent,
+-                      label: 'Sexual Personality',
++                      label: '亲密时的性格',
+                       controller: state.guidedNsfwPersonalityController,
+                       hint:
+-                          "How do they act during intimacy? e.g. 'Giggly and playful, hides their face when embarrassed'",
++                          "亲密时会如何表现？例如：爱笑又俏皮，害羞时会遮住脸",
+                       maxLines: 2,
+                       isNsfw: true,
+                       onChanged: _saveSoon,
+@@ -401,7 +401,7 @@ class GuidedConfigStep extends StatelessWidget {
+           const SizedBox(width: 8),
+           Expanded(
+             child: Text(
+-              'Tip: The more detail you provide, the better the AI can capture your vision.',
++              '提示：你提供的细节越多，AI 就越能准确呈现你的构想。',
+               style: TextStyle(
+                 color: StudioColors.proseOf(context),
+                 fontSize: 12,
+diff --git a/lib/ui/character_creator/steps/guided_output_settings.dart b/lib/ui/character_creator/steps/guided_output_settings.dart
+index 88c5dd7..0076ee1 100644
+--- a/lib/ui/character_creator/steps/guided_output_settings.dart
++++ b/lib/ui/character_creator/steps/guided_output_settings.dart
+@@ -49,7 +49,7 @@ class GuidedOutputSettings extends StatelessWidget {
+       accentColor: guidedAccent,
+       children: [
+         // Persona selector
+-        _inputLabel(context, '{{user}} Persona for Greetings'),
++        _inputLabel(context, '用于生成开场白的用户人设'),
+         const SizedBox(height: 4),
+         Text(
+           'Select a persona to tailor greetings, or "None" for public cards.',
+@@ -66,7 +66,7 @@ class GuidedOutputSettings extends StatelessWidget {
+         const SizedBox(height: 16),
+ 
+         // Greeting tones
+-        _inputLabel(context, 'Greeting Tones'),
++        _inputLabel(context, '开场白语气'),
+         const SizedBox(height: 4),
+         GreetingToneSelector(
+           selectedTones: state.selectedTones.toList(),
+@@ -88,7 +88,7 @@ class GuidedOutputSettings extends StatelessWidget {
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+-                  _inputLabel(context, 'First Message Length'),
++                  _inputLabel(context, '首条消息长度'),
+                   const SizedBox(height: 8),
+                   FirstMessageLengthDropdown(
+                     value: state.greetingLength,
+@@ -107,7 +107,7 @@ class GuidedOutputSettings extends StatelessWidget {
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+-                  _inputLabel(context, 'Alternate Greetings'),
++                  _inputLabel(context, '备用开场白数量'),
+                   const SizedBox(height: 8),
+                   AlternateGreetingsSlider(
+                     value: state.altGreetingCount,
+@@ -128,10 +128,10 @@ class GuidedOutputSettings extends StatelessWidget {
+         ),
+         const SizedBox(height: 16),
+ 
+-        _inputLabel(context, 'Greeting voice'),
++        _inputLabel(context, '叙述方式'),
+         const SizedBox(height: 4),
+         Text(
+-          'Perspective and tense for the first message, alternates, and example dialogue.',
++          '设置首条消息、备用开场白和对话示例的叙述视角与时态。',
+           style: TextStyle(color: StudioColors.mutedOf(context), fontSize: 11),
+         ),
+         const SizedBox(height: 8),
+@@ -151,7 +151,7 @@ class GuidedOutputSettings extends StatelessWidget {
+         const SizedBox(height: 16),
+ 
+         // Art style
+-        _inputLabel(context, 'Avatar Art Style'),
++        _inputLabel(context, '头像画风'),
+         const SizedBox(height: 8),
+         AvatarArtStyleSelector(
+           selectedStyle: state.artStyle,
+@@ -164,7 +164,7 @@ class GuidedOutputSettings extends StatelessWidget {
+         const SizedBox(height: 16),
+ 
+         // Description detail
+-        _inputLabel(context, 'Description Detail'),
++        _inputLabel(context, '描述详细程度'),
+         const SizedBox(height: 8),
+         DescriptionDetailChipRow(
+           options: CreatorState.generationDetailOptions.keys.toList(),
+diff --git a/lib/ui/character_creator/steps/review_step.dart b/lib/ui/character_creator/steps/review_step.dart
+index 01f84f8..2973834 100644
+--- a/lib/ui/character_creator/steps/review_step.dart
++++ b/lib/ui/character_creator/steps/review_step.dart
+@@ -196,7 +196,7 @@ class ReviewStep extends StatelessWidget {
+                     ),
+                     CreatorTextCard(
+                       title: '首条消息',
+-                      subtitle: 'Opens every new chat',
++                      subtitle: '每次新聊天都会显示',
+                       controller: state.firstMessageController,
+                       maxLines: 6,
+                     ),
+diff --git a/lib/ui/character_creator/steps/setup_step.dart b/lib/ui/character_creator/steps/setup_step.dart
+index 1118803..63ca4c0 100644
+--- a/lib/ui/character_creator/steps/setup_step.dart
++++ b/lib/ui/character_creator/steps/setup_step.dart
+@@ -123,7 +123,7 @@ class SetupStep extends StatelessWidget {
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Text(
+-                                'Model',
++                                '模型',
+                                 style: TextStyle(
+                                   color: CreatorPalette.of(context).muted,
+                                   fontSize: 11,
+@@ -310,7 +310,7 @@ class SetupStep extends StatelessWidget {
+                           isAnyRunning ? Icons.stop : Icons.play_arrow,
+                         ),
+                         label: Text(
+-                          isAnyRunning ? 'Stop Backend' : 'Start Backend',
++                          isAnyRunning ? '停止后端' : '启动后端',
+                         ),
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: isAnyRunning
+@@ -389,7 +389,7 @@ class SetupStep extends StatelessWidget {
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Text(
+-                                'Model',
++                                '模型',
+                                 style: TextStyle(
+                                   color: CreatorPalette.of(context).muted,
+                                   fontSize: 11,
+diff --git a/lib/ui/character_creator/steps/setup_step_fields.dart b/lib/ui/character_creator/steps/setup_step_fields.dart
+index d5b327a..da7c39d 100644
+--- a/lib/ui/character_creator/steps/setup_step_fields.dart
++++ b/lib/ui/character_creator/steps/setup_step_fields.dart
+@@ -148,7 +148,7 @@ class SetupExtraSettingsBody extends StatelessWidget {
+                   locked: storage.backendSettings.presetOwnsContext,
+                   child: _buildSettingsTextField(
+                     context,
+-                    label: 'Context Size',
++                    label: '上下文长度',
+                     controller: state.contextSizeController,
+                     isNumber: true,
+                     onChanged: (v) {
+diff --git a/lib/ui/character_creator/widgets/appearance_builder_card.dart b/lib/ui/character_creator/widgets/appearance_builder_card.dart
+index 41b50ac..a6ae446 100644
+--- a/lib/ui/character_creator/widgets/appearance_builder_card.dart
++++ b/lib/ui/character_creator/widgets/appearance_builder_card.dart
+@@ -6,7 +6,7 @@ import 'package:front_porch_ai/ui/character_creator/character_creator.dart';
+ import 'package:front_porch_ai/ui/character_creator/widgets/chip_select_row.dart';
+ import 'package:front_porch_ai/ui/theme/studio_colors.dart';
+ 
+-/// Blue-bordered "Character Appearance" card. Restored from the pre-refactor
++/// Blue-bordered "角色外观" card. Restored from the pre-refactor
+ /// automated config step: race (+ custom), body/hair/skin, notable features,
+ /// proportion chips, and NSFW-gated chest/butt rows.
+ class AppearanceBuilderCard extends StatelessWidget {
+@@ -43,7 +43,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+               Icon(Icons.person_outline, color: accent, size: 18),
+               const SizedBox(width: 8),
+               Text(
+-                'Character Appearance',
++                '角色外观',
+                 style: TextStyle(
+                   color: StudioColors.inkOf(context),
+                   fontSize: 14,
+@@ -62,7 +62,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+           ),
+           const SizedBox(height: 12),
+           SingleSelectChipRow(
+-            label: 'Race / Species',
++            label: '种族 / 物种',
+             value: state.race,
+             options: CreatorOptions.raceOptions,
+             accent: accent,
+@@ -70,35 +70,35 @@ class AppearanceBuilderCard extends StatelessWidget {
+           ),
+           _customRaceField(context),
+           SingleSelectChipRow(
+-            label: 'Body Type',
++            label: '体型',
+             value: state.bodyType,
+             options: CreatorOptions.bodyTypes,
+             accent: accent,
+             onChanged: (v) => _set(() => state.bodyType = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Hair Length',
++            label: '头发长度',
+             value: state.hairLength,
+             options: CreatorOptions.hairLengths,
+             accent: accent,
+             onChanged: (v) => _set(() => state.hairLength = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Hair Style',
++            label: '发型',
+             value: state.hairStyle,
+             options: CreatorOptions.hairStyles,
+             accent: accent,
+             onChanged: (v) => _set(() => state.hairStyle = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Skin Tone',
++            label: '肤色',
+             value: state.skinTone,
+             options: CreatorOptions.skinTones,
+             accent: accent,
+             onChanged: (v) => _set(() => state.skinTone = v),
+           ),
+           MultiSelectChipRow(
+-            label: 'Notable Features',
++            label: '显著特征',
+             selected: state.notableFeatures,
+             options: CreatorOptions.notableFeatureOptions,
+             accent: accent,
+@@ -106,35 +106,35 @@ class AppearanceBuilderCard extends StatelessWidget {
+           ),
+           Divider(color: StudioColors.lineOf(context), height: 16),
+           SingleSelectChipRow(
+-            label: 'Abs / Core',
++            label: '腹部 / 核心肌群',
+             value: state.absCore,
+             options: CreatorOptions.absCoreOptions,
+             accent: accent,
+             onChanged: (v) => _set(() => state.absCore = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Thighs',
++            label: '大腿',
+             value: state.thighs,
+             options: CreatorOptions.thighOptions,
+             accent: accent,
+             onChanged: (v) => _set(() => state.thighs = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Hips',
++            label: '臀胯',
+             value: state.hips,
+             options: CreatorOptions.hipOptions,
+             accent: accent,
+             onChanged: (v) => _set(() => state.hips = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Shoulders',
++            label: '肩部',
+             value: state.shoulders,
+             options: CreatorOptions.shoulderOptions,
+             accent: accent,
+             onChanged: (v) => _set(() => state.shoulders = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Waist',
++            label: '腰部',
+             value: state.waist,
+             options: CreatorOptions.waistOptions,
+             accent: accent,
+@@ -143,7 +143,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+           if (state.nsfwEnabled) ...[
+             Divider(color: nsfw, height: 24),
+             SingleSelectChipRow(
+-              label: 'Chest Size',
++              label: '胸部尺寸',
+               value: state.chestSize,
+               options: CreatorOptions.chestSizes,
+               accent: nsfw,
+@@ -151,7 +151,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+               isNsfw: true,
+             ),
+             SingleSelectChipRow(
+-              label: 'Butt Size',
++              label: '臀部尺寸',
+               value: state.buttSize,
+               options: CreatorOptions.buttSizes,
+               accent: nsfw,
+@@ -170,7 +170,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+       child: Row(
+         children: [
+           Text(
+-            'Custom: ',
++            '自定义：',
+             style: TextStyle(
+               color: StudioColors.mutedOf(context),
+               fontSize: 12,
+@@ -185,7 +185,7 @@ class AppearanceBuilderCard extends StatelessWidget {
+                 fontSize: 13,
+               ),
+               decoration: InputDecoration(
+-                hintText: 'e.g. Kitsune, Arachnid, Void-born...',
++                hintText: '例如：狐妖、蛛形种、虚空诞生者…',
+                 hintStyle: TextStyle(
+                   color: StudioColors.faintOf(context),
+                   fontSize: 12,
+diff --git a/lib/ui/character_creator/widgets/archetype_preset_card.dart b/lib/ui/character_creator/widgets/archetype_preset_card.dart
+index 140db9a..0914d8e 100644
+--- a/lib/ui/character_creator/widgets/archetype_preset_card.dart
++++ b/lib/ui/character_creator/widgets/archetype_preset_card.dart
+@@ -36,7 +36,7 @@ class ArchetypePresetCard extends StatelessWidget {
+               Icon(Icons.bolt, color: accent, size: 18),
+               const SizedBox(width: 6),
+               Text(
+-                'Quick Start — Archetype Presets',
++                '快速开始 — 角色原型预设',
+                 style: TextStyle(
+                   color: accent,
+                   fontSize: 13,
+@@ -47,7 +47,7 @@ class ArchetypePresetCard extends StatelessWidget {
+           ),
+           const SizedBox(height: 4),
+           Text(
+-            'Tap to auto-fill concept & personality',
++            '点击以自动填写核心构想和性格',
+             style: TextStyle(
+               color: StudioColors.mutedOf(context),
+               fontSize: 11,
+@@ -61,7 +61,7 @@ class ArchetypePresetCard extends StatelessWidget {
+               final isSelected = state.selectedArchetype == entry.key;
+               return ChoiceChip(
+                 label: Text(
+-                  entry.key,
++                  creatorOptionDisplayLabel(entry.key),
+                   style: TextStyle(
+                     fontSize: 12,
+                     color: isSelected
+diff --git a/lib/ui/character_creator/widgets/backstory_card.dart b/lib/ui/character_creator/widgets/backstory_card.dart
+index 08de385..3bdc327 100644
+--- a/lib/ui/character_creator/widgets/backstory_card.dart
++++ b/lib/ui/character_creator/widgets/backstory_card.dart
+@@ -58,21 +58,21 @@ class BackstoryCard extends StatelessWidget {
+           ),
+           const SizedBox(height: 12),
+           SingleSelectChipRow(
+-            label: 'Origin',
++            label: '出身',
+             value: state.backstoryOrigin,
+             options: CreatorOptions.backstoryOrigins,
+             accent: accent,
+             onChanged: (v) => _set(() => state.backstoryOrigin = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Tone',
++            label: '基调',
+             value: state.backstoryTone,
+             options: CreatorOptions.backstoryTones,
+             accent: accent,
+             onChanged: (v) => _set(() => state.backstoryTone = v),
+           ),
+           SingleSelectChipRow(
+-            label: 'Era',
++            label: '时代背景',
+             value: state.backstoryEra,
+             options: CreatorOptions.backstoryEras,
+             accent: accent,
+@@ -84,7 +84,7 @@ class BackstoryCard extends StatelessWidget {
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 Text(
+-                  'Custom Backstory Notes',
++                  '自定义背景故事备注',
+                   style: TextStyle(
+                     color: StudioColors.proseOf(context),
+                     fontSize: 12,
+@@ -95,7 +95,7 @@ class BackstoryCard extends StatelessWidget {
+                 CreatorHintField(
+                   state: state,
+                   controller: state.backstoryNotesController,
+-                  hint: 'e.g. Was betrayed by their order, seeks revenge...',
++                  hint: '例如：曾被所属组织背叛，因此寻求复仇…',
+                   maxLines: 2,
+                 ),
+               ],
+diff --git a/lib/ui/character_creator/widgets/chip_select_row.dart b/lib/ui/character_creator/widgets/chip_select_row.dart
+index b48a1a1..dd9f1f9 100644
+--- a/lib/ui/character_creator/widgets/chip_select_row.dart
++++ b/lib/ui/character_creator/widgets/chip_select_row.dart
+@@ -68,7 +68,7 @@ class SingleSelectChipRow extends StatelessWidget {
+             children: options
+                 .map(
+                   (opt) => CreatorPill(
+-                    label: opt,
++                    label: creatorOptionDisplayLabel(opt),
+                     selected: value == opt,
+                     accent: pillAccent,
+                     icon: isNsfw ? Icons.local_fire_department : null,
+@@ -117,7 +117,7 @@ class MultiSelectChipRow extends StatelessWidget {
+             children: options.map((opt) {
+               final isSelected = selected.contains(opt);
+               return CreatorPill(
+-                label: opt,
++                label: creatorOptionDisplayLabel(opt),
+                 selected: isSelected,
+                 accent: pillAccent,
+                 icon: isNsfw ? Icons.local_fire_department : null,
+diff --git a/lib/ui/character_creator/widgets/creator_step_indicator.dart b/lib/ui/character_creator/widgets/creator_step_indicator.dart
+index 459a871..74660ad 100644
+--- a/lib/ui/character_creator/widgets/creator_step_indicator.dart
++++ b/lib/ui/character_creator/widgets/creator_step_indicator.dart
+@@ -44,7 +44,7 @@ class CreatorStepIndicator extends StatelessWidget {
+   final bool Function(int i)? isDone;
+ 
+   /// Steps whose labels need the wider 60px column.
+-  static const _wide = {'Configure', 'Generate', 'Greetings'};
++  static const _wide = {'配置', 'Generate', 'Greetings'};
+ 
+   @override
+   Widget build(BuildContext context) => Row(
+diff --git a/lib/ui/character_creator/widgets/greeting_card_parts.dart b/lib/ui/character_creator/widgets/greeting_card_parts.dart
+index 2cec69a..12d9a91 100644
+--- a/lib/ui/character_creator/widgets/greeting_card_parts.dart
++++ b/lib/ui/character_creator/widgets/greeting_card_parts.dart
+@@ -247,7 +247,7 @@ class GreetingStopButton extends StatelessWidget {
+   }
+ }
+ 
+-/// "Add another greeting": writes one right away. Dashed, per the sketch.
++/// "添加另一条开场白": writes one right away. Dashed, per the sketch.
+ class GreetingAddButton extends StatelessWidget {
+   const GreetingAddButton({super.key, required this.onPressed});
+ 
+@@ -265,7 +265,7 @@ class GreetingAddButton extends StatelessWidget {
+           child: TextButton.icon(
+             onPressed: onPressed,
+             icon: const Icon(Icons.add, size: 18),
+-            label: const Text('Add another greeting', style: _label),
++            label: const Text('添加另一条开场白', style: _label),
+             style: TextButton.styleFrom(
+               foregroundColor: amber,
+               disabledForegroundColor: amber,
+diff --git a/lib/ui/character_creator/widgets/setup_backend_picker.dart b/lib/ui/character_creator/widgets/setup_backend_picker.dart
+index 045d798..b7daf7d 100644
+--- a/lib/ui/character_creator/widgets/setup_backend_picker.dart
++++ b/lib/ui/character_creator/widgets/setup_backend_picker.dart
+@@ -40,7 +40,7 @@ class SetupBackendPicker extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        _inputLabel(context, 'Backend'),
++        _inputLabel(context, '后端'),
+         const SizedBox(height: 8),
+         Row(
+           children: [
+diff --git a/lib/ui/character_creator/widgets/template_tile.dart b/lib/ui/character_creator/widgets/template_tile.dart
+index 1bb13ce..3355fa5 100644
+--- a/lib/ui/character_creator/widgets/template_tile.dart
++++ b/lib/ui/character_creator/widgets/template_tile.dart
+@@ -19,6 +19,7 @@
+ import 'package:flutter/material.dart';
+ 
+ import 'package:front_porch_ai/services/chargen/chargen.dart';
++import 'package:front_porch_ai/ui/character_creator/creator_options.dart';
+ import 'package:front_porch_ai/ui/character_creator/widgets/creator_dashed_outline.dart';
+ import 'package:front_porch_ai/ui/theme/studio_colors.dart';
+ 
+@@ -85,7 +86,7 @@ class TemplateTile extends StatelessWidget {
+                         child: Semantics(
+                           button: !t.broken,
+                           child: Text(
+-                            t.name,
++                            t.builtIn ? creatorOptionDisplayLabel(t.name) : t.name,
+                             style: TextStyle(
+                               fontSize: 14,
+                               fontWeight: FontWeight.w600,
+@@ -163,7 +164,7 @@ class TemplateTile extends StatelessWidget {
+             item(_TileAction.load, 'Load', ink),
+             item(_TileAction.rename, 'Rename', ink),
+           ],
+-          item(_TileAction.delete, 'Delete', StudioColors.badOf(context)),
++          item(_TileAction.delete, '删除', StudioColors.badOf(context)),
+         ],
+       ),
+     );
+diff --git a/lib/ui/pages/settings_page/acceleration_section.dart b/lib/ui/pages/settings_page/acceleration_section.dart
+index 7a822cd..2cc8f37 100644
+--- a/lib/ui/pages/settings_page/acceleration_section.dart
++++ b/lib/ui/pages/settings_page/acceleration_section.dart
+@@ -117,7 +117,7 @@ class AccelerationSection extends StatelessWidget {
+           TextButton(
+             onPressed: () =>
+                 showRocmHelpDialog(context, driverReady: hw.hasRocm),
+-            child: const Text('Why can\'t I use ROCm?'),
++            child: const Text('为什么无法使用 ROCm？'),
+           ),
+         Switch(
+           key: const ValueKey('use-rocm-switch'),
+diff --git a/lib/ui/pages/settings_page/advanced_tab.dart b/lib/ui/pages/settings_page/advanced_tab.dart
+index ce4246f..05c61dd 100644
+--- a/lib/ui/pages/settings_page/advanced_tab.dart
++++ b/lib/ui/pages/settings_page/advanced_tab.dart
+@@ -61,7 +61,7 @@ class SettingsAdvancedTab extends StatelessWidget {
+       child: Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+-          const SectionHeader('Storage Configuration'),
++          const SectionHeader('存储配置'),
+           const SizedBox(height: 8),
+           Container(
+             padding: const EdgeInsets.all(12),
+@@ -77,7 +77,7 @@ class SettingsAdvancedTab extends StatelessWidget {
+                   child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+-                      Text('Data Directory', style: theme.textTheme.bodySmall),
++                      Text('数据目录', style: theme.textTheme.bodySmall),
+                       Text(
+                         storageService.rootPath ?? 'Not set',
+                         style: theme.textTheme.bodyMedium?.copyWith(
+@@ -90,13 +90,13 @@ class SettingsAdvancedTab extends StatelessWidget {
+                 IconButton(
+                   icon: Icon(Icons.edit, color: theme.iconTheme.color),
+                   onPressed: onPickStoragePath,
+-                  tooltip: 'Change Data Directory',
++                  tooltip: '更改数据目录',
+                 ),
+               ],
+             ),
+           ),
+           const SizedBox(height: 24),
+-          const SectionHeader('Web Server'),
++          const SectionHeader('Web 服务器'),
+           const SizedBox(height: 8),
+           WebServerSection(portDraft: portDraft),
+           const SizedBox(height: 24),
+@@ -128,7 +128,7 @@ class DatabaseMaintenanceSection extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        const SectionHeader('Database Maintenance'),
++        const SectionHeader('数据库维护'),
+         const SizedBox(height: 8),
+         Container(
+           padding: const EdgeInsets.all(12),
+@@ -157,7 +157,7 @@ class DatabaseMaintenanceSection extends StatelessWidget {
+                   ),
+                   ElevatedButton.icon(
+                     icon: const Icon(Icons.search, size: 16),
+-                    label: const Text('Scan & Clean'),
++                    label: const Text('扫描并清理'),
+                     onPressed: () => onScanAndClean(context),
+                     style: ElevatedButton.styleFrom(
+                       backgroundColor: AppColors.porchAmberOf(context),
+diff --git a/lib/ui/pages/settings_page/launch_actions.dart b/lib/ui/pages/settings_page/launch_actions.dart
+index 7d1e24c..04aa949 100644
+--- a/lib/ui/pages/settings_page/launch_actions.dart
++++ b/lib/ui/pages/settings_page/launch_actions.dart
+@@ -55,7 +55,7 @@ Future<void> pickStoragePath(BuildContext context) async {
+         // failed). Nothing moved; say so plainly instead of looking done.
+         await showWarmDialog<void>(
+           context,
+-          title: 'Storage folder not changed',
++          title: '存储文件夹未更改',
+           icon: Icons.folder_off_outlined,
+           content: Text(refusal),
+           actions: [
+diff --git a/lib/ui/pages/settings_page/launch_engine_rows.dart b/lib/ui/pages/settings_page/launch_engine_rows.dart
+index 4eca725..497c358 100644
+--- a/lib/ui/pages/settings_page/launch_engine_rows.dart
++++ b/lib/ui/pages/settings_page/launch_engine_rows.dart
+@@ -58,7 +58,7 @@ List<Widget> launchEngineRows(
+     _launchToggle(
+       context,
+       accent: accent,
+-      label: 'Flash Attention',
++      label: 'Flash Attention（快速注意力）',
+       tooltip:
+           'Faster attention math, and less memory. ~20–40% speed boost on RTX/Apple Silicon. AMD (ROCm) follows this switch too: if KoboldCpp stops while answering with it on, the app turns it off and starts again. Gemma 4 on Vulkan always runs without it.',
+       value: storage.backendSettings.flashAttentionEnabled,
+@@ -83,7 +83,7 @@ List<Widget> launchEngineRows(
+     _launchToggle(
+       context,
+       accent: accent,
+-      label: 'Lock Weights in RAM (mlock)',
++      label: '将模型权重锁定在内存中（mlock）',
+       tooltip: Platform.isLinux
+           ? 'Prevents paging to disk. Requires root or ulimit ‑l unlimited on Linux — off by default.'
+           : 'Prevents OS from paging model weights to disk. Avoids catastrophic slowdown under memory pressure.',
+diff --git a/lib/ui/pages/settings_page/web_server_section.dart b/lib/ui/pages/settings_page/web_server_section.dart
+index edfc8fa..51da133 100644
+--- a/lib/ui/pages/settings_page/web_server_section.dart
++++ b/lib/ui/pages/settings_page/web_server_section.dart
+@@ -84,7 +84,7 @@ Future<void> attemptWebServerStart(
+ 
+   await showWarmDialog<void>(
+     context,
+-    title: 'Web server couldn’t start',
++    title: '无法启动 Web 服务器',
+     icon: Icons.wifi_tethering_off,
+     width: 380,
+     content: Text(
+@@ -108,7 +108,7 @@ Future<void> attemptWebServerStart(
+         ),
+         onPressed: () => retry(),
+         child: Text(
+-          altPort != null ? 'Use port $altPort instead' : 'Try again',
++          altPort != null ? 'Use port $altPort instead' : '重试',
+         ),
+       ),
+     ],
+@@ -205,7 +205,7 @@ class WebServerSection extends StatelessWidget {
+                       child: Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+-                          Text('Port', style: theme.textTheme.bodySmall),
++                          Text('端口', style: theme.textTheme.bodySmall),
+                           const SizedBox(height: 4),
+                           SizedBox(
+                             width: 120,
+@@ -272,7 +272,7 @@ class WebServerSection extends StatelessWidget {
+                   ],
+                 ),
+                 const SizedBox(height: 12),
+-                Text('Login', style: theme.textTheme.bodySmall),
++                Text('登录', style: theme.textTheme.bodySmall),
+                 const SizedBox(height: 4),
+                 if (webServer.auth case final auth?)
+                   WebLoginSection(
+@@ -287,7 +287,7 @@ class WebServerSection extends StatelessWidget {
+                       child: Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+-                          Text('Status', style: theme.textTheme.bodySmall),
++                          Text('状态', style: theme.textTheme.bodySmall),
+                           const SizedBox(height: 4),
+                           Row(
+                             children: [
+diff --git a/lib/ui/settings/dialogs/color_picker_dialog.dart b/lib/ui/settings/dialogs/color_picker_dialog.dart
+index df6fe3a..e419b60 100644
+--- a/lib/ui/settings/dialogs/color_picker_dialog.dart
++++ b/lib/ui/settings/dialogs/color_picker_dialog.dart
+@@ -32,7 +32,7 @@ Color swatchInkOn(Color bg) =>
+     // theme-keep: contrast over a user-chosen color
+     : Colors.black87;
+ 
+-/// The one "Select Color" picker (Settings > Chat Appearance and the chat's
++/// The one "选择颜色" picker (Settings > Chat Appearance and the chat's
+ /// UI settings): [AppColors.presetColors] quick picks plus a color wheel, in
+ /// the warm-porch dialog.
+ Future<void> showColorPicker(
+@@ -49,7 +49,7 @@ Future<void> showColorPicker(
+       builder: (context, setState) {
+         setStateCallback = setState;
+         return WarmDialog(
+-          title: 'Select Color',
++          title: '选择颜色',
+           icon: Icons.palette_outlined,
+           accent: AppColors.porchAmberOf(context),
+           width: 380,
+diff --git a/lib/ui/settings/dialogs/model_search_dialog.dart b/lib/ui/settings/dialogs/model_search_dialog.dart
+index dc6e85f..e3c9d6f 100644
+--- a/lib/ui/settings/dialogs/model_search_dialog.dart
++++ b/lib/ui/settings/dialogs/model_search_dialog.dart
+@@ -30,7 +30,7 @@ void showModelSearchDialog(
+   showGenericModelSearchDialog<RemoteModelInfo>(
+     context,
+     availableModels,
+-    title: 'Select Model',
++    title: '选择模型',
+     getTitle: (m) => m.name,
+     getSubtitle: (m) => m.id,
+     onSelected: (m) => storageService.backendSettings.setRemoteModelName(m.id),
+@@ -81,7 +81,7 @@ void showGenericModelSearchDialog<T>(
+                       fontSize: 14,
+                     ),
+                     decoration: InputDecoration(
+-                      hintText: 'Search models...',
++                      hintText: '搜索模型…',
+                       hintStyle: TextStyle(
+                         color: AppColors.textTertiary(context),
+                         fontSize: 14,
+diff --git a/lib/ui/settings/dialogs/prompt_save_dialog.dart b/lib/ui/settings/dialogs/prompt_save_dialog.dart
+index efc30c2..a78d45d 100644
+--- a/lib/ui/settings/dialogs/prompt_save_dialog.dart
++++ b/lib/ui/settings/dialogs/prompt_save_dialog.dart
+@@ -37,7 +37,7 @@ void showSavePromptDialog(BuildContext context, StorageService storageService) {
+         autofocus: true,
+         style: TextStyle(color: AppColors.textPrimary(context)),
+         decoration: InputDecoration(
+-          hintText: 'Prompt name...',
++          hintText: '提示词名称…',
+           hintStyle: TextStyle(color: AppColors.textTertiary(context)),
+         ),
+         onSubmitted: (value) {
+diff --git a/lib/ui/settings/tabs/appearance_tab/accent_picker_row.dart b/lib/ui/settings/tabs/appearance_tab/accent_picker_row.dart
+index 3a9abc8..3139d04 100644
+--- a/lib/ui/settings/tabs/appearance_tab/accent_picker_row.dart
++++ b/lib/ui/settings/tabs/appearance_tab/accent_picker_row.dart
+@@ -39,7 +39,7 @@ class AccentPickerRow extends StatelessWidget {
+         : appearance.theme.palettes.light.amber;
+     final custom = picked != null && !kAccentSwatches.contains(picked);
+     final note = picked == null
+-        ? 'Theme accent'
++        ? '主题强调色'
+         : appearance.accentAdjusted
+         ? 'Custom accent, adjusted for readability'
+         : 'Custom accent';
+@@ -57,7 +57,7 @@ class AccentPickerRow extends StatelessWidget {
+             _Swatch(
+               key: const ValueKey('accent-theme'),
+               color: themeAccent,
+-              label: 'Theme accent',
++              label: '主题强调色',
+               selected: picked == null,
+               icon: Icons.auto_awesome,
+               onTap: () => appearance.setAccentOverride(null),
+@@ -66,14 +66,14 @@ class AccentPickerRow extends StatelessWidget {
+               _Swatch(
+                 key: ValueKey('accent-${accentHex(c)}'),
+                 color: c,
+-                label: 'Accent ${accentHex(c)}',
++                label: '强调色 ${accentHex(c)}',
+                 selected: picked == c,
+                 onTap: () => appearance.setAccentOverride(c),
+               ),
+             _Swatch(
+               key: const ValueKey('accent-any'),
+               color: custom ? picked : AppColors.surfaceContainerOf(context),
+-              label: 'Any color',
++              label: '任意颜色',
+               selected: custom,
+               icon: Icons.colorize,
+               onTap: () => showColorPicker(
+diff --git a/lib/ui/settings/tabs/appearance_tab/appearance_tab.dart b/lib/ui/settings/tabs/appearance_tab/appearance_tab.dart
+index 599c0ed..bd8e654 100644
+--- a/lib/ui/settings/tabs/appearance_tab/appearance_tab.dart
++++ b/lib/ui/settings/tabs/appearance_tab/appearance_tab.dart
+@@ -41,7 +41,7 @@ class AppearanceTab extends StatelessWidget {
+         child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+-            const SectionHeader('Theme'),
++            const SectionHeader('主题'),
+             const SizedBox(height: 12),
+             const ThemeCardGrid(),
+             const SizedBox(height: 20),
+@@ -51,7 +51,7 @@ class AppearanceTab extends StatelessWidget {
+               children: [
+                 AppearanceChoice<AppThemeMode>(
+                   key: const ValueKey('appearance-mode'),
+-                  label: 'Mode',
++                  label: '模式',
+                   values: AppThemeMode.values,
+                   selected: appearance.mode,
+                   labelOf: (m) => m.label,
+@@ -60,7 +60,7 @@ class AppearanceTab extends StatelessWidget {
+                 const AccentPickerRow(),
+                 AppearanceChoice<UiFont>(
+                   key: const ValueKey('appearance-font'),
+-                  label: 'UI font',
++                  label: '界面字体',
+                   values: UiFont.values,
+                   selected: appearance.font,
+                   labelOf: (f) => f.label,
+@@ -68,7 +68,7 @@ class AppearanceTab extends StatelessWidget {
+                 ),
+                 AppearanceChoice<UiCorners>(
+                   key: const ValueKey('appearance-corners'),
+-                  label: 'Corners',
++                  label: '圆角',
+                   values: UiCorners.values,
+                   selected: appearance.corners,
+                   labelOf: (c) => c.label,
+@@ -84,7 +84,7 @@ class AppearanceTab extends StatelessWidget {
+               icon: constraints.maxWidth < 360
+                   ? null
+                   : const Icon(Icons.restart_alt, size: 18),
+-              label: const Text('Reset accent, font and corners'),
++              label: const Text('重置强调色、字体和圆角'),
+             ),
+             const SizedBox(height: 28),
+             const ChatAppearanceSection(),
+diff --git a/lib/ui/settings/tabs/appearance_tab/chat_appearance_section.dart b/lib/ui/settings/tabs/appearance_tab/chat_appearance_section.dart
+index 2cd172a..5f3c030 100644
+--- a/lib/ui/settings/tabs/appearance_tab/chat_appearance_section.dart
++++ b/lib/ui/settings/tabs/appearance_tab/chat_appearance_section.dart
+@@ -31,7 +31,7 @@ class ChatAppearanceSection extends StatelessWidget {
+ 
+   /// Curated chat-suitable Google Fonts. ('' == the UI font.)
+   static const List<(String, String)> _chatFonts = [
+-    ('Same as the UI font', ''),
++    ('与界面字体相同', ''),
+     ('Roboto', 'Roboto'),
+     ('Open Sans', 'Open Sans'),
+     ('Lato', 'Lato'),
+@@ -58,17 +58,17 @@ class ChatAppearanceSection extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         SliderSetting(
+-          label: 'Reading Size',
++          label: '阅读字号',
+           value: storageService.uiSettings.textScale,
+           min: 0.7,
+           max: 2.0,
+           onChanged: (val) => storageService.uiSettings.setTextScale(val),
+           divisions: 13,
+         ),
+-        const SectionHeader('Chat Appearance'),
++        const SectionHeader('聊天外观'),
+         const SizedBox(height: 8),
+         ColorRow(
+-          label: 'User Bubble',
++          label: '用户气泡',
+           color: storageService.uiSettings.globalUserBubbleColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -78,7 +78,7 @@ class ChatAppearanceSection extends StatelessWidget {
+           ),
+         ),
+         ColorRow(
+-          label: 'User Text',
++          label: '用户文字',
+           color: storageService.uiSettings.globalUserTextColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -87,7 +87,7 @@ class ChatAppearanceSection extends StatelessWidget {
+           ),
+         ),
+         ColorRow(
+-          label: 'AI Bubble',
++          label: 'AI 气泡',
+           color: storageService.uiSettings.globalAiBubbleColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -96,7 +96,7 @@ class ChatAppearanceSection extends StatelessWidget {
+           ),
+         ),
+         ColorRow(
+-          label: 'AI Text',
++          label: 'AI 文字',
+           color: storageService.uiSettings.globalAiTextColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -105,7 +105,7 @@ class ChatAppearanceSection extends StatelessWidget {
+           ),
+         ),
+         ColorRow(
+-          label: 'Dialogue (Quoted)',
++          label: '对话（引号内容）',
+           color: storageService.uiSettings.globalDialogueColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -114,7 +114,7 @@ class ChatAppearanceSection extends StatelessWidget {
+           ),
+         ),
+         ColorRow(
+-          label: 'Actions (*text*)',
++          label: '动作描写（*文本*）',
+           color: storageService.uiSettings.globalActionColor,
+           onPressed: () => showColorPicker(
+             context,
+@@ -135,7 +135,7 @@ class ChatAppearanceSection extends StatelessWidget {
+             runSpacing: 4,
+             children: [
+               Text(
+-                'Chat Font',
++                '聊天字体',
+                 style: TextStyle(
+                   color: AppColors.textSecondary(context),
+                   fontSize: 13,
+@@ -192,7 +192,7 @@ class ChatAppearanceSection extends StatelessWidget {
+             key: const ValueKey('chat-colors-use-theme'),
+             onPressed: storageService.uiSettings.resetChatColors,
+             icon: const Icon(Icons.format_color_reset_outlined, size: 18),
+-            label: const Text('Use the theme\'s chat colors'),
++            label: const Text('使用主题的聊天配色'),
+           ),
+         ),
+       ],
+diff --git a/lib/ui/settings/tabs/backend/backend_mode_selector.dart b/lib/ui/settings/tabs/backend/backend_mode_selector.dart
+index 7a2c258..b2e6f2c 100644
+--- a/lib/ui/settings/tabs/backend/backend_mode_selector.dart
++++ b/lib/ui/settings/tabs/backend/backend_mode_selector.dart
+@@ -61,7 +61,7 @@ class BackendModeSelector extends StatelessWidget {
+       key: const Key('chat-speech-section'),
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        const SectionHeader('Chat speech'),
++        const SectionHeader('聊天语音'),
+         const SizedBox(height: 8),
+         // Intel Mac warning banner.
+         if (backendManager.isIntelMac) ...[
+diff --git a/lib/ui/settings/tabs/backend/kobold_context_control.dart b/lib/ui/settings/tabs/backend/kobold_context_control.dart
+index 9434a80..02dca9c 100644
+--- a/lib/ui/settings/tabs/backend/kobold_context_control.dart
++++ b/lib/ui/settings/tabs/backend/kobold_context_control.dart
+@@ -116,7 +116,7 @@ class KoboldContextControl extends StatelessWidget {
+                   onPressed: () async {
+                     final keep = await askKcpps(
+                       context,
+-                      title: 'Keep ${koboldTokens(big)} tokens?',
++                      title: '保留 ${koboldTokens(big)} 个 Token？',
+                       text: words?.text ?? '',
+                       yes: 'Keep it',
+                     );
+diff --git a/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart b/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
+index 26ce468..fb202a1 100644
+--- a/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
++++ b/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
+@@ -73,7 +73,7 @@ Future<void> _say(BuildContext context, String words) => showWarmDialog<void>(
+     key: const ValueKey('speed-test-refused'),
+     style: keText(context, size: 14, height: 1.45),
+   ),
+-  actions: [KeButton('Close', onPressed: () => Navigator.of(context).pop())],
++  actions: [KeButton('关闭', onPressed: () => Navigator.of(context).pop())],
+ );
+ 
+ /// The running test, then how it ended, following [test] as it changes.
+@@ -155,7 +155,7 @@ class KoboldSpeedTestProgress extends StatelessWidget {
+         Align(
+           alignment: Alignment.centerRight,
+           child: KeButton(
+-            'Cancel',
++            '取消',
+             key: const ValueKey('speed-test-cancel'),
+             onPressed: test.phase == KoboldSpeedPhase.stopping
+                 ? null
+diff --git a/lib/ui/settings/tabs/backend/kobold_status_card.dart b/lib/ui/settings/tabs/backend/kobold_status_card.dart
+index 9cd2921..897b0e6 100644
+--- a/lib/ui/settings/tabs/backend/kobold_status_card.dart
++++ b/lib/ui/settings/tabs/backend/kobold_status_card.dart
+@@ -291,7 +291,7 @@ class _KoboldStatusCardState extends State<KoboldStatusCard> {
+       KoboldPhase.unloaded => ('Unloaded', AppColors.slateFaintOf(context)),
+       KoboldPhase.ready => ('Ready', AppColors.journalAccentOf(context)),
+       KoboldPhase.starting ||
+-      KoboldPhase.loading => ('Loading…', AppColors.porchHoneyOf(context)),
++      KoboldPhase.loading => ('正在加载…', AppColors.porchHoneyOf(context)),
+       KoboldPhase.stopped => ('Stopped', AppColors.slateFaintOf(context)),
+     };
+     final name = model == null
+diff --git a/lib/ui/settings/tabs/backend/managed_backend_section.dart b/lib/ui/settings/tabs/backend/managed_backend_section.dart
+index 6af1eb2..4493fe8 100644
+--- a/lib/ui/settings/tabs/backend/managed_backend_section.dart
++++ b/lib/ui/settings/tabs/backend/managed_backend_section.dart
+@@ -91,7 +91,7 @@ class ManagedBackendSection extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         const SizedBox(height: 24),
+-        const SectionHeader('Koboldcpp Backend'),
++        const SectionHeader('KoboldCpp 后端'),
+         const SizedBox(height: 16),
+         Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+@@ -242,7 +242,7 @@ class ManagedBackendSection extends StatelessWidget {
+         Row(
+           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+-            const SectionHeader('Configuration Preset'),
++            const SectionHeader('配置预设'),
+             TextButton.icon(
+               onPressed: onScanPresets,
+               icon: const Icon(Icons.refresh, size: 14),
+@@ -274,7 +274,7 @@ class ManagedBackendSection extends StatelessWidget {
+               if (await showKcppsPresets(context)) onPresetsSaved();
+             },
+             icon: const Icon(Icons.tune, size: 18),
+-            label: const Text('KoboldCpp presets…'),
++            label: const Text('KoboldCpp 预设…'),
+             style: OutlinedButton.styleFrom(
+               foregroundColor: AppColors.textSecondary(context),
+               side: BorderSide(color: AppColors.borderOf(context)),
+@@ -294,7 +294,7 @@ class ManagedBackendSection extends StatelessWidget {
+                 ? null
+                 : onToggleBackend,
+             icon: Icon(anyRunning ? Icons.stop : Icons.play_arrow),
+-            label: Text(anyRunning ? 'Stop Backend' : 'Start Backend'),
++            label: Text(anyRunning ? '停止后端' : '启动后端'),
+             style: ElevatedButton.styleFrom(
+               backgroundColor: anyRunning
+                   ? AppColors.negativeAccentOf(context).withValues(alpha: 0.85)
+@@ -305,7 +305,7 @@ class ManagedBackendSection extends StatelessWidget {
+           ),
+         ),
+         const SizedBox(height: 24),
+-        const SectionHeader('Process Logs'),
++        const SectionHeader('进程日志'),
+         const SizedBox(height: 8),
+         Consumer<KoboldService>(
+           builder: (context, ks, child) => LogView(logs: ks.logs),
+@@ -350,7 +350,7 @@ class _ModelSelectionState extends State<_ModelSelection> {
+         Row(
+           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+-            const SectionHeader('Model Selection'),
++            const SectionHeader('模型选择'),
+             TextButton.icon(
+               key: const ValueKey('model-rescan'),
+               onPressed: () => unawaited(widget.models.refreshModels()),
+diff --git a/lib/ui/settings/tabs/backend/omlx_section.dart b/lib/ui/settings/tabs/backend/omlx_section.dart
+index c9c2194..c57a62f 100644
+--- a/lib/ui/settings/tabs/backend/omlx_section.dart
++++ b/lib/ui/settings/tabs/backend/omlx_section.dart
+@@ -56,7 +56,7 @@ class _OmlxSectionState extends State<OmlxSection> {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         const SizedBox(height: 24),
+-        const SectionHeader('oMLX Configuration'),
++        const SectionHeader('oMLX 配置'),
+         const SizedBox(height: 8),
+         Container(
+           padding: const EdgeInsets.all(16),
+@@ -71,7 +71,7 @@ class _OmlxSectionState extends State<OmlxSection> {
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+-                  Text('Model', style: theme.textTheme.bodySmall),
++                  Text('模型', style: theme.textTheme.bodySmall),
+                   TextButton.icon(
+                     onPressed: _isFetchingModels
+                         ? null
+@@ -172,7 +172,7 @@ class _OmlxSectionState extends State<OmlxSection> {
+                 TextFormField(
+                   initialValue: storageService.backendSettings.remoteModelName,
+                   decoration: InputDecoration(
+-                    hintText: 'e.g. mlx-community/Llama-3-8B-Instruct',
++                    hintText: '例如：mlx-community/Llama-3-8B-Instruct',
+                     filled: true,
+                     fillColor: theme.scaffoldBackgroundColor,
+                     border: OutlineInputBorder(
+diff --git a/lib/ui/settings/tabs/backend/remote_api_section.dart b/lib/ui/settings/tabs/backend/remote_api_section.dart
+index 42f3f5c..38ba546 100644
+--- a/lib/ui/settings/tabs/backend/remote_api_section.dart
++++ b/lib/ui/settings/tabs/backend/remote_api_section.dart
+@@ -122,8 +122,8 @@ class _RemoteApiSectionState extends State<RemoteApiSection> {
+           obscureText: true,
+           decoration: InputDecoration(
+             hintText: storageService.backendSettings.remoteApiKey.isNotEmpty
+-                ? '•••••• (leave blank to keep)'
+-                : 'paste your API key',
++                ? '••••••（留空则保持不变）'
++                : '粘贴 API 密钥',
+             filled: true,
+             fillColor: theme.scaffoldBackgroundColor,
+             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+@@ -153,7 +153,7 @@ class _RemoteApiSectionState extends State<RemoteApiSection> {
+                 )
+               : const Icon(Icons.wifi_tethering, size: 18),
+           label: Text(
+-            _isCheckingConnection ? 'Checking...' : 'Check Connection',
++            _isCheckingConnection ? '正在检查…' : 'Check Connection',
+           ),
+           style: ElevatedButton.styleFrom(
+             backgroundColor: accent.withValues(alpha: 0.85),
+diff --git a/lib/ui/settings/tabs/backend/super_grok_card.dart b/lib/ui/settings/tabs/backend/super_grok_card.dart
+index c387e16..5025fa0 100644
+--- a/lib/ui/settings/tabs/backend/super_grok_card.dart
++++ b/lib/ui/settings/tabs/backend/super_grok_card.dart
+@@ -115,7 +115,7 @@ class SuperGrokCard extends StatelessWidget {
+       context,
+       key: const Key('super-grok-sign-in'),
+       icon: Icons.login,
+-      label: 'Sign in with SuperGrok',
++      label: '使用 SuperGrok 登录',
+       onPressed: () => auth.startSignIn(openBrowser: _open),
+     ),
+     const SizedBox(height: 6),
+@@ -128,7 +128,7 @@ class SuperGrokCard extends StatelessWidget {
+       TextButton(
+         key: const Key('super-grok-use-key'),
+         onPressed: onUseApiKey,
+-        child: const Text('Use an xAI API key instead'),
++        child: const Text('改用 xAI API 密钥'),
+       ),
+   ];
+ 
+@@ -158,14 +158,14 @@ class SuperGrokCard extends StatelessWidget {
+           onPressed: () =>
+               Clipboard.setData(ClipboardData(text: auth.userCode ?? '')),
+           icon: const Icon(Icons.copy, size: 16),
+-          label: const Text('Copy code'),
++          label: const Text('复制代码'),
+         ),
+         TextButton.icon(
+           onPressed: auth.verificationUri == null
+               ? null
+               : () => _open(auth.verificationUri!),
+           icon: const Icon(Icons.open_in_new, size: 16),
+-          label: const Text('Open xAI again'),
++          label: const Text('重新打开 xAI'),
+         ),
+         TextButton(onPressed: auth.cancelSignIn, child: const Text('取消')),
+       ],
+@@ -231,13 +231,13 @@ class SuperGrokCard extends StatelessWidget {
+         TextButton.icon(
+           onPressed: auth.checkAccess,
+           icon: const Icon(Icons.refresh, size: 16),
+-          label: const Text('Check access'),
++          label: const Text('检查访问权限'),
+         ),
+         TextButton.icon(
+           key: const Key('super-grok-sign-out'),
+           onPressed: auth.signOut,
+           icon: const Icon(Icons.logout, size: 16),
+-          label: const Text('Sign out'),
++          label: const Text('退出登录'),
+         ),
+       ],
+     ),
+diff --git a/lib/ui/settings/tabs/backend/worker_backend_section.dart b/lib/ui/settings/tabs/backend/worker_backend_section.dart
+index 25a652a..b49f8c9 100644
+--- a/lib/ui/settings/tabs/backend/worker_backend_section.dart
++++ b/lib/ui/settings/tabs/backend/worker_backend_section.dart
+@@ -139,7 +139,7 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+         SizedBox(height: widget.compact ? 16 : 28),
+         Divider(color: AppColors.borderOf(context)),
+         SizedBox(height: widget.compact ? 12 : 16),
+-        const SectionHeader('Realism evals'),
++        const SectionHeader('拟真评估'),
+         const SizedBox(height: 8),
+         Text(
+           widget.compact
+@@ -249,7 +249,7 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+                       availableModels: _models,
+                       selectedId: storage.workerRemoteModelName,
+                       fetching: _fetching,
+-                      dialogTitle: 'Realism evals model',
++                      dialogTitle: '拟真评估模型',
+                       onRefresh: () async {
+                         setState(() => _fetching = true);
+                         try {
+@@ -281,7 +281,7 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+                     obscureText: true,
+                     decoration: const InputDecoration(
+                       labelText: 'API 密钥',
+-                      hintText: 'Key for this host',
++                      hintText: '此主机的密钥',
+                     ),
+                     onSubmitted: (v) {
+                       if (v.trim().isEmpty) return;
+@@ -348,7 +348,7 @@ class _SideJobsModeToggle extends StatelessWidget {
+         Expanded(
+           child: _ModePill(
+             key: const Key('side-jobs-same-as-chat'),
+-            label: 'Same as chat',
++            label: '与聊天相同',
+             selected: !different,
+             onTap: onSame,
+           ),
+@@ -357,7 +357,7 @@ class _SideJobsModeToggle extends StatelessWidget {
+         Expanded(
+           child: _ModePill(
+             key: const Key('side-jobs-different-host'),
+-            label: 'Different host…',
++            label: '使用其他主机…',
+             selected: different,
+             onTap: onDifferent,
+           ),
+diff --git a/lib/ui/settings/tabs/general_tab.dart b/lib/ui/settings/tabs/general_tab.dart
+index 0753587..32c2c5c 100644
+--- a/lib/ui/settings/tabs/general_tab.dart
++++ b/lib/ui/settings/tabs/general_tab.dart
+@@ -95,7 +95,7 @@ class GeneralTab extends StatelessWidget {
+               children: [
+                 Flexible(
+                   child: Text(
+-                    'Auto-check for Updates',
++                    '自动检查更新',
+                     style: theme.textTheme.titleMedium,
+                   ),
+                 ),
+@@ -130,9 +130,9 @@ class GeneralTab extends StatelessWidget {
+                               SnackBar(
+                                 content: Text(
+                                   error == null
+-                                      ? 'You are up to date.'
+-                                      : 'Update check failed ($error). '
+-                                            'Try again later.',
++                                      ? '当前已是最新版本。'
++                                      : '检查更新失败（$error）。'
++                                            '请稍后重试。',
+                                 ),
+                                 duration: Duration(
+                                   seconds: error == null ? 2 : 4,
+@@ -149,10 +149,10 @@ class GeneralTab extends StatelessWidget {
+                         : const Icon(Icons.refresh, size: 18),
+                     label: Text(
+                       isBusy
+-                          ? 'Checking...'
++                          ? '正在检查…'
+                           : updateService.checkError != null
+-                          ? 'Check failed, try again'
+-                          : 'Check for Updates Now',
++                          ? '检查失败，重试'
++                          : '立即检查更新',
+                     ),
+                     style: OutlinedButton.styleFrom(
+                       foregroundColor: AppColors.textSecondary(context),
+@@ -168,23 +168,20 @@ class GeneralTab extends StatelessWidget {
+           const SizedBox(height: 16),
+           const SpellCheckLanguageRow(),
+           const SizedBox(height: 24),
+-          const SectionHeader('Porch Life'),
++          const SectionHeader('角色生活'),
+           const SizedBox(height: 8),
+           // The 18+ master switch. It lives HERE rather than in the Porch Life
+-          // tab on purpose: it hides that tab's "After Dark" group entirely
++          // tab on purpose: it hides that tab's "夜间内容" group entirely
+           // (the approved sketch: shown only when 18+ themes are enabled), so
+           // putting it inside the thing it hides would leave no way back on.
+           SwitchListTile(
+             contentPadding: EdgeInsets.zero,
+             title: Text(
+-              '18+ themes',
++              '成人内容（18+）',
+               style: TextStyle(color: AppColors.textPrimary(context)),
+             ),
+             subtitle: Text(
+-              'Shows the adult features — the After Dark group in Porch Life, '
+-              'and intimate preferences in the character editor. Off means '
+-              'they are simply not there. Turning this off never erases what '
+-              'you already set; it only hides the switches.',
++              '显示成人功能，包括「角色生活」中的「夜间内容」分组和角色编辑器中的亲密偏好。关闭后只会隐藏这些开关，不会删除你已设置的内容。',
+               style: TextStyle(
+                 fontSize: 12.5,
+                 color: AppColors.textSecondary(context),
+@@ -197,10 +194,10 @@ class GeneralTab extends StatelessWidget {
+           const SizedBox(height: 8),
+           const PorchLifePointerCard(),
+           const SizedBox(height: 24),
+-          const SectionHeader('Fallback system prompt'),
++          const SectionHeader('备用系统提示词'),
+           const SizedBox(height: 8),
+           Text(
+-            'Used in one-to-one chats when the character has no system prompt. Groups use their own prompt or a group default.',
++            '当角色没有系统提示词时，用于一对一聊天。群聊使用自己的提示词或群组默认提示词。',
+             style: TextStyle(color: AppColors.textSecondary(context)),
+           ),
+           const SizedBox(height: 8),
+@@ -216,7 +213,7 @@ class GeneralTab extends StatelessWidget {
+                   initialValue: shownPrompt,
+                   isExpanded: true,
+                   hint: const Text(
+-                    'Load saved prompt...',
++                    '加载已保存的提示词…',
+                     style: TextStyle(fontSize: 13),
+                   ),
+                   decoration: InputDecoration(
+@@ -254,12 +251,12 @@ class GeneralTab extends StatelessWidget {
+               ),
+               const SizedBox(width: 8),
+               IconButton(
+-                tooltip: 'Save current prompt',
++                tooltip: '保存当前提示词',
+                 icon: Icon(Icons.save, color: AppColors.logWarn),
+                 onPressed: () => showSavePromptDialog(context, storageService),
+               ),
+               IconButton(
+-                tooltip: 'Delete a saved prompt',
++                tooltip: '删除已保存的提示词',
+                 icon: Icon(Icons.delete_outline, color: AppColors.logError),
+                 onPressed: () =>
+                     showDeletePromptDialog(context, storageService),
+@@ -273,7 +270,7 @@ class GeneralTab extends StatelessWidget {
+             runSpacing: 4,
+             children: [
+               SystemPromptPresetChip(
+-                label: '📡 API Default',
++                label: '📡 API 默认',
+                 prompt: defaultApiSystemPrompt,
+                 storage: storageService,
+                 systemPromptController: systemPromptController,
+@@ -285,7 +282,7 @@ class GeneralTab extends StatelessWidget {
+                 systemPromptController: systemPromptController,
+               ),
+               SystemPromptPresetChip(
+-                label: '👥 Group Chat',
++                label: '👥 群聊',
+                 prompt: defaultGroupSystemPrompt,
+                 storage: storageService,
+                 systemPromptController: systemPromptController,
+@@ -299,7 +296,7 @@ class GeneralTab extends StatelessWidget {
+             style: theme.textTheme.bodyMedium,
+             decoration: InputDecoration(
+               labelText: '备用系统提示词',
+-              hintText: 'Used when a character has no system prompt...',
++              hintText: '角色没有系统提示词时使用…',
+               hintStyle: TextStyle(color: theme.textTheme.bodySmall?.color),
+               filled: true,
+               fillColor: AppColors.cardOf(context),
+@@ -313,7 +310,7 @@ class GeneralTab extends StatelessWidget {
+           const SizedBox(height: 24),
+           const GlobalPromptAdditions(),
+           const SizedBox(height: 24),
+-          const SectionHeader('About & License'),
++          const SectionHeader('关于与许可证'),
+           const SizedBox(height: 8),
+           const AboutLicenseCard(),
+         ],
+diff --git a/lib/ui/settings/tabs/general_tab/about_license_card.dart b/lib/ui/settings/tabs/general_tab/about_license_card.dart
+index fee7ca4..141d13e 100644
+--- a/lib/ui/settings/tabs/general_tab/about_license_card.dart
++++ b/lib/ui/settings/tabs/general_tab/about_license_card.dart
+@@ -22,7 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
+ import 'package:front_porch_ai/app_version.dart';
+ import 'package:front_porch_ai/ui/theme/theme.dart';
+ 
+-/// Settings → General "About & License" card: version, AGPL notice, and the
++/// Settings → General "关于与许可证" card: version, AGPL notice, and the
+ /// source-code / license-violation links.
+ class AboutLicenseCard extends StatelessWidget {
+   const AboutLicenseCard({super.key});
+@@ -50,12 +50,7 @@ class AboutLicenseCard extends StatelessWidget {
+           ),
+           const SizedBox(height: 6),
+           Text(
+-            'Free, open-source software © 2026 Front Porch AI, licensed under '
+-            'the GNU Affero General Public License v3.0. You are free to use, '
+-            'study, modify, and redistribute it under the AGPL. The complete '
+-            'source code is available below; if you received this app without '
+-            'that source, or as part of a closed-source product, that is a '
+-            'license violation.',
++            'Front Porch AI 是免费开源软件 © 2026，采用 GNU Affero 通用公共许可证第 3 版（AGPL）。你可以根据 AGPL 自由使用、研究、修改和再分发。本项目的完整源代码可在下方获取；如果你获得此应用时未附带源代码，或它作为闭源产品的一部分提供，则属于许可证违规。',
+             style: TextStyle(
+               color: AppColors.textSecondary(context),
+               fontSize: 12,
+@@ -69,7 +64,7 @@ class AboutLicenseCard extends StatelessWidget {
+             children: [
+               ActionChip(
+                 avatar: const Icon(Icons.code, size: 16),
+-                label: const Text('Source code'),
++                label: const Text('源代码'),
+                 onPressed: () => launchUrl(
+                   Uri.parse(repoUrl),
+                   mode: LaunchMode.externalApplication,
+@@ -77,7 +72,7 @@ class AboutLicenseCard extends StatelessWidget {
+               ),
+               ActionChip(
+                 avatar: const Icon(Icons.gavel, size: 16),
+-                label: const Text('Report a license violation'),
++                label: const Text('举报许可证违规'),
+                 onPressed: () => launchUrl(
+                   Uri.parse('$repoUrl/issues'),
+                   mode: LaunchMode.externalApplication,
+diff --git a/lib/ui/settings/tabs/generation_tab.dart b/lib/ui/settings/tabs/generation_tab.dart
+index af7cd51..4ef8c77 100644
+--- a/lib/ui/settings/tabs/generation_tab.dart
++++ b/lib/ui/settings/tabs/generation_tab.dart
+@@ -54,7 +54,7 @@ class _GenerationTabState extends State<GenerationTab> {
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           // ── Reasoning (thinking models — local KoboldCpp & remote) ─────
+-          const SectionHeader('Thinking'),
++          const SectionHeader('思考设置'),
+           const SizedBox(height: 8),
+           ThinkingSettingsBlock(
+             enabled: storage.backendSettings.reasoningEnabled,
+@@ -66,10 +66,10 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Generation Parameters ──────────────────────────────────────
+-          const SectionHeader('Generation Parameters'),
++          const SectionHeader('生成参数'),
+           const SizedBox(height: 8),
+           SliderSetting(
+-            label: 'Temperature',
++            label: '温度',
+             value: storage.generationSettings.temperature,
+             min: 0.0,
+             max: 2.0,
+@@ -80,7 +80,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           ),
+           if (knobs.contains(SamplerKnob.minP))
+             SliderSetting(
+-              label: 'Min-P',
++              label: '最小 P 值',
+               value: storage.generationSettings.minP,
+               min: 0.0,
+               max: 1.0,
+@@ -90,7 +90,7 @@ class _GenerationTabState extends State<GenerationTab> {
+               decimalPlaces: 2,
+             ),
+           SliderSetting(
+-            label: 'Top-P',
++            label: 'Top-P 采样',
+             value: storage.generationSettings.topP,
+             min: 0.1,
+             max: 1.0,
+@@ -101,7 +101,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           ),
+           if (knobs.contains(SamplerKnob.topK))
+             SliderSetting(
+-              label: 'Top-K',
++              label: 'Top-K 采样',
+               value: storage.generationSettings.topK.toDouble(),
+               min: 0,
+               max: 200,
+@@ -113,7 +113,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             ),
+           if (knobs.contains(SamplerKnob.repeatPenalty))
+             SliderSetting(
+-              label: 'Repeat Penalty',
++              label: '重复惩罚',
+               value: storage.generationSettings.repeatPenalty,
+               min: 1.0,
+               max: 3.0,
+@@ -125,7 +125,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             ),
+           if (knobs.contains(SamplerKnob.repeatPenaltyTokens))
+             SliderSetting(
+-              label: 'Repeat Penalty Tokens',
++              label: '重复惩罚范围（Token）',
+               value: storage.generationSettings.repeatPenaltyTokens.toDouble(),
+               min: 0,
+               max: 2048,
+@@ -137,7 +137,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             ),
+           if (knobs.contains(SamplerKnob.xtc)) ...[
+             SliderSetting(
+-              label: 'XTC Threshold',
++              label: 'XTC 阈值',
+               value: storage.generationSettings.xtcThreshold,
+               min: 0.0,
+               max: 0.5,
+@@ -148,7 +148,7 @@ class _GenerationTabState extends State<GenerationTab> {
+               decimalPlaces: 2,
+             ),
+             SliderSetting(
+-              label: 'XTC Probability',
++              label: 'XTC 概率',
+               value: storage.generationSettings.xtcProbability,
+               min: 0.0,
+               max: 1.0,
+@@ -161,7 +161,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           ],
+           if (knobs.contains(SamplerKnob.dry))
+             SliderSetting(
+-              label: 'DRY Strength',
++              label: 'DRY 强度',
+               value: storage.generationSettings.dryMultiplier,
+               min: 0.0,
+               max: 3.0,
+@@ -176,7 +176,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             Row(
+               children: [
+                 Text(
+-                  'Dynamic Temperature',
++                  '动态温度',
+                   style: TextStyle(color: AppColors.textPrimary(context)),
+                 ),
+                 const Spacer(),
+@@ -190,7 +190,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             ),
+             if (storage.generationSettings.dynamicTempEnabled)
+               SliderSetting(
+-                label: 'Dynatemp Range',
++                label: '动态温度范围',
+                 value: storage.generationSettings.dynamicTempRange,
+                 min: 0.0,
+                 max: 2.0,
+@@ -204,10 +204,10 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Output Limits ──────────────────────────────────────────────
+-          const SectionHeader('Output Limits'),
++          const SectionHeader('输出限制'),
+           const SizedBox(height: 8),
+           SliderSetting(
+-            label: 'Max Output Tokens',
++            label: '最大输出 Token 数',
+             value: storage.generationSettings.maxLength.toDouble(),
+             min: 16,
+             max: 16384,
+@@ -220,7 +220,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           PresetContextLock(
+             locked: storage.backendSettings.presetOwnsContext,
+             child: SliderSetting(
+-              label: 'Context Size',
++              label: '上下文长度',
+               value: storage.backendSettings.contextSize.toDouble().clamp(
+                 512,
+                 isRemote ? 500000.0 : 131072.0,
+@@ -241,11 +241,10 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Model transport ────────────────────────────────────────────
+-          const SectionHeader('Model transport'),
++          const SectionHeader('模型调用方式'),
+           const SizedBox(height: 8),
+           Text(
+-            'How the engine evaluations (Realism, Journal, Growth Rings) '
+-            'talk to the model.',
++            '此处设置拟真引擎、日记和成长轨迹等功能与模型之间的调用方式。',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 12,
+@@ -255,7 +254,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           Row(
+             children: [
+               Text(
+-                'Native tool calling',
++                '原生工具调用',
+                 style: TextStyle(color: AppColors.textPrimary(context)),
+               ),
+               const Spacer(),
+@@ -268,12 +267,7 @@ class _GenerationTabState extends State<GenerationTab> {
+             ],
+           ),
+           Text(
+-            'When on, Realism, Journal and Growth use native tool calls if '
+-            'this model supports them — cleaner structured results, and on '
+-            'the common local templates no slower than the JSON floor. When '
+-            'off, every eval uses the JSON/XML floor even if the model can '
+-            'speak tools. The sidebar pill still shows whether the model '
+-            'can. Default on.',
++            '开启后，如果模型支持，拟真引擎、日记和成长轨迹会使用原生工具调用，能获得更清晰的结构化结果；在常见的本地模板中，速度也不会比 JSON 方式更慢。关闭后，即使模型支持工具调用，所有评估都会使用基础 JSON/XML 方式。侧边栏标签仍会显示模型是否支持工具调用。默认开启。',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 11,
+@@ -282,12 +276,12 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Display Output ─────────────────────────────────────────────
+-          const SectionHeader('Display Output'),
++          const SectionHeader('输出显示'),
+           const SizedBox(height: 8),
+           Row(
+             children: [
+               Text(
+-                'Smooth Output Buffer',
++                '平滑输出缓冲',
+                 style: TextStyle(color: AppColors.textPrimary(context)),
+               ),
+               const Spacer(),
+@@ -301,7 +295,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           ),
+           if (storage.uiSettings.displayBufferEnabled) ...[
+             SliderSetting(
+-              label: 'Target Display Speed (t/s)',
++              label: '目标显示速度（Token/秒）',
+               value: storage.uiSettings.targetDisplayTps,
+               min: 5.0,
+               max: 60.0,
+@@ -309,7 +303,7 @@ class _GenerationTabState extends State<GenerationTab> {
+               divisions: 55,
+             ),
+             SliderSetting(
+-              label: 'Buffer Duration (seconds)',
++              label: '缓冲时长（秒）',
+               value: storage.uiSettings.bufferDurationSeconds,
+               min: 1.0,
+               max: 10.0,
+@@ -321,7 +315,7 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Stop Sequences ─────────────────────────────────────────────
+-          const SectionHeader('Stop Sequences'),
++          const SectionHeader('停止序列'),
+           const SizedBox(height: 8),
+           StopSequenceList(
+             sequences: storage.generationSettings.stopSequences,
+@@ -332,7 +326,7 @@ class _GenerationTabState extends State<GenerationTab> {
+ 
+           // ── Banned Phrases (KoboldCpp only) ────────────────────────────
+           if (knobs.contains(SamplerKnob.bannedPhrases)) ...[
+-            const SectionHeader('Banned Phrases'),
++            const SectionHeader('屏蔽短语'),
+             BannedPhrasesEditor(
+               controller: widget.bannedPhrasesController,
+               onChanged: (phrases) =>
+@@ -344,11 +338,10 @@ class _GenerationTabState extends State<GenerationTab> {
+           const SizedBox(height: 24),
+ 
+           // ── Output Sanitizer ───────────────────────────────────────────
+-          const SectionHeader('Output Sanitizer'),
++          const SectionHeader('输出清理器'),
+           const SizedBox(height: 4),
+           Text(
+-            'Replace specific character sequences in model output before '
+-            'saving to chat history.',
++            '在保存到聊天记录之前，替换模型输出中的指定字符序列。',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 12,
+@@ -379,14 +372,11 @@ class _GenerationTabState extends State<GenerationTab> {
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       Text(
+-                        'Sanitise Existing History',
++                        '清理已有聊天记录',
+                         style: TextStyle(color: AppColors.textPrimary(context)),
+                       ),
+                       Text(
+-                        'When enabled, opening a chat will permanently '
+-                        'apply the rules below to the AI messages already '
+-                        'saved in that chat\'s history — your own messages '
+-                        'are never touched. This cannot be undone.',
++                        '启用后，打开聊天时会永久按照下方规则处理该聊天记录中已经保存的 AI 消息。你自己发送的消息不会被修改，此操作无法撤销。',
+                         style: TextStyle(
+                           color: AppColors.textTertiary(context),
+                           fontSize: 11,
+@@ -404,16 +394,11 @@ class _GenerationTabState extends State<GenerationTab> {
+                     if (val) {
+                       final confirmed = await showWarmDialog<bool>(
+                         context,
+-                        title: 'Rewrite saved chat history?',
++                        title: '重新处理已保存的聊天记录？',
+                         icon: Icons.warning_amber_rounded,
+                         destructive: true,
+                         content: const WarmDialogText(
+-                          'Every chat you open while this is on will have '
+-                          'the rules applied to its saved AI messages — '
+-                          'permanently, on that chat\'s next save. Your own '
+-                          'messages are never touched. This cannot be '
+-                          'undone (automatic local backups are your safety '
+-                          'net — Settings → General).',
++                          '启用期间打开的每个聊天，都会在下次保存时永久将这些规则应用于已保存的 AI 消息。你自己发送的消息不会受到影响，此操作无法撤销（本地自动备份可作为保障，位置：设置 → 常规）。',
+                         ),
+                         actions: [
+                           TextButton(
+@@ -422,7 +407,7 @@ class _GenerationTabState extends State<GenerationTab> {
+                           ),
+                           TextButton(
+                             onPressed: () => Navigator.pop(context, true),
+-                            child: const Text('Rewrite on open'),
++                            child: const Text('打开时重新处理'),
+                           ),
+                         ],
+                       );
+diff --git a/lib/ui/settings/tabs/porch_life_defaults_note.dart b/lib/ui/settings/tabs/porch_life_defaults_note.dart
+index ba8b174..b3223d4 100644
+--- a/lib/ui/settings/tabs/porch_life_defaults_note.dart
++++ b/lib/ui/settings/tabs/porch_life_defaults_note.dart
+@@ -39,11 +39,7 @@ class PorchLifeDefaultsNote extends StatelessWidget {
+         ),
+       ),
+       child: Text(
+-        'These are the defaults new chats start from. Any single chat can '
+-        'overrule most of them from its sidebar — Chaos Mode, Needs, '
+-        'Objectives and Growth Rings all have a switch there for that one '
+-        'story. Passage of Time is the exception: that row is the live '
+-        'clock switch for every open chat.',
++        '这些是新聊天的默认设置。大多数选项都可以在单个聊天的侧边栏中单独覆盖——混沌模式、需求、目标和成长轨迹都提供了独立开关。时间流逝是例外：此处的开关会控制所有已打开聊天的实时故事时钟。',
+         style: TextStyle(
+           fontSize: 12.5,
+           color: AppColors.textSecondary(context),
+diff --git a/lib/ui/settings/tabs/porch_life_engine_card.dart b/lib/ui/settings/tabs/porch_life_engine_card.dart
+index a751839..d77e8f8 100644
+--- a/lib/ui/settings/tabs/porch_life_engine_card.dart
++++ b/lib/ui/settings/tabs/porch_life_engine_card.dart
+@@ -22,7 +22,7 @@ import 'package:front_porch_ai/services/services.dart';
+ import 'package:front_porch_ai/ui/settings/widgets/widgets.dart';
+ import 'package:front_porch_ai/ui/widgets/widgets.dart';
+ 
+-/// "The Engine" group — extracted when the tab grew past its comfort size
++/// "引擎" group — extracted when the tab grew past its comfort size
+ /// (it once also held the Model transport card, since moved to Generation
+ /// settings on both surfaces).
+ class PorchLifeEngineCard extends StatelessWidget {
+@@ -38,19 +38,15 @@ class PorchLifeEngineCard extends StatelessWidget {
+   @override
+   Widget build(BuildContext context) {
+     return FeatureGroupCard(
+-      title: 'The Engine',
+-      subtitle: 'feelings about what you do',
++      title: '引擎',
++      subtitle: '角色对你行为的感受',
+       rows: [
+         FeatureRow(
+           icon: Icons.theater_comedy,
+-          label: 'Realism Engine',
++          label: '拟真引擎',
+           need: FeatureNeed.core,
+           blurb:
+-              'Bond and trust, moods that carry between turns, physical '
+-              'state — how the character feels about what you just did. '
+-              'Needs, the story clock and desire all read from it; the '
+-              'rest of Porch Life runs with or without it, and every row '
+-              'says which it is.',
++              '关系与信任、会延续到后续回合的情绪，以及身体状态——也就是角色对你刚才所做之事的感受。需求、故事时钟和欲望都会读取这些状态；角色生活中的其他功能则可独立运行，每一项都会说明自己的依赖条件。',
+           value: engineOn,
+           onChanged: storage.realismSettings.setRealismDefault,
+         ),
+@@ -58,14 +54,10 @@ class PorchLifeEngineCard extends StatelessWidget {
+           icon: Icons.favorite_outline,
+           label: '需求',
+           need: FeatureNeed.needs,
+-          dependsOn: 'the Realism Engine',
++          dependsOn: '拟真引擎',
+           satisfied: engineOn,
+           blurb:
+-              'Hunger, energy, comfort and the rest, Sims-style — they '
+-              'drift through a scene and colour how the character feels. '
+-              'The engine is what turns a need into a mood, so needs run '
+-              'with it or not at all. Individual chats can still switch '
+-              'them off in the sidebar.',
++              '类似模拟人生的需求系统，包括饥饿、精力、舒适度等。这些需求会在场景中变化，并影响角色的感受。拟真引擎会将需求转化为情绪，因此需求功能必须与引擎一同运行。你仍可在每个聊天的侧边栏中单独关闭需求。',
+           value: storage.realismSettings.needsSimDefault,
+           onChanged: storage.realismSettings.setNeedsSimDefault,
+           showChildWhenOff: true,
+diff --git a/lib/ui/settings/tabs/porch_life_mcp_web_card.dart b/lib/ui/settings/tabs/porch_life_mcp_web_card.dart
+index 432a70b..b8364b2 100644
+--- a/lib/ui/settings/tabs/porch_life_mcp_web_card.dart
++++ b/lib/ui/settings/tabs/porch_life_mcp_web_card.dart
+@@ -30,25 +30,15 @@ class PorchLifeMcpWebCard extends StatelessWidget {
+   Widget build(BuildContext context) {
+     final storage = context.watch<StorageService>();
+     return FeatureGroupCard(
+-      title: 'Web Search and extra tools',
+-      subtitle: 'looking things up, and recipe cards from your library',
++      title: '网页搜索与额外工具',
++      subtitle: '用于查询资料，并从资料库生成配方卡片',
+       rows: [
+         FeatureRow(
+           icon: Icons.travel_explore,
+-          label: 'Web Search',
++          label: '网页搜索',
+           need: FeatureNeed.alone,
+           blurb:
+-              'When they hit a word or event they don\'t know, they can '
+-              'look it up and react as themselves — not reciting a wiki. '
+-              'Only the first reply to a message you send can search on '
+-              'its own. To force one lookup, end the line with '
+-              '/search -- the name, or type the words when you regenerate. '
+-              'Continue, guests, group follow-ups, and Dynamic Responses '
+-              'stay offline. '
+-              'Works with no key: search falls back to Wikipedia '
+-              '(encyclopedia lookups). Add a Tavily API key below '
+-              'for full web coverage. Off by default. Turning this on '
+-              'or off applies to every chat, including ones already open.',
++              '当角色遇到不熟悉的词语或事件时，可以自行查询并以角色身份作出反应，而不是照抄百科。只有你发送消息后生成的第一条回复可以主动搜索。若要强制查询，可在消息末尾添加 /search -- 名称，或在重新生成回复时输入要查询的词语。继续生成、访客、群聊后续回复和动态回复不会联网。无需密钥也可使用：默认会回退到维基百科查询。若要覆盖更广的网页内容，可在下方添加 Tavily API 密钥。此功能默认关闭；开启或关闭后会应用于所有聊天，包括已打开的聊天。',
+           value: storage.webSearchSettings.webSearchDefault,
+           onChanged: storage.webSearchSettings.setWebSearchDefault,
+           showChildWhenOff: true,
+diff --git a/lib/ui/settings/tabs/porch_life_tab.dart b/lib/ui/settings/tabs/porch_life_tab.dart
+index b02f0a3..662a4df 100644
+--- a/lib/ui/settings/tabs/porch_life_tab.dart
++++ b/lib/ui/settings/tabs/porch_life_tab.dart
+@@ -89,8 +89,7 @@ class PorchLifeTab extends StatelessWidget {
+       padding: const EdgeInsets.all(16),
+       children: [
+         Text(
+-          'Everything that makes a character feel like they live somewhere. '
+-          'Each switch says plainly what it needs — many need nothing at all.',
++          '让角色真正拥有生活感的各项功能。每个开关都会说明所需条件，其中许多功能不依赖其他模块。',
+           style: TextStyle(
+             fontSize: 13,
+             color: AppColors.textSecondary(context),
+@@ -101,62 +100,44 @@ class PorchLifeTab extends StatelessWidget {
+         PorchLifeEngineCard(engineOn: engineOn, storage: storage),
+ 
+         FeatureGroupCard(
+-          title: 'Time & World',
+-          subtitle: "the story's clock and sky",
++          title: '时间与世界',
++          subtitle: "故事中的时间与天气",
+           rows: [
+             FeatureRow(
+               icon: Icons.schedule,
+-              label: 'Passage of Time',
++              label: '时间流逝',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'The story keeps its own clock — dawn to morning to evening '
+-                  'to night, day after day. This switch is what runs the clock '
+-                  'in every open chat. Off pauses them immediately; on starts '
+-                  'them again. The AI judges how long each exchange actually '
+-                  'took, so a shared meal moves the clock further than a '
+-                  'passing hello. A normal send always moves at least a '
+-                  'minute or two.',
++              blurb: '故事有自己的时钟——从黎明、清晨、傍晚到夜晚，日复一日。此开关控制所有已打开聊天中的时间流逝。关闭会立即暂停，开启后则重新开始。AI 会判断每轮对话实际经过了多长时间，因此一起吃顿饭比随口打个招呼更耗时。每次正常发送消息至少会推进一到两分钟。',
+               value: timeOn,
+               onChanged: storage.realismSettings.setPassageOfTimeDefault,
+             ),
+             FeatureRow(
+               icon: Icons.fast_forward_outlined,
+-              label: 'Time-skip bridge',
++              label: '时间跳跃衔接',
+               need: FeatureNeed.needs,
+-              dependsOn: 'Passage of Time',
++              dependsOn: '时间流逝',
+               satisfied: timeOn,
+-              blurb:
+-                  'When a message skips a day or more ("two weeks '
+-                  'later"), a short narrator card fills in how those days '
+-                  'went before the character replies. One short AI call, '
+-                  'only on a turn that skips that far. Off, the skip still '
+-                  'happens, just without the card.',
++              blurb: '当消息跳过一天或更久（例如“两个星期后”）时，角色回复前会显示一段简短旁白，补充这段时间里发生的事。只有确实发生较大时间跳跃的回合才会额外调用一次 AI。关闭后仍会跳过时间，只是不再显示这段旁白。',
+               value: realism.timeSkipBridgeEnabled,
+               onChanged: realism.setTimeSkipBridgeEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.cloud_outlined,
+-              label: 'Story Weather',
++              label: '故事天气',
+               need: FeatureNeed.needs,
+-              dependsOn: 'Passage of Time',
++              dependsOn: '时间流逝',
+               satisfied: timeOn,
+-              blurb:
+-                  'Weather rolls through the story\'s days and is felt in mood '
+-                  'and comfort. Characters can see fronts coming ("looks like '
+-                  'rain tomorrow"). It costs no extra AI call — the sky is '
+-                  'worked out from the date — but it needs days to pass.',
++              blurb: '天气会随着故事中的日子变化，并影响角色的心情与舒适感。角色也能察觉天气变化，例如预感“明天可能会下雨”。天气根据日期计算，不会额外调用 AI，但需要时间持续流逝。',
+               value: weatherOn,
+               onChanged: storage.realismSettings.setWeatherEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.thermostat,
+-              label: 'Temperatures in °F',
++              label: '温度单位：华氏度',
+               need: FeatureNeed.needs,
+-              dependsOn: 'Story Weather',
++              dependsOn: '故事天气',
+               satisfied: timeOn && weatherOn,
+-              blurb:
+-                  'Display only — characters always experience weather in '
+-                  'words ("coat-and-gloves cold"), never numbers.',
++              blurb: '此选项只影响显示方式——角色感受到的天气始终会用文字描述（例如“冷得需要穿外套和手套”），不会用数字表示。',
+               value: storage.realismSettings.weatherFahrenheit,
+               onChanged: storage.realismSettings.setWeatherFahrenheit,
+             ),
+@@ -164,98 +145,60 @@ class PorchLifeTab extends StatelessWidget {
+         ),
+ 
+         FeatureGroupCard(
+-          title: 'Memory & Heart',
+-          subtitle: 'what they keep and carry',
++          title: '记忆与情感',
++          subtitle: '角色记住并随身携带的事物',
+           rows: [
+             FeatureRow(
+               icon: Icons.menu_book_outlined,
+-              label: 'The Journal',
++              label: '日记',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Memory cards and the "where we are" recap, kept per chat and '
+-                  'never shared between chats. With the Realism Engine on, '
+-                  'cards also carry the feeling of the moment; without it they '
+-                  'are simply remembered.',
++              blurb: '记忆卡片和“当前进展”摘要会按聊天分别保存，不会在不同聊天之间共享。启用拟真引擎后，卡片还会记录当时的情绪；未启用时则只保存事件记忆。',
+               value: journalOn,
+               onChanged: storage.memorySettings.setJournalEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.nightlight_outlined,
+-              label: 'Dreams',
++              label: '梦境',
+               need: FeatureNeed.needs,
+-              dependsOn: 'the Journal and Passage of Time',
++              dependsOn: '日记与时间流逝',
+               satisfied: journalOn && timeOn,
+-              blurb:
+-                  'When a story night passes, the character dreams — a short, '
+-                  'hazy scene woven from their memories, mood and the weather.',
++              blurb: '故事中的夜晚过去后，角色会做梦——梦境是一段朦胧短场景，由角色的记忆、心情和天气共同编织而成。',
+               value: storage.realismSettings.dreamsEnabled,
+               onChanged: storage.realismSettings.setDreamsEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.handshake_outlined,
+-              label: 'Promises',
++              label: '承诺',
+               need: FeatureNeed.needs,
+-              dependsOn: 'the Journal',
++              dependsOn: '日记',
+               satisfied: journalOn,
+-              blurb:
+-                  'Commitments either of you make are remembered, and kept or '
+-                  'broken ones come back later. Uses one extra AI request per '
+-                  'reply to spot them, so it is slower and costs more on a paid '
+-                  'API. You can settle one yourself in the Journal\'s Promises '
+-                  'tab.',
++              blurb: '你和角色做出的承诺都会被记住，之后也会体现承诺是否兑现。每条回复会额外调用一次 AI 来识别承诺，因此速度会慢一些，使用付费 API 时成本也会更高。你也可以在日记的“承诺”标签页中手动处理承诺。',
+               value: realism.promiseLedgerEnabled,
+               onChanged: realism.setPromiseLedgerEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.checkroom_outlined,
+-              label: 'Pockets & Wardrobe',
++              label: '口袋与衣橱',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'What they are wearing and carrying is remembered instead of '
+-                  'scrolling out of the conversation — so the keys they picked '
+-                  'up an hour ago are still in their pocket, and the coat they '
+-                  'took off is still off. Items can change: a candy bar becomes '
+-                  'a wrapper, a sword gets notched. Uses one extra AI request '
+-                  'per reply to notice what changed, so it is slower and costs '
+-                  'more on a paid API. Kept per chat and cleared with it.',
++              blurb: '角色穿着和携带的物品会被持续记住，而不会随着聊天记录滚动而丢失——比如一小时前捡到的钥匙仍在口袋里，脱下的外套也仍然脱着。物品状态会变化：糖果会变成糖纸，剑可能出现缺口。每条回复会额外调用一次 AI 来识别变化，因此速度会慢一些，付费 API 的成本也会更高。状态按聊天保存，并随该聊天一起清除。',
+               value: realism.pocketsEnabled,
+               onChanged: realism.setPocketsEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.swap_horiz,
+-              label: 'Hand things between characters',
++              label: '在角色之间传递物品',
+               need: FeatureNeed.needs,
+-              dependsOn: 'Pockets & Wardrobe',
++              dependsOn: '口袋与衣橱',
+               satisfied: realism.pocketsEnabled,
+-              blurb:
+-                  'In a group chat, when one character hands something to '
+-                  'another it actually moves — out of their pocket and into '
+-                  'the other\'s, keeping whatever condition it was in. Without '
+-                  'this, a handed-over item simply leaves the giver and reaches '
+-                  'no one. Costs nothing extra; it rides the check Pockets is '
+-                  'already doing. Best with a frontier model (Claude, GPT, '
+-                  'Gemini): it has to name WHO received the thing, which is '
+-                  'harder than noticing what changed, and smaller local models '
+-                  'often get the name wrong. When the name does not match '
+-                  'somebody in the chat, the app declines to guess — the item '
+-                  'leaves the giver and goes nowhere, exactly as before.',
++              blurb: '在群聊中，当一个角色把物品交给另一个角色时，物品会真正转移到对方身上，并保留原有状态。如果关闭此功能，物品只会从交出者身上消失，不会出现在接收者那里。此功能不会额外增加调用，而是复用“口袋与衣橱”已有的检查。推荐使用能力较强的模型（Claude、GPT、Gemini）：模型需要准确指出接收者是谁，这比识别物品变化更困难；较小的本地模型更容易弄错名字。如果名称与聊天中的任何角色都不匹配，应用不会猜测，物品会像以前一样消失且不归任何人所有。',
+               value: realism.pocketTransfersEnabled,
+               onChanged: realism.setPocketTransfersEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.cloud_queue,
+-              label: 'Standing Mood',
++              label: '持续情绪',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Lets them arrive already in a mood you had nothing to do '
+-                  'with — tired, hungry, worn down by a week of rain, or '
+-                  'cheerful after a good night. Everything else in the app '
+-                  'reacts to YOU, which slowly makes you the centre of their '
+-                  'world; this is the part that is just their day. It is never '
+-                  'invented: it comes from what the app already tracks, and '
+-                  'hovering the mood chip tells you exactly what they walked '
+-                  'in carrying, so you can always tell their day from your '
+-                  'doing. Costs nothing — no extra AI request.',
++              blurb: '角色会带着与你无关的情绪进入场景——例如疲惫、饥饿、被连续一周的雨天消磨了精神，或因昨晚过得愉快而心情很好。应用中的其他系统大多围绕你的行为作出反应，这容易让你逐渐成为角色世界的中心；此功能则记录角色自己的日常状态。这些情绪并非凭空编造，而是根据应用已有的追踪信息得出。将鼠标悬停在情绪标签上即可查看原因，区分角色自己的状态与你的行为。此功能不需要额外 AI 调用。',
+               value: realism.standingMoodEnabled,
+               onChanged: realism.setStandingMoodEnabled,
+             ),
+@@ -263,31 +206,22 @@ class PorchLifeTab extends StatelessWidget {
+         ),
+ 
+         FeatureGroupCard(
+-          title: 'Presence',
+-          subtitle: 'noticing you, nothing more',
++          title: '存在感',
++          subtitle: '察觉到你的存在',
+           rows: [
+             FeatureRow(
+               icon: Icons.spa_outlined,
+-              label: 'Growth Rings',
++              label: '成长轨迹',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Slow character evolution — rings, not rewrites. What they '
+-                  'live through is added as a new layer instead of overwriting '
+-                  'who they were.',
++              blurb: '让角色缓慢成长——像增加年轮，而不是推倒重写。角色经历的事情会成为新的成长层次，而不会覆盖他们原本的性格。',
+               value: storage.memorySettings.characterEvolutionEnabled,
+               onChanged: storage.memorySettings.setCharacterEvolutionEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.track_changes,
+-              label: 'Objectives',
++              label: '目标',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Short-lived quests a character works toward — set your own, '
+-                  'or let them decide what they want. Needs nothing else to '
+-                  'run, but it does check in with the AI every few messages '
+-                  '(and after a time skip) to see where each goal stands. '
+-                  'Switching this off is the way to stop that cost — your '
+-                  'quests are kept either way.',
++              blurb: '角色会努力完成一些短期目标。你可以自行设定，也可以让角色决定自己想做什么。此功能不依赖其他模块，但会每隔几条消息（以及时间跳跃后）调用 AI 检查目标进展。关闭它可以停止这部分开销；无论开关如何，已有目标都会保留。',
+               value: objectivesOn,
+               onChanged: storage.realismSettings.setObjectivesEnabled,
+             ),
+@@ -295,14 +229,9 @@ class PorchLifeTab extends StatelessWidget {
+               icon: Icons.flag_outlined,
+               label: '目标与抱负',
+               need: FeatureNeed.needs,
+-              dependsOn: 'Objectives',
++              dependsOn: '目标',
+               satisfied: objectivesOn,
+-              blurb:
+-                  'Long-term goals written on the character\'s card colour how '
+-                  'they steer a scene, and finishing an objective moves them a '
+-                  'little closer. Costs nothing extra — the goals are already '
+-                  'on the card — but finishing a quest is the only thing that '
+-                  'moves them, so they need Objectives running.',
++              blurb: '写在角色卡上的长期目标会影响角色在场景中的行动方向；完成一项目标也会让角色向抱负更进一步。此功能本身不会增加额外调用，因为目标已在角色卡中，但只有“目标”功能运行时，完成任务才会推进抱负。',
+               value: realism.ambitionsEnabled,
+               onChanged: realism.setAmbitionsEnabled,
+             ),
+@@ -315,30 +244,17 @@ class PorchLifeTab extends StatelessWidget {
+             ),
+             FeatureRow(
+               icon: Icons.person_search_outlined,
+-              label: 'Notice new characters',
++              label: '发现新角色',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Every few messages the app reads what was just narrated and, '
+-                  'if a new named character has turned up in the story, offers '
+-                  'to bring them in so they can speak for themselves. Switch '
+-                  'this off and it stops asking — you can still invite someone '
+-                  'in yourself at any time with the /scan command or the guest '
+-                  'button. On by default; turn it off if the offers interrupt '
+-                  'more than they help.',
++              blurb: '每隔几条消息，应用会分析刚刚叙述的内容。如果故事中出现了有名字的新角色，就会询问你是否将其加入，让新角色也能参与对话。关闭后应用不会再主动询问；你仍可随时使用 /scan 命令或访客按钮邀请角色。此功能默认开启；如果提示打断了你的使用，可以将其关闭。',
+               value: realism.sceneGuestDetectionEnabled,
+               onChanged: realism.setSceneGuestDetectionEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.casino_outlined,
+-              label: 'Chaos Mode',
++              label: '混沌模式',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'Pressure builds quietly as a scene goes on, and every so '
+-                  'often something happens that neither of you planned — a '
+-                  'knock at the door, a spilled drink, weather turning. It '
+-                  'works with or without the Realism Engine. Switching it on '
+-                  'here turns it on for new chats and groups; each chat can '
+-                  'still overrule it in the sidebar.',
++              blurb: '随着场景推进，压力会悄悄累积，偶尔就会发生意料之外的事情——有人敲门、饮料洒了，或天气突然变化。此功能无论是否启用拟真引擎都能运行。在这里开启后，新聊天和群组默认启用；每个聊天仍可在侧边栏单独覆盖此设置。',
+               value: realism.chaosModeDefault,
+               onChanged: realism.setChaosModeDefault,
+               showChildWhenOff: true,
+@@ -346,24 +262,17 @@ class PorchLifeTab extends StatelessWidget {
+             ),
+             FeatureRow(
+               icon: Icons.history,
+-              label: 'Welcome-back recap',
++              label: '回归摘要',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'After you have been away a while, opening a chat shows a '
+-                  'small "where we left off" banner. Uses the time of your last '
+-                  'message, already saved with your chat. Nothing new is '
+-                  'collected and nothing leaves your device.',
++              blurb: '离开一段时间后重新打开聊天，会显示一条简短的“上次聊到哪里”摘要。它使用聊天中已经保存的上一条消息时间，不会收集新数据，也不会将任何内容发送到设备之外。',
+               value: storage.realismSettings.absenceBannerEnabled,
+               onChanged: storage.realismSettings.setAbsenceBannerEnabled,
+             ),
+             FeatureRow(
+               icon: Icons.waving_hand_outlined,
+-              label: 'Character notices your absence',
++              label: '角色会察觉你的离开',
+               need: FeatureNeed.alone,
+-              blurb:
+-                  'The character briefly acknowledges a long gap ("it\'s been a '
+-                  'few days") — once, in coarse words, never guessing what you '
+-                  'were doing. Same local-only timestamp as the recap banner.',
++              blurb: '当你长时间没有出现时，角色会简短地提及这段间隔（例如“已经好几天了”）。提示只会出现一次，使用概略表达，不会猜测你这段时间在做什么。它与回归摘要使用同一份仅保存在本地的时间戳。',
+               value: storage.realismSettings.absenceAckEnabled,
+               onChanged: storage.realismSettings.setAbsenceAckEnabled,
+               child: AwayThreshold(storage: storage),
+@@ -380,45 +289,26 @@ class PorchLifeTab extends StatelessWidget {
+         // in Settings → General so it stays reachable while this is hidden.
+         if (adultOn)
+           FeatureGroupCard(
+-            title: 'After Dark',
+-            subtitle: 'shown only when 18+ themes are on',
++            title: '夜间内容',
++            subtitle: '仅在启用成人内容时显示',
+             rows: [
+               FeatureRow(
+                 icon: Icons.local_fire_department,
+-                label: 'Afterglow',
++                label: '余韵',
+                 need: FeatureNeed.needs,
+-                dependsOn: "Realism's arousal",
++                dependsOn: '拟真引擎的欲望评估',
+                 satisfied: engineOn,
+-                blurb:
+-                    'Desire builds through a scene and settles afterwards '
+-                    'instead of resetting — so intimacy keeps a believable '
+-                    'rhythm and a character is not instantly ready to go '
+-                    'again. The engine is what scores desire, so this cannot '
+-                    'run without it. Uses one short extra AI request per reply '
+-                    'to notice a climax, so it costs a little more on a paid '
+-                    'API. Multiorgasmic characters feel a tenderness window '
+-                    'instead of a lock.',
++                blurb: '角色的欲望会在场景中逐渐累积，并在之后慢慢平复，而不是立即重置。这样亲密互动会更有真实节奏，角色也不会立刻准备好再次开始。此功能依赖拟真引擎对欲望进行评分，因此无法单独运行。每条回复会额外调用一次简短的 AI 请求来识别高潮，所以使用付费 API 时会增加少量成本。多重高潮设定的角色会经历一段温存期，而不是被直接锁定。',
+                 value: storage.realismSettings.nsfwCooldownDefault,
+                 onChanged: storage.realismSettings.setNsfwCooldownDefault,
+               ),
+               FeatureRow(
+                 icon: Icons.favorite,
+-                label: 'Acts on desires',
++                label: '依照欲望行动',
+                 need: FeatureNeed.needs,
+-                dependsOn: 'the Realism Engine',
++                dependsOn: '拟真引擎',
+                 satisfied: engineOn,
+-                blurb:
+-                    'A character with intimate preferences on their card acts '
+-                    'on them instead of only reacting: they ask for what they '
+-                    'want, in their own voice — a dominant character presses '
+-                    'where a soft-spoken one hints — and turns down what they '
+-                    'are not interested in rather than going along with it. '
+-                    'Being refused something they wanted shows in their mood '
+-                    'afterwards, sharper or quieter as fits who they are. Needs '
+-                    'the engine because that is what scores the answer they '
+-                    'get; without it they would ask and nothing would ever '
+-                    'come of it. Costs nothing extra — no AI request, just '
+-                    'two more lines in the prompt.',
++                blurb: '如果角色卡中设定了亲密偏好，角色会主动按自己的偏好行动，而不只是被动回应：他们会用自己的方式表达需求；强势的角色会更直接，寡言的角色则可能委婉暗示，也会拒绝自己不感兴趣的事情。被拒绝时，角色的后续情绪也会有所体现，表现得更尖锐或更沉默，符合其性格。此功能需要拟真引擎来评估角色得到的回应；没有引擎时，角色即使提出需求，也不会产生后续影响。此功能不增加额外 AI 请求，只会在提示词中多加入两行内容。',
+                 value: realism.intimateAgencyEnabled,
+                 onChanged: realism.setIntimateAgencyEnabled,
+               ),
+diff --git a/lib/ui/settings/tabs/voice_media_tab.dart b/lib/ui/settings/tabs/voice_media_tab.dart
+index b5783f3..914565a 100644
+--- a/lib/ui/settings/tabs/voice_media_tab.dart
++++ b/lib/ui/settings/tabs/voice_media_tab.dart
+@@ -106,7 +106,7 @@ class _TtsSection extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        const SectionHeader('Text-to-Speech'),
++        const SectionHeader('文本转语音'),
+         const SizedBox(height: 8),
+         Container(
+           padding: const EdgeInsets.all(12),
+@@ -136,7 +136,7 @@ class _TtsSection extends StatelessWidget {
+                               final voiceKey =
+                                   storageService.ttsSettings.ttsVoiceModel;
+                               if (voiceKey.isEmpty) {
+-                                return 'Enabled — Voice: Not set';
++                                return '已启用 — 尚未设置语音';
+                               }
+                               final ttsService = Provider.of<TtsService>(
+                                 context,
+@@ -150,7 +150,7 @@ class _TtsSection extends StatelessWidget {
+                                   : voiceKey;
+                               return 'Enabled — Voice: $displayName';
+                             }()
+-                          : 'Disabled',
++                          : '已禁用',
+                       style: TextStyle(
+                         fontSize: 12,
+                         color: AppColors.textSecondary(context),
+@@ -165,7 +165,7 @@ class _TtsSection extends StatelessWidget {
+                   builder: (_) => TtsSettingsDialog(),
+                 ),
+                 icon: const Icon(Icons.settings, size: 16),
+-                label: const Text('Configure'),
++                label: const Text('配置'),
+                 style: ElevatedButton.styleFrom(
+                   // Warm-porch: was AppColors.userBubble (cool-blue chrome
+                   // misuse of a chat-bubble constant); onAccentOf keeps
+diff --git a/lib/ui/settings/tabs/voice_media_tab/call_system_prompt_field.dart b/lib/ui/settings/tabs/voice_media_tab/call_system_prompt_field.dart
+index 139963b..feb0e7c 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/call_system_prompt_field.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/call_system_prompt_field.dart
+@@ -81,7 +81,7 @@ class _CallSystemPromptFieldState extends State<CallSystemPromptField> {
+           horizontal: 12,
+           vertical: 10,
+         ),
+-        hintText: 'Instructions appended during voice calls...',
++        hintText: '通话期间追加的指令…',
+         hintStyle: TextStyle(
+           color: AppColors.textTertiary(context),
+           fontSize: 13,
+diff --git a/lib/ui/settings/tabs/voice_media_tab/expression_section.dart b/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
+index c1679f8..79153b2 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
+@@ -51,7 +51,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+       case 'background':
+         return 'Background';
+       case 'both':
+-        return 'Both';
++        return '两者都启用';
+       default:
+         return mode;
+     }
+@@ -63,7 +63,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         const SizedBox(height: 24),
+-        const SectionHeader('Expression Images'),
++        const SectionHeader('表情图像'),
+         const SizedBox(height: 8),
+         Consumer<StorageService>(
+           builder: (context, storage, _) {
+@@ -96,13 +96,13 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             const Text(
+-                              'Expression Images',
++                              '表情图像',
+                               style: TextStyle(fontWeight: FontWeight.bold),
+                             ),
+                             Text(
+                               storage.expressionSettings.expressionEnabled
+                                   ? 'Enabled — ${_expressionModeLabel(storage.expressionSettings.expressionClassificationMode)}, ${_expressionDisplayLabel(storage.expressionSettings.expressionDisplayMode)}'
+-                                  : 'Disabled',
++                                  : '已禁用',
+                               style: TextStyle(
+                                 fontSize: 12,
+                                 color: AppColors.textSecondary(context),
+@@ -155,15 +155,15 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                             items: const [
+                               DropdownMenuItem(
+                                 value: 'llm',
+-                                child: Text('LLM (Realism Engine)'),
++                                child: Text('大语言模型（拟真引擎）'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'onnx',
+-                                child: Text('Local ONNX Model'),
++                                child: Text('本地 ONNX 模型'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'manual',
+-                                child: Text('Manual Only'),
++                                child: Text('仅手动控制'),
+                               ),
+                             ],
+                             onChanged: (val) {
+@@ -213,15 +213,15 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                             items: const [
+                               DropdownMenuItem(
+                                 value: 'sidebar',
+-                                child: Text('Sidebar Only'),
++                                child: Text('仅侧边栏'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'background',
+-                                child: Text('Background Only'),
++                                child: Text('仅后台'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'both',
+-                                child: Text('Both'),
++                                child: Text('两者都启用'),
+                               ),
+                             ],
+                             onChanged: (val) {
+@@ -354,19 +354,19 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                             items: const [
+                               DropdownMenuItem(
+                                 value: 'neutral',
+-                                child: Text('Neutral Sprite'),
++                                child: Text('中性立绘'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'prime',
+-                                child: Text('Prime Avatar'),
++                                child: Text('主头像'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'none',
+-                                child: Text('Hide'),
++                                child: Text('隐藏'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'emoji',
+-                                child: Text('Emoji Icon'),
++                                child: Text('表情符号图标'),
+                               ),
+                             ],
+                             onChanged: (val) {
+diff --git a/lib/ui/settings/tabs/voice_media_tab/stt_section.dart b/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
+index 63a0e04..8fa3eb1 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
+@@ -56,7 +56,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         const SizedBox(height: 24),
+-        const SectionHeader('Voice Input (STT)'),
++        const SectionHeader('语音输入（STT）'),
+         const SizedBox(height: 8),
+         Container(
+           padding: const EdgeInsets.all(12),
+@@ -130,15 +130,15 @@ class VoiceMediaSttSection extends StatelessWidget {
+                             items: const [
+                               DropdownMenuItem(
+                                 value: 'tiny.en',
+-                                child: Text('Tiny (~105MB, fastest)'),
++                                child: Text('Tiny（约 105 MB，速度最快）'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'base.en',
+-                                child: Text('Base (~155MB, balanced)'),
++                                child: Text('Base（约 155 MB，均衡）'),
+                               ),
+                               DropdownMenuItem(
+                                 value: 'small.en',
+-                                child: Text('Small (~360MB, best accuracy)'),
++                                child: Text('Small（约 360 MB，准确率最高）'),
+                               ),
+                             ],
+                             onChanged: (val) {
+@@ -321,7 +321,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                                     items: [
+                                       const DropdownMenuItem<String>(
+                                         value: null,
+-                                        child: Text('System Default'),
++                                        child: Text('系统默认'),
+                                       ),
+                                       ...sttService.inputDevices.map(
+                                         (d) => DropdownMenuItem<String>(
+@@ -346,7 +346,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                                 size: 20,
+                                 color: AppColors.textSecondary(context),
+                               ),
+-                              tooltip: 'Refresh devices',
++                              tooltip: '刷新设备',
+                               onPressed: () => sttService.refreshInputDevices(),
+                             ),
+                           ],
+diff --git a/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart b/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
+index 1cb5cf4..918dcd0 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
+@@ -220,7 +220,7 @@ List<Widget> voiceCallSettingsChildren(
+                     horizontal: 12,
+                     vertical: 10,
+                   ),
+-                  hintText: 'Enter model ID or configure API first',
++                  hintText: '请输入模型 ID，或先配置 API',
+                   hintStyle: TextStyle(
+                     color: AppColors.textTertiary(context),
+                     fontSize: 13,
+diff --git a/lib/ui/settings/widgets/feature_row.dart b/lib/ui/settings/widgets/feature_row.dart
+index 865022a..9b1b1c3 100644
+--- a/lib/ui/settings/widgets/feature_row.dart
++++ b/lib/ui/settings/widgets/feature_row.dart
+@@ -83,10 +83,10 @@ class FeatureRow extends StatelessWidget {
+   final bool showChildWhenOff;
+ 
+   String get _chipText => switch (need) {
+-    FeatureNeed.alone => 'works alone',
+-    FeatureNeed.core => 'core',
+-    FeatureNeed.needs => 'needs ${dependsOn ?? ''}',
+-    FeatureNeed.pairs => 'pairs with ${dependsOn ?? ''}',
++    FeatureNeed.alone => '可独立运行',
++    FeatureNeed.core => '核心功能',
++    FeatureNeed.needs => '依赖：${dependsOn ?? ''}',
++    FeatureNeed.pairs => '建议配合：${dependsOn ?? ''}',
+   };
+ 
+   @override
+@@ -216,7 +216,7 @@ class _NeedChip extends StatelessWidget {
+   }
+ }
+ 
+-/// A titled group of [FeatureRow]s ("Time & World", "Memory & Heart", …).
++/// A titled group of [FeatureRow]s ("时间与世界", "记忆与情感", …).
+ class FeatureGroupCard extends StatelessWidget {
+   const FeatureGroupCard({
+     super.key,
+diff --git a/lib/ui/settings/widgets/global_prompt_additions.dart b/lib/ui/settings/widgets/global_prompt_additions.dart
+index aad638d..3e2cde2 100644
+--- a/lib/ui/settings/widgets/global_prompt_additions.dart
++++ b/lib/ui/settings/widgets/global_prompt_additions.dart
+@@ -22,7 +22,7 @@ class GlobalPromptAdditions extends StatelessWidget {
+     } catch (error) {
+       if (!context.mounted) return;
+       ScaffoldMessenger.of(context).showSnackBar(
+-        SnackBar(content: Text('Could not save prompt addition: $error')),
++        SnackBar(content: Text('无法保存提示词补充内容：$error')),
+       );
+     }
+   }
+@@ -33,7 +33,7 @@ class GlobalPromptAdditions extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        const SectionHeader('Global prompt additions'),
++        const SectionHeader('全局提示词补充'),
+         const SizedBox(height: 8),
+         Text(
+           'Saved automatically. Leave blank to disable. Both fields support {{char}} and {{user}}.',
+@@ -45,7 +45,7 @@ class GlobalPromptAdditions extends StatelessWidget {
+           minLines: 2,
+           maxLines: 5,
+           decoration: const InputDecoration(
+-            labelText: 'Additional system instructions',
++            labelText: '额外系统指令',
+             helperText: 'Appended to the selected system prompt, including character and group prompts.',
+             helperMaxLines: 3,
+             border: OutlineInputBorder(),
+@@ -59,7 +59,7 @@ class GlobalPromptAdditions extends StatelessWidget {
+           minLines: 2,
+           maxLines: 5,
+           decoration: const InputDecoration(
+-            labelText: 'Additional post-history instructions',
++            labelText: '历史记录后的附加指令',
+             helperText: '追加在现有历史记录后指令之后。',
+             helperMaxLines: 3,
+             border: OutlineInputBorder(),
+diff --git a/lib/ui/settings/widgets/image_gen_enable_section.dart b/lib/ui/settings/widgets/image_gen_enable_section.dart
+index 0a2d214..aa77de2 100644
+--- a/lib/ui/settings/widgets/image_gen_enable_section.dart
++++ b/lib/ui/settings/widgets/image_gen_enable_section.dart
+@@ -43,7 +43,7 @@ class ImageGenEnableSection extends StatelessWidget {
+         return Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+-            const SectionHeader('Image Generation'),
++            const SectionHeader('图像生成'),
+             const SizedBox(height: 8),
+             Container(
+               padding: const EdgeInsets.all(12),
+@@ -71,13 +71,13 @@ class ImageGenEnableSection extends StatelessWidget {
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             const Text(
+-                              'Image Generation',
++                              '图像生成',
+                               style: TextStyle(fontWeight: FontWeight.bold),
+                             ),
+                             Text(
+                               enabled
+                                   ? 'Enabled — Image Studio button shown in chat'
+-                                  : 'Disabled',
++                                  : '已禁用',
+                               style: TextStyle(
+                                 fontSize: 12,
+                                 color: AppColors.textSecondary(context),
+diff --git a/lib/ui/settings/widgets/legacy_cleanup_card.dart b/lib/ui/settings/widgets/legacy_cleanup_card.dart
+index fd43916..d16730b 100644
+--- a/lib/ui/settings/widgets/legacy_cleanup_card.dart
++++ b/lib/ui/settings/widgets/legacy_cleanup_card.dart
+@@ -63,7 +63,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+ 
+     final confirmed = await showWarmDialog<bool>(
+       context,
+-      title: 'Reclaim disk space?',
++      title: '释放磁盘空间？',
+       icon: Icons.cleaning_services_outlined,
+       destructive: true,
+       content: Text(
+@@ -84,7 +84,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+             backgroundColor: AppColors.formAccentOf(context),
+             foregroundColor: AppColors.onAccentOf(context),
+           ),
+-          child: const Text('Delete old models'),
++          child: const Text('删除旧模型'),
+         ),
+       ],
+     );
+@@ -113,7 +113,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         const SizedBox(height: 24),
+-        const SectionHeader('Reclaim Disk Space'),
++        const SectionHeader('释放磁盘空间'),
+         const SizedBox(height: 8),
+         Container(
+           width: double.infinity,
+diff --git a/lib/ui/settings/widgets/photo_understanding_card.dart b/lib/ui/settings/widgets/photo_understanding_card.dart
+index 2023679..e9fd361 100644
+--- a/lib/ui/settings/widgets/photo_understanding_card.dart
++++ b/lib/ui/settings/widgets/photo_understanding_card.dart
+@@ -48,7 +48,7 @@ class PhotoUnderstandingCard extends StatelessWidget {
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             const SizedBox(height: 24),
+-            const SectionHeader('Photo Understanding'),
++            const SectionHeader('图像理解'),
+             const SizedBox(height: 8),
+             Container(
+               padding: const EdgeInsets.all(12),
+diff --git a/lib/ui/settings/widgets/porch_life_row_children.dart b/lib/ui/settings/widgets/porch_life_row_children.dart
+index ca96de3..531f6ad 100644
+--- a/lib/ui/settings/widgets/porch_life_row_children.dart
++++ b/lib/ui/settings/widgets/porch_life_row_children.dart
+@@ -98,10 +98,10 @@ class AwayThreshold extends StatelessWidget {
+           dropdownColor: AppColors.cardOf(context),
+           style: TextStyle(color: AppColors.textPrimary(context), fontSize: 12),
+           items: const [
+-            DropdownMenuItem(value: 12, child: Text('12 hours')),
+-            DropdownMenuItem(value: 24, child: Text('a day')),
+-            DropdownMenuItem(value: 72, child: Text('3 days')),
+-            DropdownMenuItem(value: 168, child: Text('a week')),
++            DropdownMenuItem(value: 12, child: Text('12 小时')),
++            DropdownMenuItem(value: 24, child: Text('一天')),
++            DropdownMenuItem(value: 72, child: Text('3 天')),
++            DropdownMenuItem(value: 168, child: Text('一周')),
+           ],
+           onChanged: (v) {
+             if (v != null) storage.realismSettings.setAbsenceThresholdHours(v);
+@@ -192,7 +192,7 @@ class _WebSearchKeyFieldState extends State<WebSearchKeyField> {
+                 foregroundColor: AppColors.onAccentOf(context),
+               ),
+               onPressed: _saving ? null : _save,
+-              child: Text(_saving ? 'Saving…' : 'Save key'),
++              child: Text(_saving ? '正在保存…' : 'Save key'),
+             ),
+             if (hasKey)
+               TextButton(
+diff --git a/lib/ui/settings/widgets/remote_model_picker_field.dart b/lib/ui/settings/widgets/remote_model_picker_field.dart
+index 85e7373..b504cdb 100644
+--- a/lib/ui/settings/widgets/remote_model_picker_field.dart
++++ b/lib/ui/settings/widgets/remote_model_picker_field.dart
+@@ -33,7 +33,7 @@ class RemoteModelPickerField extends StatelessWidget {
+     required this.onRefresh,
+     required this.onSelected,
+     this.onTyped,
+-    this.dialogTitle = 'Select Model',
++    this.dialogTitle = '选择模型',
+   });
+ 
+   final List<RemoteModelInfo> availableModels;
+@@ -53,7 +53,7 @@ class RemoteModelPickerField extends StatelessWidget {
+         Row(
+           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+-            Text('Model', style: theme.textTheme.bodySmall),
++            Text('模型', style: theme.textTheme.bodySmall),
+             TextButton.icon(
+               onPressed: fetching ? null : onRefresh,
+               icon: fetching
+@@ -86,7 +86,7 @@ class RemoteModelPickerField extends StatelessWidget {
+           TextFormField(
+             initialValue: selectedId,
+             decoration: InputDecoration(
+-              hintText: 'e.g. nousresearch/hermes-3-llama-3.1-405b',
++              hintText: '例如：nousresearch/hermes-3-llama-3.1-405b',
+               filled: true,
+               fillColor: theme.scaffoldBackgroundColor,
+               border: OutlineInputBorder(
+diff --git a/lib/ui/settings/widgets/remote_provider_bar.dart b/lib/ui/settings/widgets/remote_provider_bar.dart
+index 2feef3f..eaa03bb 100644
+--- a/lib/ui/settings/widgets/remote_provider_bar.dart
++++ b/lib/ui/settings/widgets/remote_provider_bar.dart
+@@ -44,7 +44,7 @@ class RemoteProviderBar extends StatelessWidget {
+   /// not Model Settings.
+   final bool remoteHostsOnly;
+ 
+-  /// Worker "Off" — no host pill is highlighted.
++  /// Worker "关闭" — no host pill is highlighted.
+   final bool noneSelected;
+ 
+   static const _all = <(RemoteProviderKind, String)>[
+@@ -54,7 +54,7 @@ class RemoteProviderBar extends StatelessWidget {
+     (RemoteProviderKind.xai, 'xAI'),
+     (RemoteProviderKind.lmStudio, 'LM Studio'),
+     (RemoteProviderKind.omlx, 'oMLX'),
+-    (RemoteProviderKind.custom, 'Custom'),
++    (RemoteProviderKind.custom, '自定义'),
+   ];
+ 
+   static const _remoteHosts = <(RemoteProviderKind, String)>[
+@@ -62,7 +62,7 @@ class RemoteProviderBar extends StatelessWidget {
+     (RemoteProviderKind.nanoGpt, 'Nano-GPT'),
+     (RemoteProviderKind.xai, 'xAI'),
+     (RemoteProviderKind.lmStudio, 'LM Studio'),
+-    (RemoteProviderKind.custom, 'Custom'),
++    (RemoteProviderKind.custom, '自定义'),
+   ];
+ 
+   @override
+diff --git a/lib/ui/settings/widgets/spell_check_language_row.dart b/lib/ui/settings/widgets/spell_check_language_row.dart
+index f449594..10e6c26 100644
+--- a/lib/ui/settings/widgets/spell_check_language_row.dart
++++ b/lib/ui/settings/widgets/spell_check_language_row.dart
+@@ -14,7 +14,7 @@ import 'package:front_porch_ai/ui/widgets/widgets.dart'
+     show GuardedPicker, StyledDropdown;
+ import 'package:front_porch_ai/utils/utils.dart';
+ 
+-/// Sentinel dropdown value for the "Load a dictionary file…" entry. Not a
++/// Sentinel dropdown value for the "加载词典文件…" entry. Not a
+ /// language, so it is intercepted in onChanged and never stored.
+ const String _kAddDictionary = '__add_dictionary__';
+ 
+@@ -178,7 +178,7 @@ class _SpellCheckLanguageRowState extends State<SpellCheckLanguageRow> {
+                 if (Platform.isLinux)
+                   const DropdownMenuItem(
+                     value: _kAddDictionary,
+-                    child: Text('Load a dictionary file…'),
++                    child: Text('加载词典文件…'),
+                   ),
+               ],
+               onChanged: (value) {
+diff --git a/lib/ui/settings/widgets/web_login_section.dart b/lib/ui/settings/widgets/web_login_section.dart
+index a8638fd..66a1429 100644
+--- a/lib/ui/settings/widgets/web_login_section.dart
++++ b/lib/ui/settings/widgets/web_login_section.dart
+@@ -91,7 +91,7 @@ class _WebLoginSectionState extends State<WebLoginSection> {
+     final messenger = ScaffoldMessenger.of(context);
+     await widget.auth.signOutAllDevices();
+     messenger.showSnackBar(
+-      const SnackBar(content: Text('All web devices were signed out.')),
++      const SnackBar(content: Text('已退出所有网页设备。')),
+     );
+   }
+ 
+@@ -100,7 +100,7 @@ class _WebLoginSectionState extends State<WebLoginSection> {
+     final confirmed = await showDialog<bool>(
+       context: context,
+       builder: (ctx) => AlertDialog(
+-        title: const Text('Reset web login?'),
++        title: const Text('重置网页登录？'),
+         content: const Text(
+           'This erases the web username, password and 2FA, and signs out '
+           'every device. The next browser visit will show the first-run '
+@@ -127,7 +127,7 @@ class _WebLoginSectionState extends State<WebLoginSection> {
+     await _refresh();
+     messenger.showSnackBar(
+       const SnackBar(
+-        content: Text('Web login reset — create a new one from the browser.'),
++        content: Text('网页登录已重置——请在浏览器中创建新的登录信息。'),
+       ),
+     );
+   }
+@@ -169,7 +169,7 @@ class _WebLoginSectionState extends State<WebLoginSection> {
+                 await Clipboard.setData(ClipboardData(text: token));
+                 if (!context.mounted) return;
+                 ScaffoldMessenger.of(context).showSnackBar(
+-                  const SnackBar(content: Text('Setup code copied.')),
++                  const SnackBar(content: Text('设置代码已复制。')),
+                 );
+               },
+               child: const Text(
+diff --git a/lib/ui/settings/widgets/wiki_url_field.dart b/lib/ui/settings/widgets/wiki_url_field.dart
+index e024697..14905a9 100644
+--- a/lib/ui/settings/widgets/wiki_url_field.dart
++++ b/lib/ui/settings/widgets/wiki_url_field.dart
+@@ -128,7 +128,7 @@ class _WikiUrlFieldState extends State<WikiUrlField> {
+                 foregroundColor: AppColors.onAccentOf(context),
+               ),
+               onPressed: _save,
+-              child: const Text('Save wiki'),
++              child: const Text('保存 Wiki'),
+             ),
+           ),
+         ],
+diff --git a/lib/ui/settings/widgets/wiki_url_list.dart b/lib/ui/settings/widgets/wiki_url_list.dart
+index 6cdfc3b..bb1ed96 100644
+--- a/lib/ui/settings/widgets/wiki_url_list.dart
++++ b/lib/ui/settings/widgets/wiki_url_list.dart
+@@ -59,7 +59,7 @@ class _WikiUrlListState extends State<WikiUrlList> {
+                   Expanded(
+                     child: Text(
+                       saved.isEmpty
+-                          ? 'Saved wikis'
++                          ? '已保存的 Wiki'
+                           : 'Saved wikis (${saved.length})',
+                       style: TextStyle(
+                         color: AppColors.textSecondary(context),
+diff --git a/lib/ui/settings/widgets/worker_kobold_kcpps_picker.dart b/lib/ui/settings/widgets/worker_kobold_kcpps_picker.dart
+index df86567..e2187e8 100644
+--- a/lib/ui/settings/widgets/worker_kobold_kcpps_picker.dart
++++ b/lib/ui/settings/widgets/worker_kobold_kcpps_picker.dart
+@@ -72,7 +72,7 @@ class WorkerKoboldKcppsPicker extends StatelessWidget {
+       key: const Key('side-jobs-kobold-kcpps'),
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        Text('Realism evals .kcpps', style: theme.textTheme.bodySmall),
++        Text('拟真评估 .kcpps 文件', style: theme.textTheme.bodySmall),
+         const SizedBox(height: 4),
+         Row(
+           children: [
+@@ -121,7 +121,7 @@ class WorkerKoboldKcppsPicker extends StatelessWidget {
+             TextButton(
+               key: const Key('side-jobs-kobold-kcpps-browse'),
+               onPressed: () => _browse(context),
+-              child: const Text('Browse…'),
++              child: const Text('浏览…'),
+             ),
+           ],
+         ),
+diff --git a/lib/ui/settings/widgets/worker_kobold_model_picker.dart b/lib/ui/settings/widgets/worker_kobold_model_picker.dart
+index 19a739d..a7d960f 100644
+--- a/lib/ui/settings/widgets/worker_kobold_model_picker.dart
++++ b/lib/ui/settings/widgets/worker_kobold_model_picker.dart
+@@ -75,7 +75,7 @@ class WorkerKoboldModelPicker extends StatelessWidget {
+       key: const Key('side-jobs-kobold-model'),
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+-        Text('Realism evals model', style: theme.textTheme.bodySmall),
++        Text('拟真评估模型', style: theme.textTheme.bodySmall),
+         const SizedBox(height: 4),
+         Row(
+           children: [
+@@ -122,7 +122,7 @@ class WorkerKoboldModelPicker extends StatelessWidget {
+             TextButton(
+               key: const Key('side-jobs-kobold-model-browse'),
+               onPressed: () => _browse(context),
+-              child: const Text('Browse…'),
++              child: const Text('浏览…'),
+             ),
+           ],
+         ),
+diff --git a/lib/ui/widgets/age_gender_row.dart b/lib/ui/widgets/age_gender_row.dart
+index cc0ccf0..c9dc117 100644
+--- a/lib/ui/widgets/age_gender_row.dart
++++ b/lib/ui/widgets/age_gender_row.dart
+@@ -10,10 +10,10 @@ class AgeGenderRow extends StatelessWidget {
+     required this.ageController,
+     required this.genderController,
+     this.onChanged,
+-    this.ageLabel = 'Age',
+-    this.genderLabel = 'Gender',
+-    this.ageHint = 'e.g. 25, Ancient...',
+-    this.genderHint = 'e.g. Female, Male...',
++    this.ageLabel = '年龄',
++    this.genderLabel = '性别',
++    this.ageHint = '例如：25 岁、远古时代…',
++    this.genderHint = '例如：女性、男性…',
+   });
+ 
+   final TextEditingController ageController;
+diff --git a/lib/ui/widgets/birthday_row.dart b/lib/ui/widgets/birthday_row.dart
+index 309a18b..fe95be8 100644
+--- a/lib/ui/widgets/birthday_row.dart
++++ b/lib/ui/widgets/birthday_row.dart
+@@ -52,7 +52,7 @@ class BirthdayRow extends StatelessWidget {
+             TextButton(
+               onPressed: () => _pick(context),
+               child: Text(
+-                parsed == null ? 'Set' : 'Change',
++                parsed == null ? 'Set' : '更改',
+                 style: TextStyle(color: amber),
+               ),
+             ),
+@@ -97,7 +97,7 @@ class BirthdayRow extends StatelessWidget {
+       firstDate: DateTime(1800, 1, 1),
+       lastDate: DateTime(2200, 12, 31),
+       selectableDayPredicate: (d) => !(d.month == 2 && d.day == 29),
+-      helpText: 'Birthday',
++      helpText: '生日',
+     );
+     if (picked == null) return;
+     if (picked.month == 2 && picked.day == 29) return;
+diff --git a/lib/ui/widgets/description_detail_chip_row.dart b/lib/ui/widgets/description_detail_chip_row.dart
+index 3ad8b46..f1e37da 100644
+--- a/lib/ui/widgets/description_detail_chip_row.dart
++++ b/lib/ui/widgets/description_detail_chip_row.dart
+@@ -1,5 +1,6 @@
+ import 'package:flutter/material.dart';
+ 
++import '../character_creator/creator_options.dart';
+ import '../theme/app_colors.dart';
+ import '../theme/creator_palette.dart';
+ 
+@@ -53,7 +54,7 @@ class DescriptionDetailChipRow extends StatelessWidget {
+           children: options.map((label) {
+             final isSelected = selectedDetail == label;
+             return ChoiceChip(
+-              label: Text(label),
++              label: Text(creatorOptionDisplayLabel(label)),
+               selected: isSelected,
+               onSelected: (_) => onChanged(label),
+               selectedColor: accent,
+diff --git a/lib/ui/widgets/expanded_editor_dialog.dart b/lib/ui/widgets/expanded_editor_dialog.dart
+index c2456d4..91ab347 100644
+--- a/lib/ui/widgets/expanded_editor_dialog.dart
++++ b/lib/ui/widgets/expanded_editor_dialog.dart
+@@ -70,7 +70,7 @@ Future<void> showExpandedEditorDialog({
+                   const SizedBox(width: 8),
+                   ElevatedButton.icon(
+                     icon: const Icon(Icons.check, size: 16),
+-                    label: const Text('Apply'),
++                    label: const Text('应用'),
+                     style: ElevatedButton.styleFrom(
+                       backgroundColor: AppColors.formAccentOf(context),
+                       foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/widgets/group_alternate_greetings_editor.dart b/lib/ui/widgets/group_alternate_greetings_editor.dart
+index 939d865..4b0c0e5 100644
+--- a/lib/ui/widgets/group_alternate_greetings_editor.dart
++++ b/lib/ui/widgets/group_alternate_greetings_editor.dart
+@@ -78,7 +78,7 @@ class _GroupAlternateGreetingsEditorState
+             ),
+             const SizedBox(width: 6),
+             Text(
+-              'Alternate Greetings',
++              '备用开场白数量',
+               style: TextStyle(
+                 fontSize: 14,
+                 fontWeight: FontWeight.w600,
+diff --git a/lib/ui/widgets/guarded_picker.dart b/lib/ui/widgets/guarded_picker.dart
+index 5df8090..1deb1dd 100644
+--- a/lib/ui/widgets/guarded_picker.dart
++++ b/lib/ui/widgets/guarded_picker.dart
+@@ -33,7 +33,7 @@ enum PickerFailureKind {
+         "a file, but it didn't appear. Nothing was changed.\n\n"
+         "Press Try again. If it still doesn't appear, close Front Porch AI "
+         'and open it again.',
+-    retryLabel: 'Try again',
++    retryLabel: '重试',
+     icon: Icons.insert_drive_file_outlined,
+   ),
+   folder(
+@@ -43,7 +43,7 @@ enum PickerFailureKind {
+         "a folder, but it didn't appear. Nothing was changed.\n\n"
+         "Press Try again. If it still doesn't appear, close Front Porch AI "
+         'and open it again.',
+-    retryLabel: 'Try again',
++    retryLabel: '重试',
+     icon: Icons.folder_off_outlined,
+   ),
+   save(
+@@ -52,7 +52,7 @@ enum PickerFailureKind {
+         'Something got in the way while saving the file.\n\n'
+         'Press Try again and choose a different place to save it, such as '
+         'your Documents folder.',
+-    retryLabel: 'Try again',
++    retryLabel: '重试',
+     icon: Icons.save_outlined,
+   ),
+   readFolder(
+diff --git a/lib/ui/widgets/identity_chip_lists.dart b/lib/ui/widgets/identity_chip_lists.dart
+index 6081094..b5c494f 100644
+--- a/lib/ui/widgets/identity_chip_lists.dart
++++ b/lib/ui/widgets/identity_chip_lists.dart
+@@ -305,7 +305,7 @@ class IdentityChipLists extends StatelessWidget {
+         if (hasBirthday) ...[
+           _header(
+             Icons.cake_outlined,
+-            'Birthday',
++            '生日',
+             context.creatorPalette?.amber ?? AppColors.formAccentOf(context),
+           ),
+           const SizedBox(height: 12),
+diff --git a/lib/ui/widgets/needs_clock_off_note.dart b/lib/ui/widgets/needs_clock_off_note.dart
+index a61b20f..c5a761a 100644
+--- a/lib/ui/widgets/needs_clock_off_note.dart
++++ b/lib/ui/widgets/needs_clock_off_note.dart
+@@ -28,7 +28,7 @@ import 'package:front_porch_ai/ui/theme/app_colors.dart';
+ /// line they read as broken. The phone says the same words
+ /// (web_ui/src/components/realism/NeedsClockOffNote.tsx).
+ ///
+-/// "Off" is the Porch Life Passage of Time switch (`passageOfTimeDefault`),
++/// "关闭" is the Porch Life Passage of Time switch (`passageOfTimeDefault`),
+ /// the live clock gate. Pass [clockOn] where the caller already holds it;
+ /// otherwise the note reads it from [StorageService] and rebuilds when it
+ /// flips. Pumped without a StorageService (a form tested on its own), the
+diff --git a/lib/ui/widgets/nsfw_toggle.dart b/lib/ui/widgets/nsfw_toggle.dart
+index 75053f0..e5adfce 100644
+--- a/lib/ui/widgets/nsfw_toggle.dart
++++ b/lib/ui/widgets/nsfw_toggle.dart
+@@ -9,8 +9,8 @@ class NsfwToggle extends StatelessWidget {
+     required this.value,
+     required this.accentColor,
+     required this.onChanged,
+-    this.title = 'Enable NSFW Options',
+-    this.subtitle = 'Unlock intimate character details',
++    this.title = '启用成人内容选项',
++    this.subtitle = '解锁角色的亲密特征设定',
+     this.animated = false,
+   });
+ 
+diff --git a/lib/ui/widgets/realism_form_section/realism_relationship_card.dart b/lib/ui/widgets/realism_form_section/realism_relationship_card.dart
+index 9d14fc6..6e05e0a 100644
+--- a/lib/ui/widgets/realism_form_section/realism_relationship_card.dart
++++ b/lib/ui/widgets/realism_form_section/realism_relationship_card.dart
+@@ -108,7 +108,7 @@ String _shortTermTierName(int score) {
+ String _longTermTierName(int score) {
+   if (score >= 80) return 'Soulbound';
+   if (score >= 50) return 'Deep Bond';
+-  if (score >= 20) return 'Close';
++  if (score >= 20) return '关闭';
+   if (score >= 5) return 'Familiar';
+   if (score >= -4) return 'Acquaintance';
+   if (score >= -19) return 'Uneasy';
+diff --git a/lib/ui/widgets/relationship_scale.dart b/lib/ui/widgets/relationship_scale.dart
+index 475345f..7aff726 100644
+--- a/lib/ui/widgets/relationship_scale.dart
++++ b/lib/ui/widgets/relationship_scale.dart
+@@ -19,7 +19,7 @@ import 'package:front_porch_ai/ui/theme/theme.dart';
+ String relationshipTierName(int value) {
+   if (value >= 80) return 'Soulbound';
+   if (value >= 50) return 'Deep Bond';
+-  if (value >= 20) return 'Close';
++  if (value >= 20) return '关闭';
+   if (value >= 5) return 'Familiar';
+   if (value >= -4) return 'Acquaintance';
+   if (value >= -19) return 'Uneasy';
+diff --git a/lib/ui/widgets/wardrobe_chip_section.dart b/lib/ui/widgets/wardrobe_chip_section.dart
+index 3d5aa32..1bc3596 100644
+--- a/lib/ui/widgets/wardrobe_chip_section.dart
++++ b/lib/ui/widgets/wardrobe_chip_section.dart
+@@ -82,7 +82,7 @@ class WardrobeChipSection extends StatelessWidget {
+             Icon(Icons.checkroom, size: 18, color: amber),
+             const SizedBox(width: 8),
+             Text(
+-              'Pockets & Wardrobe',
++              '口袋与衣橱',
+               style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.w600,
+@@ -186,7 +186,7 @@ class WardrobeChipSection extends StatelessWidget {
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                'Pockets & Wardrobe',
++                '口袋与衣橱',
+                 style: TextStyle(
+                   color: pocketsEnabled!
+                       ? AppColors.textPrimary(context)
+diff --git a/lib/ui/widgets/warm_dialog.dart b/lib/ui/widgets/warm_dialog.dart
+index 17fe1af..6b9e850 100644
+--- a/lib/ui/widgets/warm_dialog.dart
++++ b/lib/ui/widgets/warm_dialog.dart
+@@ -222,7 +222,7 @@ class WarmDialogText extends StatelessWidget {
+ /// (null by default). Inside the creator: a 44px `prose` text button.
+ Widget warmDialogCancel(
+   BuildContext context, {
+-  String label = 'Cancel',
++  String label = '取消',
+   Object? value,
+ }) {
+   final studio = context.creatorPalette;
