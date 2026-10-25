@@ -1,0 +1,1022 @@
+diff --git a/lib/services/kobold/kobold_context_verdict.dart b/lib/services/kobold/kobold_context_verdict.dart
+index 7ed90f3..f9cdeb3 100644
+--- a/lib/services/kobold/kobold_context_verdict.dart
++++ b/lib/services/kobold/kobold_context_verdict.dart
+@@ -246,43 +246,41 @@ int _shortMb(KoboldLoad l, KoboldMachine machine) => machine.unified
+   switch (v.outcome) {
+     case KoboldContextOutcome.tooSmall:
+       return (
+-        title: 'Not recommended or supported.',
++        title: '不建议或不受支持。',
+         text:
+-            'Below ${koboldTokens(kKoboldContextFloor)} tokens the character '
+-            'remembers very little of the chat. '
+-            '${v.faster ? 'It is a little faster here, not enough to make '
+-                      'up for that.' : 'It is no faster here either.'}',
++            '上下文低于 ${koboldTokens(kKoboldContextFloor)} 个 token 时，角色只能记住很少的聊天内容。'
++            '${v.faster ? '这里虽然会稍快一些，但不足以弥补记忆不足。' : '这里也不会更快。'}',
+       );
+     case KoboldContextOutcome.likeNow:
+       return (
+-        title: 'Works like now.',
++        title: '与当前速度相近。',
+         text: isCurrent
+-            ? 'Nothing else changes.'
+-            : 'Replies come as fast as now.',
++            ? '其他方面没有变化。'
++            : '回复速度与现在相同。',
+       );
+     case KoboldContextOutcome.faster:
+-      return (title: 'Works, faster.', text: 'Replies come faster than now.');
++      return (title: '可以运行，速度更快。', text: '回复速度会比现在更快。');
+     case KoboldContextOutcome.littleSlower:
+       return (
+-        title: 'Works, a little slower.',
+-        text: 'Replies take a little longer than now.',
++        title: '可以运行，但会稍慢。',
++        text: '回复会比现在稍慢一些。',
+       );
+     case KoboldContextOutcome.slower:
+       return (
+-        title: 'Works, slower.',
+-        text: 'Replies take noticeably longer than now.',
++        title: '可以运行，但速度较慢。',
++        text: '回复会明显比现在慢。',
+       );
+     case KoboldContextOutcome.tooBig:
+       final why = [
+-        if (v.verySlow) 'Replies would be very slow',
+-        if (v.outOfMemory) 'the computer may run out of memory',
+-      ].join(', and ');
++        if (v.verySlow) '回复速度会非常慢',
++        if (v.outOfMemory) '电脑可能会耗尽内存',
++      ].join('；');
+       final most = largestGood == null
+           ? ''
+-          : ' The most that works well here is ${koboldTokens(largestGood)}.';
++          : ' 在这台电脑上，较合适的最大值是 ${koboldTokens(largestGood)}。';
+       return (
+-        title: 'Too big for this computer.',
+-        text: '${why[0].toUpperCase()}${why.substring(1)}.$most',
++        title: '对这台电脑来说太大了。',
++        text: '$why。$most',
+       );
+   }
+ }
+diff --git a/lib/ui/avatar_creation/avatar_generation_panel/avatar_portrait_review.dart b/lib/ui/avatar_creation/avatar_generation_panel/avatar_portrait_review.dart
+index 911a90e..2da9f10 100644
+--- a/lib/ui/avatar_creation/avatar_generation_panel/avatar_portrait_review.dart
++++ b/lib/ui/avatar_creation/avatar_generation_panel/avatar_portrait_review.dart
+@@ -130,7 +130,7 @@ class AvatarPortraitReviewCard extends StatelessWidget {
+                   ? _c.regeneratePortrait
+                   : null,
+               icon: const Icon(Icons.autorenew, size: 16),
+-              label: const Text('Regenerate'),
++              label: const Text('重新生成'),
+               style: OutlinedButton.styleFrom(
+                 foregroundColor: AppColors.porchAmberOf(context),
+                 side: BorderSide(color: AppColors.porchAmberOf(context)),
+diff --git a/lib/ui/avatar_creation/avatar_generation_panel/avatar_run_progress.dart b/lib/ui/avatar_creation/avatar_generation_panel/avatar_run_progress.dart
+index ae77cca..ec4bad0 100644
+--- a/lib/ui/avatar_creation/avatar_generation_panel/avatar_run_progress.dart
++++ b/lib/ui/avatar_creation/avatar_generation_panel/avatar_run_progress.dart
+@@ -59,7 +59,7 @@ class AvatarRunProgress extends StatelessWidget {
+           _stageRow(
+             context,
+             at: AvatarRunStage.portrait,
+-            label: 'Portrait — saved & set as card image (create model)',
++            label: '头像已保存并设为角色卡图片（创建模型）',
+             activeLabel: 'Generating portrait…',
+           ),
+         );
+@@ -70,7 +70,7 @@ class AvatarRunProgress extends StatelessWidget {
+             _stageRow(
+               context,
+               at: AvatarRunStage.switching,
+-              label: 'Switched to edit model',
++              label: '已切换到编辑模型',
+               activeLabel:
+                   'Switching to edit model (first use can take a minute)…',
+             ),
+diff --git a/lib/ui/avatar_creation/avatar_prompt_rules.dart b/lib/ui/avatar_creation/avatar_prompt_rules.dart
+index da6ff46..6462aa2 100644
+--- a/lib/ui/avatar_creation/avatar_prompt_rules.dart
++++ b/lib/ui/avatar_creation/avatar_prompt_rules.dart
+@@ -37,7 +37,7 @@ Future<void> editCreatorPromptRules(
+   if (controller.running) {
+     ScaffoldMessenger.of(context).showSnackBar(
+       const SnackBar(
+-        content: Text('Stop the pack before changing its prompt rules.'),
++        content: Text('修改提示词规则前，请先停止生成任务。'),
+       ),
+     );
+     return;
+diff --git a/lib/ui/avatar_creation/expressions_section.dart b/lib/ui/avatar_creation/expressions_section.dart
+index bacddda..fdc22ce 100644
+--- a/lib/ui/avatar_creation/expressions_section.dart
++++ b/lib/ui/avatar_creation/expressions_section.dart
+@@ -90,7 +90,7 @@ class ExpressionsSection extends StatelessWidget {
+                         context.creatorPalette?.amber ??
+                         AppColors.formAccentOf(context),
+                   ),
+-                  child: const Text('Prompt rules…'),
++                  child: const Text('提示词规则…'),
+                 ),
+               if (packOn && c.qcVisible) ...[
+                 const SizedBox(width: 4),
+@@ -170,7 +170,7 @@ class ExpressionsSection extends StatelessWidget {
+           ),
+           DropdownMenuItem(
+             value: true,
+-            child: Text('all ${kFullExpressionSet.length}'),
++            child: Text('全部 ${kFullExpressionSet.length}'),
+           ),
+         ],
+         onChanged: c.running ? null : (v) => c.setFullSet(v ?? false),
+diff --git a/lib/ui/avatar_creation/portrait_section.dart b/lib/ui/avatar_creation/portrait_section.dart
+index e82e127..f1f658c 100644
+--- a/lib/ui/avatar_creation/portrait_section.dart
++++ b/lib/ui/avatar_creation/portrait_section.dart
+@@ -486,7 +486,7 @@ class PortraitSection extends StatelessWidget {
+   void _saveFailed(BuildContext context) {
+     ScaffoldMessenger.of(context).showSnackBar(
+       const SnackBar(
+-        content: Text('The character could not be saved — image not added.'),
++        content: Text('无法保存角色，未添加图片。'),
+       ),
+     );
+   }
+diff --git a/lib/ui/avatar_creation/upload_tag_dialog.dart b/lib/ui/avatar_creation/upload_tag_dialog.dart
+index 6522db7..8c9aca4 100644
+--- a/lib/ui/avatar_creation/upload_tag_dialog.dart
++++ b/lib/ui/avatar_creation/upload_tag_dialog.dart
+@@ -73,7 +73,7 @@ Future<String?> showUploadTagDialog(BuildContext context, Uint8List bytes) {
+                   size: 15,
+                   color: AppColors.formAccentOf(context),
+                 ),
+-                label: const Text('Gallery look (outfit / scene — no emotion)'),
++                label: const Text('画廊风格（服装／场景，不含情绪）'),
+                 labelStyle: TextStyle(
+                   color: AppColors.textPrimary(ctx),
+                   fontSize: 12,
+diff --git a/lib/ui/chat_components/bubbles/message_bubble.actions.dart b/lib/ui/chat_components/bubbles/message_bubble.actions.dart
+index 5071e57..d5ebc25 100644
+--- a/lib/ui/chat_components/bubbles/message_bubble.actions.dart
++++ b/lib/ui/chat_components/bubbles/message_bubble.actions.dart
+@@ -106,7 +106,7 @@ class GreetingSwipeRow extends StatelessWidget {
+                 message: 'Select greet',
+                 child: InkWell(
+                   onTap: () => openVariantPicker(
+-                    title: 'Select greet',
++                    title: '选择开场白',
+                     onSelect: chatService.selectGreeting,
+                   ),
+                   borderRadius: BorderRadius.circular(12),
+diff --git a/lib/ui/chat_components/bubbles/message_bubble.dialogs.dart b/lib/ui/chat_components/bubbles/message_bubble.dialogs.dart
+index 302daf8..71d71d5 100644
+--- a/lib/ui/chat_components/bubbles/message_bubble.dialogs.dart
++++ b/lib/ui/chat_components/bubbles/message_bubble.dialogs.dart
+@@ -165,7 +165,7 @@ Future<void> confirmDeleteMessage(BuildContext context, int index) async {
+   final chatService = Provider.of<ChatService>(context, listen: false);
+   final yes = await showWarmDialog<bool>(
+     context,
+-    title: 'Delete Message',
++    title: '删除消息',
+     icon: Icons.warning_amber_rounded,
+     destructive: true,
+     content: const WarmDialogText(
+@@ -181,7 +181,7 @@ Future<void> confirmForkMessage(BuildContext context, int index) async {
+   final chatService = Provider.of<ChatService>(context, listen: false);
+   final yes = await showWarmDialog<bool>(
+     context,
+-    title: 'Fork Conversation',
++    title: '分支对话',
+     icon: Icons.call_split,
+     accent: AppColors.porchAmberOf(context),
+     content: WarmDialogText(
+@@ -194,7 +194,7 @@ Future<void> confirmForkMessage(BuildContext context, int index) async {
+   if (context.mounted) {
+     ScaffoldMessenger.of(context).showSnackBar(
+       const SnackBar(
+-        content: Text('Conversation forked! You are now on the new branch.'),
++        content: Text('已创建对话分支！你现在位于新的分支中。'),
+       ),
+     );
+   }
+diff --git a/lib/ui/chat_components/overlays/evaluation_progress_shell.dart b/lib/ui/chat_components/overlays/evaluation_progress_shell.dart
+index dec88d0..668a240 100644
+--- a/lib/ui/chat_components/overlays/evaluation_progress_shell.dart
++++ b/lib/ui/chat_components/overlays/evaluation_progress_shell.dart
+@@ -74,7 +74,7 @@ class _EvaluationProgressShellState extends State<EvaluationProgressShell> {
+             TextButton.icon(
+               onPressed: widget.onExpand,
+               icon: const Icon(Icons.open_in_full),
+-              label: const Text('Show evaluation details'),
++              label: const Text('显示评估详情'),
+             ),
+             if (widget.onStop != null)
+               TextButton(
+diff --git a/lib/ui/chat_components/overlays/objective_check_overlay.dart b/lib/ui/chat_components/overlays/objective_check_overlay.dart
+index 319a6df..f8ec49f 100644
+--- a/lib/ui/chat_components/overlays/objective_check_overlay.dart
++++ b/lib/ui/chat_components/overlays/objective_check_overlay.dart
+@@ -81,10 +81,10 @@ class ObjectiveCheckOverlayState extends State<ObjectiveCheckOverlay>
+     final accentColor = AppColors.porchAmberOf(context);
+ 
+     final pills = <EvalPill>[
+-      EvalPill(label: 'Objective', icon: Icons.flag, color: accentColor),
+-      EvalPill(label: 'Progress', icon: Icons.trending_up, color: accentColor),
++      EvalPill(label: '目标', icon: Icons.flag, color: accentColor),
++      EvalPill(label: '进度', icon: Icons.trending_up, color: accentColor),
+       EvalPill(
+-        label: 'Completion',
++        label: '完成度',
+         icon: Icons.check_circle_outline,
+         color: accentColor,
+       ),
+@@ -137,7 +137,7 @@ class ObjectiveCheckOverlayState extends State<ObjectiveCheckOverlay>
+                             child: TextButton.icon(
+                               onPressed: widget.onMinimize,
+                               icon: const Icon(Icons.minimize),
+-                              label: const Text('Minimize evaluation'),
++                              label: const Text('收起评估'),
+                             ),
+                           ),
+                         // ── Header ───────────────────────────────────────────
+diff --git a/lib/ui/chat_components/overlays/rag_setup/rag_consent_view.dart b/lib/ui/chat_components/overlays/rag_setup/rag_consent_view.dart
+index 672a217..727982a 100644
+--- a/lib/ui/chat_components/overlays/rag_setup/rag_consent_view.dart
++++ b/lib/ui/chat_components/overlays/rag_setup/rag_consent_view.dart
+@@ -129,7 +129,7 @@ class RagConsentView extends StatelessWidget {
+             ElevatedButton.icon(
+               onPressed: onStartSetup,
+               icon: Icon(Icons.rocket_launch, size: 16),
+-              label: Text('Set Up & Enable'),
++              label: Text('设置并启用'),
+               style: ElevatedButton.styleFrom(
+                 backgroundColor: ChatColors.memoryOf(context),
+                 foregroundColor: StatusColors.onFill,
+diff --git a/lib/ui/chat_components/overlays/realism_processing_overlay.dart b/lib/ui/chat_components/overlays/realism_processing_overlay.dart
+index 2ea7cf5..870e2a1 100644
+--- a/lib/ui/chat_components/overlays/realism_processing_overlay.dart
++++ b/lib/ui/chat_components/overlays/realism_processing_overlay.dart
+@@ -84,14 +84,14 @@ class RealismProcessingOverlayState extends State<RealismProcessingOverlay>
+ 
+     final pills = isGreeting
+         ? <EvalPill>[
+-            EvalPill(label: 'Emotion', icon: Icons.mood, color: accentColor),
++            EvalPill(label: '情绪', icon: Icons.mood, color: accentColor),
+             EvalPill(
+-              label: 'Bond',
++              label: '羁绊',
+               icon: Icons.favorite_border,
+               color: accentColor,
+             ),
+             EvalPill(
+-              label: 'Trust',
++              label: '信任',
+               icon: Icons.handshake_outlined,
+               color: accentColor,
+             ),
+@@ -99,23 +99,23 @@ class RealismProcessingOverlayState extends State<RealismProcessingOverlay>
+         : <EvalPill>[
+             if (widget.chatService.isCheckingCompletion)
+               EvalPill(
+-                label: 'Objective',
++                label: '目标',
+                 icon: Icons.flag,
+                 color: accentColor,
+               ),
+             EvalPill(
+-              label: 'Relationship',
++              label: '关系',
+               icon: Icons.favorite_border,
+               color: accentColor,
+             ),
+-            EvalPill(label: 'Emotion', icon: Icons.mood, color: accentColor),
++            EvalPill(label: '情绪', icon: Icons.mood, color: accentColor),
+             EvalPill(
+-              label: 'Scene',
++              label: '场景',
+               icon: Icons.wb_twilight,
+               color: accentColor,
+             ),
+             EvalPill(
+-              label: 'Trust',
++              label: '信任',
+               icon: Icons.handshake_outlined,
+               color: accentColor,
+             ),
+@@ -169,7 +169,7 @@ class RealismProcessingOverlayState extends State<RealismProcessingOverlay>
+                             child: TextButton.icon(
+                               onPressed: widget.onMinimize,
+                               icon: const Icon(Icons.minimize),
+-                              label: const Text('Minimize evaluation'),
++                              label: const Text('收起评估'),
+                             ),
+                           ),
+                         // ── Header ───────────────────────────────────────────
+diff --git a/lib/ui/chat_components/overlays/stopped_reply_notice.dart b/lib/ui/chat_components/overlays/stopped_reply_notice.dart
+index d4b27a2..c0724d3 100644
+--- a/lib/ui/chat_components/overlays/stopped_reply_notice.dart
++++ b/lib/ui/chat_components/overlays/stopped_reply_notice.dart
+@@ -62,7 +62,7 @@ class StoppedReplyNotice extends StatelessWidget {
+                   ? null
+                   : () => chatService.regenerateLastMessage(),
+               style: TextButton.styleFrom(foregroundColor: accent),
+-              child: const Text('Try again'),
++              child: const Text('重试'),
+             ),
+           IconButton(
+             tooltip: 'Dismiss',
+diff --git a/lib/ui/chat_components/prompt_source_panes.dart b/lib/ui/chat_components/prompt_source_panes.dart
+index 52a5b04..5478948 100644
+--- a/lib/ui/chat_components/prompt_source_panes.dart
++++ b/lib/ui/chat_components/prompt_source_panes.dart
+@@ -69,7 +69,7 @@ class PromptSourcePanes extends StatelessWidget {
+         final wide = constraints.maxWidth >= 640;
+         final card = PromptSourcePane(
+           paneId: 'card',
+-          title: 'Character card prompt',
++          title: '角色卡提示词',
+           body: cardPrompt,
+           selected: usesCard,
+           maxPaneHeight: wide ? 220 : 160,
+@@ -77,7 +77,7 @@ class PromptSourcePanes extends StatelessWidget {
+         );
+         final user = PromptSourcePane(
+           paneId: 'user',
+-          title: 'Your prompt (Settings → General)',
++          title: '你的提示词（设置 → 常规）',
+           body: userPrompt,
+           selected: !usesCard,
+           maxPaneHeight: wide ? 220 : 160,
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.actions.dart b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.actions.dart
+index c4e5704..4b1031e 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.actions.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.actions.dart
+@@ -183,7 +183,7 @@ Future<void> plantGrowthRing(
+ }) async {
+   final draft = await GrowthRingEditorDialog.show(
+     context,
+-    title: 'Plant a ring for $characterName',
++    title: '为 $characterName 添加一段关系记录',
+   );
+   if (draft == null) return;
+   await chatService.plantGrowthRingFor(
+@@ -201,7 +201,7 @@ Future<void> editGrowthRing(
+ ) async {
+   final draft = await GrowthRingEditorDialog.show(
+     context,
+-    title: 'Edit ring',
++    title: '编辑关系记录',
+     initialContent: ring.content,
+     initialCategory: ring.category,
+   );
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.card.dart b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.card.dart
+index 3ad43f6..27a9dae 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.card.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.card.dart
+@@ -271,10 +271,10 @@ class GrowthRingCard extends StatelessWidget {
+             value: 'pin',
+             child: Text(ring.pinned ? 'Unpin' : 'Pin (never fades)'),
+           ),
+-          const PopupMenuItem(value: 'edit', child: Text('Edit wording')),
+-          const PopupMenuItem(value: 'retire', child: Text('Retire to past')),
++          const PopupMenuItem(value: 'edit', child: Text('编辑措辞')),
++          const PopupMenuItem(value: 'retire', child: Text('归档到过去')),
+         ] else ...[
+-          const PopupMenuItem(value: 'restore', child: Text('Bring back')),
++          const PopupMenuItem(value: 'restore', child: Text('恢复')),
+           const PopupMenuItem(value: 'delete', child: Text('永久删除')),
+         ],
+       ],
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.dart b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.dart
+index 3676e0a..776969f 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/growth_panel.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/growth_panel.dart
+@@ -93,7 +93,7 @@ class GrowthPanel extends StatelessWidget {
+           children: [
+             SidebarSubHeader(
+               icon: Icons.donut_large,
+-              label: 'Growth · $characterName',
++              label: '成长 · $characterName',
+               accent: accent,
+               trailing: Row(
+                 mainAxisSize: MainAxisSize.min,
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/journal_panel.dart b/lib/ui/chat_components/sidebar/journal_memory/journal_panel.dart
+index 461faef..0825fd5 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/journal_panel.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/journal_panel.dart
+@@ -123,7 +123,7 @@ class _JournalPanelState extends State<JournalPanel> {
+       children: [
+         SidebarSubHeader(
+           icon: Icons.menu_book,
+-          label: 'The Journal',
++          label: '日记',
+           accent: accent,
+           trailing: Text(
+             '${_cards.length}',
+@@ -300,7 +300,7 @@ class _JournalPanelState extends State<JournalPanel> {
+     ).persona.name;
+     final draft = await JournalCardEditorDialog.show(
+       context,
+-      title: 'Plant a memory in ${widget.characterName}\'s journal',
++      title: '将一段记忆写入 ${widget.characterName} 的日记',
+       userName: userName,
+     );
+     if (draft == null || !mounted) return;
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/memory_panel.dart b/lib/ui/chat_components/sidebar/journal_memory/memory_panel.dart
+index 5a1ae83..2ada04b 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/memory_panel.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/memory_panel.dart
+@@ -117,7 +117,7 @@ class _MemoryPanelState extends State<MemoryPanel> {
+         // Header with enable toggle (first-run consent flow preserved)
+         SidebarSubHeader(
+           icon: Icons.psychology,
+-          label: 'Memory (RAG)',
++          label: '记忆（RAG）',
+           accent: accent,
+           trailing: SizedBox(
+             height: 28,
+@@ -223,7 +223,7 @@ class _MemoryPanelState extends State<MemoryPanel> {
+               ),
+               _link(
+                 icon: Icons.library_books,
+-                label: 'Data Bank',
++                label: '资料库',
+                 color: AppColors.textTertiary(context),
+                 iconColor: AppColors.iconSecondary(context),
+                 onTap: () {
+diff --git a/lib/ui/chat_components/sidebar/journal_memory/rag_settings_well.dart b/lib/ui/chat_components/sidebar/journal_memory/rag_settings_well.dart
+index e2507a4..f503377 100644
+--- a/lib/ui/chat_components/sidebar/journal_memory/rag_settings_well.dart
++++ b/lib/ui/chat_components/sidebar/journal_memory/rag_settings_well.dart
+@@ -61,7 +61,7 @@ class _RagSettingsWellState extends State<RagSettingsWell> {
+         children: [
+           _sliderHeader(
+             context,
+-            title: 'Past moments per reply',
++            title: '每次回复引用的过往片段数',
+             valueLabel: count == 0 ? 'All' : '$count',
+             hint: count == 0
+                 ? 'Bring back every strong match (can get long).'
+@@ -88,7 +88,7 @@ class _RagSettingsWellState extends State<RagSettingsWell> {
+           const SizedBox(height: 6),
+           _sliderHeader(
+             context,
+-            title: 'How much of a moment to keep',
++            title: '每段记忆保留的内容量',
+             valueLabel: '$window messages',
+             hint:
+                 'Each saved memory is a short stretch of chat. Larger keeps '
+diff --git a/lib/ui/chat_components/sidebar/sidebar_body.dart b/lib/ui/chat_components/sidebar/sidebar_body.dart
+index 6038723..1f285d4 100644
+--- a/lib/ui/chat_components/sidebar/sidebar_body.dart
++++ b/lib/ui/chat_components/sidebar/sidebar_body.dart
+@@ -173,7 +173,7 @@ class _SidebarBodyState extends State<SidebarBody> {
+             PorchAccordion(
+               id: 'author_note',
+               emoji: '📝',
+-              title: "Author's Note",
++              title: '作者注记',
+               subtitle: chat.authorNote.trim().isEmpty
+                   ? null
+                   : 'active · strength ${chat.authorNoteStrength}',
+diff --git a/lib/ui/chat_components/sidebar/story_tools/afk_panel.dart b/lib/ui/chat_components/sidebar/story_tools/afk_panel.dart
+index 1db5805..20aa1d4 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/afk_panel.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/afk_panel.dart
+@@ -61,7 +61,7 @@ class _AfkPanelState extends State<AfkPanel> {
+       children: [
+         SidebarSubHeader(
+           icon: Icons.bedtime_outlined,
+-          label: 'Dynamic Responses (AFK)',
++          label: '动态回复（离开时）',
+           accent: accent,
+           trailing: Row(
+             mainAxisSize: MainAxisSize.min,
+@@ -256,13 +256,13 @@ class _AfkPanelState extends State<AfkPanel> {
+                         items: const [
+                           DropdownMenuItem(
+                             value: 1,
+-                            child: Text('a few hours'),
++                            child: Text('几小时'),
+                           ),
+                           DropdownMenuItem(
+                             value: 3,
+-                            child: Text('half the day'),
++                            child: Text('半天'),
+                           ),
+-                          DropdownMenuItem(value: 6, child: Text('a full day')),
++                          DropdownMenuItem(value: 6, child: Text('一整天')),
+                         ],
+                         onChanged: (v) {
+                           if (v != null) {
+diff --git a/lib/ui/chat_components/sidebar/story_tools/chaos_panel.dart b/lib/ui/chat_components/sidebar/story_tools/chaos_panel.dart
+index 7b21289..8953c30 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/chaos_panel.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/chaos_panel.dart
+@@ -51,7 +51,7 @@ class ChaosPanel extends StatelessWidget {
+       children: [
+         SidebarSubHeader(
+           icon: Icons.casino,
+-          label: 'Chaos Mode',
++          label: '混沌模式',
+           accent: AppColors.chaosAccentOf(context),
+           trailing: Switch(
+             value: enabled,
+diff --git a/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.cards.dart b/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.cards.dart
+index 4f4e1b8..4a93780 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.cards.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.cards.dart
+@@ -77,7 +77,7 @@ class ChatPlaceSettingCard extends StatelessWidget {
+       ),
+       child: Row(
+         children: [
+-          const ChatPlaceRolePill(label: 'SETTING', accent: true),
++          const ChatPlaceRolePill(label: '设定', accent: true),
+           const SizedBox(width: 8),
+           Expanded(
+             child: Text(
+@@ -103,7 +103,7 @@ class ChatPlaceSettingCard extends StatelessWidget {
+                 : () async {
+                     final ok = await confirmChatPlaceChange(
+                       context,
+-                      title: 'Move to lore?',
++                      title: '移至世界资料？',
+                       body:
+                           'Move to lore? Weather will turn off for this chat.',
+                     );
+@@ -177,7 +177,7 @@ class ChatPlaceLoreTile extends StatelessWidget {
+               ),
+             ),
+             const SizedBox(width: 6),
+-            const ChatPlaceRolePill(label: 'LORE', accent: false),
++            const ChatPlaceRolePill(label: '世界资料', accent: false),
+             const SizedBox(width: 8),
+             Expanded(
+               child: Text(
+@@ -208,7 +208,7 @@ class ChatPlaceLoreTile extends StatelessWidget {
+                       if (primaryId != null) {
+                         final ok = await confirmChatPlaceChange(
+                           context,
+-                          title: 'Replace setting?',
++                          title: '替换设定？',
+                           body:
+                               'Replace setting? Weather and room description will switch to ${world.name}.',
+                         );
+diff --git a/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.picker.dart b/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.picker.dart
+index 9c56a48..9fec593 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.picker.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/chat_places_panel.picker.dart
+@@ -26,7 +26,7 @@ Future<bool> confirmChatPlaceChange(
+         ),
+         FilledButton(
+           onPressed: () => Navigator.pop(ctx, true),
+-          child: const Text('Continue'),
++          child: const Text('继续'),
+         ),
+       ],
+     ),
+@@ -50,7 +50,7 @@ Future<void> showAttachPlacePicker(
+   if (available.isEmpty) {
+     if (context.mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+-        const SnackBar(content: Text('All places are already attached.')),
++        const SnackBar(content: Text('所有地点都已添加。')),
+       );
+     }
+     return;
+@@ -146,8 +146,8 @@ Future<void> showAttachPlacePicker(
+     context: context,
+     builder: (ctx) => AlertDialog(
+       backgroundColor: AppColors.surfaceOf(ctx),
+-      title: Text('Attach ${chosen.name}'),
+-      content: const Text('Add as lore, or replace the current setting?'),
++      title: Text('添加 ${chosen.name}'),
++      content: const Text('要将其添加为世界设定资料，还是替换当前设定？'),
+       actions: [
+         TextButton(
+           onPressed: () => Navigator.pop(ctx, 'cancel'),
+@@ -155,11 +155,11 @@ Future<void> showAttachPlacePicker(
+         ),
+         TextButton(
+           onPressed: () => Navigator.pop(ctx, 'lore'),
+-          child: const Text('Add as lore'),
++          child: const Text('添加为世界设定资料'),
+         ),
+         FilledButton(
+           onPressed: () => Navigator.pop(ctx, 'setting'),
+-          child: const Text('Use as setting'),
++          child: const Text('用作当前设定'),
+         ),
+       ],
+     ),
+@@ -174,7 +174,7 @@ Future<void> showAttachPlacePicker(
+   }
+   final ok = await confirmChatPlaceChange(
+     context,
+-    title: 'Replace setting?',
++    title: '替换设定？',
+     body:
+         'Replace setting? Weather and room description will switch to ${chosen.name}.',
+   );
+diff --git a/lib/ui/chat_components/sidebar/story_tools/lorebook_chat_book.dart b/lib/ui/chat_components/sidebar/story_tools/lorebook_chat_book.dart
+index 2eae0e6..6842dac 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/lorebook_chat_book.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/lorebook_chat_book.dart
+@@ -59,7 +59,7 @@ class ChatLorebookSection extends StatelessWidget {
+       children: [
+         SidebarSubHeader(
+           icon: Icons.chat_bubble_outline,
+-          label: 'This Chat',
++          label: '当前聊天',
+           accent: honey,
+           trailing: Row(
+             mainAxisSize: MainAxisSize.min,
+diff --git a/lib/ui/chat_components/sidebar/story_tools/objective_add_goal.dart b/lib/ui/chat_components/sidebar/story_tools/objective_add_goal.dart
+index a030822..da1194b 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/objective_add_goal.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/objective_add_goal.dart
+@@ -152,7 +152,7 @@ class _ObjectiveAddGoalState extends State<ObjectiveAddGoal> {
+                   fontWeight: FontWeight.bold,
+                 ),
+               ),
+-              child: const Text('As Primary'),
++              child: const Text('设为主要目标'),
+             ),
+             ElevatedButton(
+               onPressed:
+@@ -170,7 +170,7 @@ class _ObjectiveAddGoalState extends State<ObjectiveAddGoal> {
+                 minimumSize: const Size(0, 28),
+                 textStyle: const TextStyle(fontSize: 10),
+               ),
+-              child: const Text('As Side'),
++              child: const Text('设为次要目标'),
+             ),
+           ],
+         ),
+diff --git a/lib/ui/chat_components/sidebar/story_tools/objective_task_row.dart b/lib/ui/chat_components/sidebar/story_tools/objective_task_row.dart
+index 7dc4bca..c931e95 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/objective_task_row.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/objective_task_row.dart
+@@ -282,7 +282,7 @@ class ObjectiveSetAsideTag extends StatelessWidget {
+     if (!dormant) return const SizedBox.shrink();
+     final color = AppColors.textTertiary(context);
+     return Semantics(
+-      label: 'Set aside for now',
++      label: '暂时搁置',
+       excludeSemantics: true,
+       child: Padding(
+         padding: const EdgeInsets.only(top: 4),
+diff --git a/lib/ui/chat_components/sidebar/story_tools/story_tools_group.dart b/lib/ui/chat_components/sidebar/story_tools/story_tools_group.dart
+index bdaf015..07edeac 100644
+--- a/lib/ui/chat_components/sidebar/story_tools/story_tools_group.dart
++++ b/lib/ui/chat_components/sidebar/story_tools/story_tools_group.dart
+@@ -69,7 +69,7 @@ class StoryToolsGroup extends StatelessWidget {
+     return PorchAccordion(
+       id: 'story_tools',
+       emoji: '🎲',
+-      title: 'Story Tools',
++      title: '故事工具',
+       accent: AppColors.porchHoneyOf(context),
+       initiallyExpanded: initiallyExpanded,
+       onExpansionChanged: onExpansionChanged,
+diff --git a/lib/ui/chat_components/sidebar/wiki_panel.dart b/lib/ui/chat_components/sidebar/wiki_panel.dart
+index 02b2418..d287bc0 100644
+--- a/lib/ui/chat_components/sidebar/wiki_panel.dart
++++ b/lib/ui/chat_components/sidebar/wiki_panel.dart
+@@ -54,7 +54,7 @@ class WikiPanel extends StatelessWidget {
+     return PorchAccordion(
+       id: 'wiki',
+       emoji: '📖',
+-      title: 'Wiki',
++      title: '百科',
+       subtitle: subtitle,
+       accent: AppColors.porchAmberOf(context),
+       initiallyExpanded: initiallyExpanded,
+diff --git a/lib/ui/chat_components/widgets/inline_chat_image.dart b/lib/ui/chat_components/widgets/inline_chat_image.dart
+index de8cbfb..1f17f43 100644
+--- a/lib/ui/chat_components/widgets/inline_chat_image.dart
++++ b/lib/ui/chat_components/widgets/inline_chat_image.dart
+@@ -166,7 +166,7 @@ class _InlineChatImageState extends State<InlineChatImage> {
+         await Clipboard.setData(ClipboardData(text: widget.prompt!.trim()));
+         if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+-            const SnackBar(content: Text('Prompt copied to clipboard')),
++            const SnackBar(content: Text('提示词已复制到剪贴板')),
+           );
+         }
+     }
+@@ -208,13 +208,13 @@ class _InlineChatImageState extends State<InlineChatImage> {
+       if (context.mounted) {
+         ScaffoldMessenger.of(
+           context,
+-        ).showSnackBar(SnackBar(content: Text('Saved to ${p.basename(out)}')));
++        ).showSnackBar(SnackBar(content: Text('已保存到 ${p.basename(out)}')));
+       }
+     } catch (e) {
+       if (context.mounted) {
+         ScaffoldMessenger.of(
+           context,
+-        ).showSnackBar(SnackBar(content: Text('Couldn’t save image: $e')));
++        ).showSnackBar(SnackBar(content: Text('无法保存图片：$e')));
+       }
+     }
+   }
+diff --git a/lib/ui/chat_components/widgets/regen_critique_field.dart b/lib/ui/chat_components/widgets/regen_critique_field.dart
+index 1a736d7..f56a76f 100644
+--- a/lib/ui/chat_components/widgets/regen_critique_field.dart
++++ b/lib/ui/chat_components/widgets/regen_critique_field.dart
+@@ -261,7 +261,7 @@ class _RegenCritiqueDialogState extends State<_RegenCritiqueDialog> {
+         warmDialogConfirm(
+           context,
+           key: const Key('regen-critique-confirm'),
+-          label: 'Regenerate',
++          label: '重新生成',
+           onPressed: _pop,
+         ),
+       ],
+@@ -305,14 +305,14 @@ class _LookupRow extends StatelessWidget {
+             children: [
+               _SourceChip(
+                 key: const Key('regen-lookup-web'),
+-                label: 'Web',
++                label: '网页',
+                 selected: !wiki,
+                 onTap: () => onWiki(false),
+               ),
+               const SizedBox(width: 8),
+               _SourceChip(
+                 key: const Key('regen-lookup-wiki'),
+-                label: 'Wiki',
++                label: '维基',
+                 selected: wiki && wikiEnabled,
+                 enabled: wikiEnabled,
+                 onTap: wikiEnabled ? () => onWiki(true) : null,
+diff --git a/lib/ui/layout/main_layout.dart b/lib/ui/layout/main_layout.dart
+index 59f65d2..40af087 100644
+--- a/lib/ui/layout/main_layout.dart
++++ b/lib/ui/layout/main_layout.dart
+@@ -92,7 +92,7 @@ class _MainLayoutState extends State<MainLayout> {
+             style: TextStyle(color: AppColors.onAccentOf(context)),
+           ),
+           action: SnackBarAction(
+-            label: 'Copy details',
++            label: '复制详情',
+             textColor: AppColors.onAccentOf(context),
+             onPressed: () => Clipboard.setData(
+               ClipboardData(text: EngineHealth.instance.buildReport()),
+diff --git a/lib/ui/widgets/greeting_seed_form/greeting_seed_sections.dart b/lib/ui/widgets/greeting_seed_form/greeting_seed_sections.dart
+index ab383c2..8934ea5 100644
+--- a/lib/ui/widgets/greeting_seed_form/greeting_seed_sections.dart
++++ b/lib/ui/widgets/greeting_seed_form/greeting_seed_sections.dart
+@@ -59,7 +59,7 @@ class GreetingSeedTimeSection extends StatelessWidget {
+                     flex: 2,
+                     child: seedDropdown(
+                       context,
+-                      label: 'Time of Day',
++                      label: '一天中的时段',
+                       value: s.timeOfDay,
+                       items: kGreetingSeedTimes,
+                       hint: 'inherit (morning)',
+@@ -70,7 +70,7 @@ class GreetingSeedTimeSection extends StatelessWidget {
+                   Expanded(
+                     child: seedLabeledField(
+                       context,
+-                      label: 'Day Number',
++                      label: '天数',
+                       child: seedBoxedField(
+                         context,
+                         SyncedTextField(
+@@ -146,7 +146,7 @@ class GreetingSeedRelationshipSection extends StatelessWidget {
+           Column(
+             children: [
+               SliderWithInput(
+-                label: 'Short-term bond',
++                label: '短期羁绊',
+                 value: (s.shortTermBond ?? 0).toDouble(),
+                 unset: s.shortTermBond == null,
+                 min: -300,
+diff --git a/lib/ui/widgets/identity_chip_lists.dart b/lib/ui/widgets/identity_chip_lists.dart
+index b5c494f..b4c9073 100644
+--- a/lib/ui/widgets/identity_chip_lists.dart
++++ b/lib/ui/widgets/identity_chip_lists.dart
+@@ -259,7 +259,7 @@ class IdentityChipLists extends StatelessWidget {
+           _card(
+             context,
+             ChipListEditor(
+-              label: 'Long-term goals',
++              label: '长期目标',
+               accent: true,
+               values: ambitions!,
+               onChanged: onAmbitionsChanged!,
+@@ -407,14 +407,14 @@ class IdentityChipLists extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 14),
+                 ChipListEditor(
+-                  label: 'Warms to',
++                  label: '逐渐亲近',
+                   values: intimateInto!,
+                   onChanged: onIntimateIntoChanged!,
+                   hintText: 'e.g. slow mornings',
+                 ),
+                 const SizedBox(height: 16),
+                 ChipListEditor(
+-                  label: 'Not interested in',
++                  label: '不感兴趣',
+                   values: intimateNotInto!,
+                   onChanged: onIntimateNotIntoChanged!,
+                   hintText: 'e.g. an audience',
+diff --git a/lib/ui/widgets/model_selector.dart b/lib/ui/widgets/model_selector.dart
+index 11b9ed0..38d8078 100644
+--- a/lib/ui/widgets/model_selector.dart
++++ b/lib/ui/widgets/model_selector.dart
+@@ -71,7 +71,7 @@ class ModelSelector extends StatelessWidget {
+       items.add(
+         DropdownMenuItem<String>(
+           value: _managedSentinel,
+-          child: const Text('None (Managed by kcpps)'),
++          child: const Text('无（由 kcpps 管理）'),
+         ),
+       );
+     }
+diff --git a/lib/ui/widgets/needs_form_section.dart b/lib/ui/widgets/needs_form_section.dart
+index 34d9173..74b8cf8 100644
+--- a/lib/ui/widgets/needs_form_section.dart
++++ b/lib/ui/widgets/needs_form_section.dart
+@@ -114,7 +114,7 @@ class NeedsFormSection extends StatelessWidget {
+               // Master toggle
+               RealismFormSection.buildToggleRow(
+                 icon: Icons.battery_std,
+-                label: 'Needs Simulation',
++                label: '需求模拟',
+                 subtitle:
+                     'Hunger etc. (higher = more sated/less urgent; 100=full, 0=critical) — influences prompts & behavior when low',
+                 value: enabled,
+@@ -132,7 +132,7 @@ class NeedsFormSection extends StatelessWidget {
+ 
+                 // Per-need baseline sliders
+                 _needsSlider(
+-                  label: 'Hunger',
++                  label: '饥饿',
+                   needKey: 'hunger',
+                   value: baselineHunger,
+                   onChanged: onBaselineHungerChanged,
+@@ -140,7 +140,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Bladder',
++                  label: '膀胱',
+                   needKey: 'bladder',
+                   value: baselineBladder,
+                   onChanged: onBaselineBladderChanged,
+@@ -148,7 +148,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Energy',
++                  label: '精力',
+                   needKey: 'energy',
+                   value: baselineEnergy,
+                   onChanged: onBaselineEnergyChanged,
+@@ -156,7 +156,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Social',
++                  label: '社交',
+                   needKey: 'social',
+                   value: baselineSocial,
+                   onChanged: onBaselineSocialChanged,
+@@ -164,7 +164,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Fun',
++                  label: '娱乐',
+                   needKey: 'fun',
+                   value: baselineFun,
+                   onChanged: onBaselineFunChanged,
+@@ -172,7 +172,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Hygiene',
++                  label: '卫生',
+                   needKey: 'hygiene',
+                   value: baselineHygiene,
+                   onChanged: onBaselineHygieneChanged,
+@@ -180,7 +180,7 @@ class NeedsFormSection extends StatelessWidget {
+                 ),
+                 const SizedBox(height: 12),
+                 _needsSlider(
+-                  label: 'Comfort',
++                  label: '舒适度',
+                   needKey: 'comfort',
+                   value: baselineComfort,
+                   onChanged: onBaselineComfortChanged,
+@@ -199,7 +199,7 @@ class NeedsFormSection extends StatelessWidget {
+                 // Enjoys low hygiene
+                 RealismFormSection.buildToggleRow(
+                   icon: Icons.water_drop_outlined,
+-                  label: 'Enjoys low hygiene',
++                  label: '偏好较低的卫生水平',
+                   subtitle:
+                       'Character prefers being sweaty, musky, or filthy (inverts hygiene behavior)',
+                   value: enjoysLowHygiene,
+@@ -238,9 +238,9 @@ class NeedsFormSection extends StatelessWidget {
+                 const SizedBox(height: 8),
+                 SegmentedButton<String>(
+                   segments: const [
+-                    ButtonSegment(value: 'sloth', label: Text('Sloth')),
++                    ButtonSegment(value: 'sloth', label: Text('慢悠悠')),
+                     ButtonSegment(value: 'normal', label: Text('普通')),
+-                    ButtonSegment(value: 'fast', label: Text('Fast')),
++                    ButtonSegment(value: 'fast', label: Text('快速')),
+                   ],
+                   selected: {needsPace},
+                   onSelectionChanged: onNeedsPaceChanged == null
+diff --git a/lib/ui/widgets/realism_form_section.dart b/lib/ui/widgets/realism_form_section.dart
+index 3847e16..96e9f06 100644
+--- a/lib/ui/widgets/realism_form_section.dart
++++ b/lib/ui/widgets/realism_form_section.dart
+@@ -396,8 +396,8 @@ class RealismFormSection extends StatelessWidget {
+             ),
+             child: buildRealismToggleRow(
+               icon: Icons.casino,
+-              label: 'Chaos Mode (Chance Time)',
+-              subtitle: 'Random narrative events during roleplay',
++              label: '混沌模式（随机事件时间）',
++              subtitle: '角色扮演期间随机发生的剧情事件',
+               value: chaosModeEnabled,
+               onChanged: onChaosModeChanged,
+               context: context,
+diff --git a/lib/ui/widgets/setup_overlay.dart b/lib/ui/widgets/setup_overlay.dart
+index 6e15d57..3534da5 100644
+--- a/lib/ui/widgets/setup_overlay.dart
++++ b/lib/ui/widgets/setup_overlay.dart
+@@ -99,7 +99,7 @@ class _SetupOverlayState extends State<SetupOverlay> {
+                       borderRadius: BorderRadius.circular(8),
+                     ),
+                   ),
+-                  child: const Text('Retry Setup'),
++                  child: const Text('重试设置'),
+                 ),
+                 TextButton(
+                   onPressed: () => setupService.reset(),
+@@ -166,7 +166,7 @@ class _SetupOverlayState extends State<SetupOverlay> {
+         _choiceButton(
+           context,
+           icon: Icons.rocket_launch,
+-          title: 'KoboldCpp — managed by Front Porch AI (recommended)',
++          title: 'KoboldCpp — 由 Front Porch AI 管理（推荐）',
+           subtitle:
+               'We download and run the AI engine for you. Starts fetching '
+               'now in the background while you set things up.',
+@@ -177,7 +177,7 @@ class _SetupOverlayState extends State<SetupOverlay> {
+         _choiceButton(
+           context,
+           icon: Icons.cloud_outlined,
+-          title: 'I have my own backend',
++          title: '我有自己的后端',
+           subtitle:
+               'OpenRouter, Nano-GPT, oMLX, LM Studio, or any OpenAI-'
+               'compatible API — local or cloud. Configure it in '
+@@ -189,7 +189,7 @@ class _SetupOverlayState extends State<SetupOverlay> {
+         _choiceButton(
+           context,
+           icon: Icons.help_outline,
+-          title: 'Not sure yet',
++          title: '还不确定',
+           subtitle:
+               'We\'ll quietly fetch the engine in the background so '
+               'everything just works when you\'re ready.',
+diff --git a/lib/ui/widgets/version_chip.dart b/lib/ui/widgets/version_chip.dart
+index 4f914af..e0507af 100644
+--- a/lib/ui/widgets/version_chip.dart
++++ b/lib/ui/widgets/version_chip.dart
+@@ -41,7 +41,7 @@ class VersionChip extends StatelessWidget {
+     final color = AppColors.textTertiary(context);
+     return Semantics(
+       button: true,
+-      label: 'Copy app version $version',
++      label: '复制应用版本 $version',
+       excludeSemantics: true,
+       child: Tooltip(
+         message: 'Copy version',
+diff --git a/lib/ui/widgets/work_row.dart b/lib/ui/widgets/work_row.dart
+index 18ee0b5..8d7ae2d 100644
+--- a/lib/ui/widgets/work_row.dart
++++ b/lib/ui/widgets/work_row.dart
+@@ -147,7 +147,7 @@ class _WorkRowState extends State<WorkRow> {
+         _field(
+           context,
+           key: const ValueKey('work-brief'),
+-          label: 'What the job is',
++          label: '工作内容',
+           hint: 'e.g. shelves returns, then reads until close',
+           initial: widget.occupationBrief,
+           onChanged: widget.onOccupationBriefChanged,
