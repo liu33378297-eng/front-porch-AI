@@ -1,0 +1,2049 @@
+diff --git a/lib/ui/image_studio/edit_source_well.dart b/lib/ui/image_studio/edit_source_well.dart
+index 27afb1c..6477b1b 100644
+--- a/lib/ui/image_studio/edit_source_well.dart
++++ b/lib/ui/image_studio/edit_source_well.dart
+@@ -103,7 +103,7 @@ class EditSourceWell extends StatelessWidget {
+                   ),
+                   const SizedBox(height: 4),
+                   Text(
+-                    'Add photo',
++                    '添加图片',
+                     style: TextStyle(
+                       fontSize: 11,
+                       color: AppColors.textTertiary(context),
+diff --git a/lib/ui/image_studio/edit_view.dart b/lib/ui/image_studio/edit_view.dart
+index 6bfd477..1a52693 100644
+--- a/lib/ui/image_studio/edit_view.dart
++++ b/lib/ui/image_studio/edit_view.dart
+@@ -192,7 +192,7 @@ class _EditViewState extends State<EditView> {
+     if (path != null) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+-          content: Text('Image saved to $path'),
++          content: Text('图片已保存到 $path'),
+           backgroundColor: AppColors.resolve(
+             context,
+             AppColors.logReady,
+@@ -210,7 +210,7 @@ class _EditViewState extends State<EditView> {
+     if (mounted) {
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(const SnackBar(content: Text('Image sent to chat')));
++      ).showSnackBar(const SnackBar(content: Text('图片已发送到聊天')));
+     }
+   }
+ 
+diff --git a/lib/ui/image_studio/expression_intensity_picker.dart b/lib/ui/image_studio/expression_intensity_picker.dart
+index 03b504f..bf7b596 100644
+--- a/lib/ui/image_studio/expression_intensity_picker.dart
++++ b/lib/ui/image_studio/expression_intensity_picker.dart
+@@ -20,12 +20,12 @@ class ExpressionIntensityPicker extends StatelessWidget {
+ 
+   @override
+   Widget build(BuildContext context) => Semantics(
+-    label: 'Expression intensity',
++    label: '表情强度',
+     child: Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text(
+-          'Expression intensity',
++          '表情强度',
+           style: TextStyle(color: AppColors.textPrimary(context)),
+         ),
+         DropdownButton<String>(
+diff --git a/lib/ui/image_studio/expression_pack_dialog.dart b/lib/ui/image_studio/expression_pack_dialog.dart
+index 3a56a93..dc906a4 100644
+--- a/lib/ui/image_studio/expression_pack_dialog.dart
++++ b/lib/ui/image_studio/expression_pack_dialog.dart
+@@ -147,10 +147,10 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+         widget.onSessionChanged?.call(false);
+         await showWarmDialog<void>(
+           context,
+-          title: 'Expression pack can’t start',
++          title: '表情包无法启动',
+           icon: Icons.warning_amber,
+           content: WarmDialogText(
+-            plan.refusal ?? 'Add a pack description before generating.',
++            plan.refusal ?? '生成前请先填写表情包描述。',
+           ),
+           actions: [warmDialogCancel(context, label: '知道了')],
+         );
+@@ -161,7 +161,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+           : widget.basePrompt;
+       if (!mounted) return;
+       if (!plan.edit && basePrompt.trim().isEmpty) {
+-        throw StateError('An image prompt could not be prepared.');
++        throw StateError('无法准备图像提示词。');
+       }
+       if (!_canOwnBoard()) {
+         setState(() => _checkingWorkflow = false);
+@@ -206,7 +206,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+             content: Text(
+               flight.busy
+                   ? kAlreadyGeneratingMessage
+-                  : (flight.error ?? 'The expression pack could not start.'),
++                  : (flight.error ?? '表情包无法启动。'),
+             ),
+           ),
+         );
+@@ -217,7 +217,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+       widget.onSessionChanged?.call(false);
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(SnackBar(content: Text('Pack could not start: $error')));
++      ).showSnackBar(SnackBar(content: Text('表情包无法启动：$error')));
+     }
+   }
+ 
+@@ -229,7 +229,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+     ScaffoldMessenger.of(context).showSnackBar(
+       const SnackBar(
+         content: Text(
+-          'Another screen has an expression pack. Use the pack banner above to stop or discard a phone pack, or finish a desktop pack in its originating screen.',
++          '另一个页面正在运行表情包任务。请使用上方的任务横幅停止或丢弃手机端任务，或返回启动桌面端任务的页面完成操作。',
+         ),
+       ),
+     );
+@@ -280,8 +280,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text(
+-            'Imported $count expressions for ${widget.characterName} — '
+-            'expressions enabled',
++            '已为 ${widget.characterName} 导入并启用 $count 个表情。',
+           ),
+         ),
+       );
+@@ -295,7 +294,7 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+       setState(() => _importing = false);
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(SnackBar(content: Text('Import failed: $error')));
++      ).showSnackBar(SnackBar(content: Text('导入失败：$error')));
+     } finally {
+       if (onBoard) expressionPackBoard.setImporting(ownedRun!, false);
+     }
+@@ -309,13 +308,13 @@ class ExpressionPackDialogState extends State<ExpressionPackDialog> {
+     if (_session == null || _imported) return true;
+     final discard = await showWarmDialog<bool>(
+       context,
+-      title: 'Discard expression pack?',
++      title: '要丢弃表情包吗？',
+       icon: Icons.delete_outline,
+       content: const WarmDialogText(
+-        'Stop this pack and discard its results? Imported expressions remain in the library.',
++        '停止此表情包任务并丢弃其结果？已导入的表情仍会保留在素材库中。',
+       ),
+       actions: [
+-        warmDialogCancel(context, label: 'Keep pack'),
++        warmDialogCancel(context, label: '保留表情包'),
+         warmDialogConfirm(
+           context,
+           label: '放弃',
+diff --git a/lib/ui/image_studio/expression_pack_grid.dart b/lib/ui/image_studio/expression_pack_grid.dart
+index 0d4622f..a5709eb 100644
+--- a/lib/ui/image_studio/expression_pack_grid.dart
++++ b/lib/ui/image_studio/expression_pack_grid.dart
+@@ -149,7 +149,7 @@ class ExpressionPackGrid extends StatelessWidget {
+             color: AppColors.iconSecondary(context),
+           ),
+           label: Text(
+-            cancelRequested ? 'Stopping after current…' : 'Cancel',
++            cancelRequested ? '当前项目完成后停止…' : '取消',
+             style: TextStyle(
+               color: AppColors.textSecondary(context),
+               fontSize: 12,
+@@ -189,7 +189,7 @@ class ExpressionPackGrid extends StatelessWidget {
+                     );
+                     if (rules != null) session.updatePromptRules(rules);
+                   },
+-            child: const Text('Prompt rules…'),
++            child: const Text('提示词规则…'),
+           ),
+         );
+       }
+@@ -216,7 +216,7 @@ class ExpressionPackGrid extends StatelessWidget {
+               color: AppColors.iconSecondary(context),
+             ),
+             label: Text(
+-              'Generate remaining (${session.pendingCount})',
++              '生成剩余项（${session.pendingCount}）',
+               style: TextStyle(
+                 color: AppColors.textSecondary(context),
+                 fontSize: 12,
+@@ -244,8 +244,8 @@ class ExpressionPackGrid extends StatelessWidget {
+                 : const Icon(Icons.download_done, size: 16),
+             label: Text(
+               imported
+-                  ? 'Expressions imported'
+-                  : 'Import ${session.keptCount} expressions',
++                  ? '表情已导入'
++                  : '导入 ${session.keptCount} 个表情',
+             ),
+             style: ElevatedButton.styleFrom(
+               backgroundColor: AppColors.formAccentOf(context),
+@@ -413,7 +413,7 @@ class _PackCell extends StatelessWidget {
+                         minHeight: 24,
+                       ),
+                       iconSize: 14,
+-                      tooltip: 'Re-roll (edit prompt, strength, seed)',
++                      tooltip: '重新生成（编辑提示词、强度和种子）',
+                       icon: Icon(
+                         Icons.casino_outlined,
+                         color: AppColors.iconPrimary(context),
+@@ -440,7 +440,7 @@ class _PackCell extends StatelessWidget {
+             mainAxisSize: MainAxisSize.min,
+             children: [
+               Tooltip(
+-                message: slot.error ?? 'Generation failed',
++                message: slot.error ?? '生成失败',
+                 child: Icon(
+                   Icons.error_outline,
+                   size: 18,
+diff --git a/lib/ui/image_studio/expression_pack_prompt_editor.dart b/lib/ui/image_studio/expression_pack_prompt_editor.dart
+index 23766f2..470d102 100644
+--- a/lib/ui/image_studio/expression_pack_prompt_editor.dart
++++ b/lib/ui/image_studio/expression_pack_prompt_editor.dart
+@@ -54,7 +54,7 @@ Future<void> showPackRerollEditor(
+         backgroundColor: AppColors.surfaceOf(context),
+         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+         title: Text(
+-          'Re-roll «$emotion»',
++          '重新生成“$emotion”',
+           style: TextStyle(fontSize: 15, color: AppColors.textPrimary(context)),
+         ),
+         content: SingleChildScrollView(
+@@ -104,15 +104,15 @@ Future<void> showPackRerollEditor(
+                   }),
+                   child: Text(
+                     promptEdited
+-                        ? 'Use intensity wording (replaces custom prompt)'
+-                        : 'Use intensity wording',
++                        ? '使用强度对应的描述（替换自定义提示词）'
++                        : '使用强度对应的描述',
+                   ),
+                 ),
+                 SizedBox(
+                   height: 44,
+                   child: promptEdited && !useIntensityPrompt
+                       ? Text(
+-                          'A custom prompt overrides intensity until you replace its wording.',
++                          '自定义提示词会覆盖表情强度的描述，直到你替换该提示词。',
+                           style: TextStyle(
+                             color: AppColors.textSecondary(context),
+                             fontSize: 12,
+@@ -142,13 +142,13 @@ Future<void> showPackRerollEditor(
+                       ),
+                     ),
+                     helperText: promptEdited
+-                        ? 'Your wording sticks to this slot for future re-rolls.'
++                        ? '你编写的文本会保留在此槽位，供之后重新生成时使用。'
+                         : ' ',
+                   ),
+                 ),
+                 const SizedBox(height: 12),
+                 Text(
+-                  'Variation strength',
++                  '变化强度',
+                   style: TextStyle(
+                     color: AppColors.textSecondary(context),
+                     fontSize: 11,
+@@ -195,9 +195,9 @@ Future<void> showPackRerollEditor(
+                     ),
+                   ),
+                   subtitle: Text(
+-                    'Off keeps the pack-consistent noise — the same seed with '
+-                    'unchanged prompt and strength reproduces the same image, '
+-                    'so tweak something above or roll new noise here.',
++                    '关闭后会保留表情包的一致噪声。相同随机种子搭配 '
++                    '相同的提示词和强度会生成相同图片；'
++                    '你可以调整上方参数，或在此生成新的随机噪声。',
+                     style: TextStyle(
+                       color: AppColors.textTertiary(context),
+                       fontSize: 11,
+@@ -219,7 +219,7 @@ Future<void> showPackRerollEditor(
+           ElevatedButton.icon(
+             onPressed: () => Navigator.of(context).pop(true),
+             icon: const Icon(Icons.casino_outlined, size: 16),
+-            label: const Text('Re-roll'),
++            label: const Text('重新生成'),
+             style: ElevatedButton.styleFrom(
+               backgroundColor: AppColors.formAccentOf(context),
+               foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/image_studio/expression_pack_qc_ui.dart b/lib/ui/image_studio/expression_pack_qc_ui.dart
+index e87f13d..674fc6f 100644
+--- a/lib/ui/image_studio/expression_pack_qc_ui.dart
++++ b/lib/ui/image_studio/expression_pack_qc_ui.dart
+@@ -51,11 +51,11 @@ class PackQcBadge extends StatelessWidget {
+   Widget build(BuildContext context) {
+     final clean = verdict.pass && verdict.note.isEmpty;
+     final message = clean
+-        ? 'Looks good — same person, expression reads as «$emotion»'
++        ? '看起来不错：人物一致，表情符合“$emotion”'
+         : [
+-            if (!verdict.samePerson) 'May be a different person',
++            if (!verdict.samePerson) '人物可能不一致',
+             if (!verdict.expressionMatches)
+-              'Expression doesn\'t read as «$emotion»',
++              '表情与“$emotion”不符',
+             if (verdict.note.isNotEmpty) verdict.note,
+           ].join('\n');
+     return packOverlayChip(
+@@ -110,7 +110,7 @@ class PackQcFooterControls extends StatelessWidget {
+         Padding(
+           padding: const EdgeInsets.only(right: 8),
+           child: Text(
+-            '${qc.unparsedCount} couldn\'t be checked',
++            '有 ${qc.unparsedCount} 张无法检查',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 11,
+@@ -136,8 +136,8 @@ class PackQcFooterControls extends StatelessWidget {
+               ),
+         label: Text(
+           running
+-              ? 'Checking ${qc.checkedCount} / ${qc.totalToCheck}…'
+-              : 'Vision check',
++              ? '正在检查 ${qc.checkedCount} / ${qc.totalToCheck}…'
++              : '视觉检查',
+           style: TextStyle(
+             color: AppColors.textSecondary(context),
+             fontSize: 12,
+@@ -155,7 +155,7 @@ class PackQcFooterControls extends StatelessWidget {
+           padding: EdgeInsets.zero,
+           constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+           iconSize: 16,
+-          tooltip: 'Stop checking',
++          tooltip: '停止检查',
+           icon: Icon(Icons.close, color: AppColors.iconSecondary(context)),
+           onPressed: qc.cancel,
+         ),
+@@ -173,7 +173,7 @@ class PackQcFooterControls extends StatelessWidget {
+               }
+             },
+             child: Text(
+-              'Uncheck flagged (${flaggedKept.length})',
++              '取消勾选标记项（${flaggedKept.length}）',
+               style: TextStyle(color: _qcWarnColor(context), fontSize: 12),
+             ),
+           ),
+diff --git a/lib/ui/image_studio/expression_pack_setup.dart b/lib/ui/image_studio/expression_pack_setup.dart
+index f1e43ec..407cc51 100644
+--- a/lib/ui/image_studio/expression_pack_setup.dart
++++ b/lib/ui/image_studio/expression_pack_setup.dart
+@@ -133,8 +133,8 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+             const SizedBox(width: 14),
+             Expanded(
+               child: Text(
+-                'Every emotion is generated from this base portrait, so the '
+-                'whole pack stays recognizably ${widget.characterName}.',
++                '每种情绪都会基于这张基础肖像生成，因此整个表情包中的角色 '
++                '都能保持为 ${widget.characterName}，便于辨认。',
+                 style: TextStyle(
+                   color: AppColors.textSecondary(context),
+                   fontSize: 12.5,
+@@ -162,9 +162,9 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+             ) ==
+             ImageGenBackend.comfyUi) ...[
+           Text(
+-            'On ComfyUI the pack runs your Edit graph (chosen on the Image '
+-            'Studio desk, under Edit). If it is not ready the pack stops and '
+-            'says what is missing; it never uses the Create graph instead.',
++            '在 ComfyUI 中，表情包会运行你在图像工作室的编辑页中选择的 '
++            '编辑工作流。如果工作流尚未就绪，任务会停止并说明缺少什么，'
++            '不会改用生成工作流。',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 11,
+@@ -175,8 +175,8 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+         _setChoice(
+           context,
+           selected: !_fullSet,
+-          title: 'Starter (${kCuratedExpressionSet.length} emotions)',
+-          subtitle: 'the essentials, quick to generate',
++          title: '入门（${kCuratedExpressionSet.length} 种情绪）',
++          subtitle: '包含常用情绪，生成更快',
+           emotions: kCuratedExpressionSet,
+           onTap: () => setState(() => _fullSet = false),
+         ),
+@@ -184,8 +184,8 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+         _setChoice(
+           context,
+           selected: _fullSet,
+-          title: 'Full (${kFullExpressionSet.length} emotions)',
+-          subtitle: 'every expression the chat can show',
++          title: '完整（${kFullExpressionSet.length} 种情绪）',
++          subtitle: '包含聊天中可显示的全部表情',
+           emotions: kFullExpressionSet,
+           onTap: () => setState(() => _fullSet = true),
+         ),
+@@ -199,8 +199,8 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+             controlAffinity: ListTileControlAffinity.leading,
+             activeColor: AppColors.formAccentOf(context),
+             title: Text(
+-              'Keep the $_existingInChosen you already have — generate only '
+-              'the missing ${_chosenSet.length - _existingInChosen}',
++              '保留已有的 $_existingInChosen 个表情，仅生成 '
++              '缺少的 ${_chosenSet.length - _existingInChosen} 个',
+               style: TextStyle(
+                 color: AppColors.textPrimary(context),
+                 fontSize: 12.5,
+@@ -208,10 +208,10 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+             ),
+             subtitle: Text(
+               _skipExisting
+-                  ? 'Your existing expression images stay untouched.'
+-                  : 'All ${_chosenSet.length} will be regenerated (with '
+-                        '"replace existing" on, that overwrites the ones '
+-                        'you kept).',
++                  ? '现有表情图片将保持不变。'
++                  : '将重新生成全部 ${_chosenSet.length} 个表情（如果启用了 '
++                        '“替换已有图片”选项，该操作会覆盖 '
++                        '你选择保留的图片）。',
+               style: TextStyle(
+                 color: AppColors.textTertiary(context),
+                 fontSize: 11,
+@@ -226,7 +226,7 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+         ),
+         const SizedBox(height: 16),
+         Text(
+-          'Variation strength',
++          '变化强度',
+           style: TextStyle(
+             color: AppColors.textSecondary(context),
+             fontSize: 11,
+@@ -259,7 +259,7 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+           ],
+         ),
+         Text(
+-          'Changes source variation only when the workflow supports it. Expression intensity changes the wording.',
++          '仅当工作流支持时才会改变来源图的变化幅度。表情强度则会改变提示词的描述。',
+           style: TextStyle(
+             color: AppColors.textTertiary(context),
+             fontSize: 11,
+@@ -284,7 +284,7 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+-                    'Replace old images when an emotion is regenerated',
++                    '重新生成某种情绪时，替换旧图片',
+                     style: TextStyle(
+                       color: AppColors.textSecondary(context),
+                       fontSize: 12.5,
+@@ -292,7 +292,7 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+                   ),
+                   const SizedBox(height: 2),
+                   Text(
+-                    'Off adds the new one alongside the old.',
++                    '关闭后，新图片会与旧图片同时保留。',
+                     style: TextStyle(
+                       color: AppColors.textTertiary(context),
+                       fontSize: 11,
+@@ -305,14 +305,14 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+         ),
+         const SizedBox(height: 12),
+         Text(
+-          'Generates $count images one at a time — you can keep, re-roll, or '
+-          'drop each one before importing.',
++          '将逐张生成 $count 张图片。每张生成后，你都可以保留、重新生成或 '
++          '删除，再统一导入。',
+           style: TextStyle(
+             color: AppColors.textTertiary(context),
+             fontSize: 11.5,
+           ),
+         ),
+-        TextButton(onPressed: _editRules, child: const Text('Prompt rules…')),
++        TextButton(onPressed: _editRules, child: const Text('提示词规则…')),
+         const SizedBox(height: 16),
+         Row(
+           mainAxisAlignment: MainAxisAlignment.end,
+@@ -335,7 +335,7 @@ class _ExpressionPackSetupState extends State<ExpressionPackSetup> {
+                       skipExisting: _skipExisting,
+                     ),
+               icon: const Icon(Icons.auto_awesome, size: 16),
+-              label: Text('Start ($_effectiveCount)'),
++              label: Text('开始（$_effectiveCount）'),
+               style: ElevatedButton.styleFrom(
+                 backgroundColor: AppColors.formAccentOf(context),
+                 foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/image_studio/expression_prompt_rules_editor.dart b/lib/ui/image_studio/expression_prompt_rules_editor.dart
+index 20f162a..dae2d84 100644
+--- a/lib/ui/image_studio/expression_prompt_rules_editor.dart
++++ b/lib/ui/image_studio/expression_prompt_rules_editor.dart
+@@ -89,19 +89,19 @@ class _ExpressionPromptRulesEditorState
+     final error = ValueNotifier<String?>(null);
+     final result = await showWarmDialog<ExpressionPromptReplacement>(
+       context,
+-      title: 'Literal replacement',
++      title: '文本替换规则',
+       width: 420,
+       content: Column(
+         mainAxisSize: MainAxisSize.min,
+         children: [
+           TextField(
+             controller: find,
+-            decoration: const InputDecoration(labelText: 'Find'),
++            decoration: const InputDecoration(labelText: '查找文本'),
+             maxLength: 2048,
+           ),
+           TextField(
+             controller: replace,
+-            decoration: const InputDecoration(labelText: 'Replace with'),
++            decoration: const InputDecoration(labelText: '替换为'),
+             maxLength: 2048,
+           ),
+           ValueListenableBuilder<bool>(
+@@ -123,7 +123,7 @@ class _ExpressionPromptRulesEditorState
+         warmDialogCancel(context),
+         warmDialogConfirm(
+           context,
+-          label: 'Use replacement',
++          label: '使用替换规则',
+           onPressed: () {
+             try {
+               Navigator.pop(
+@@ -186,14 +186,14 @@ class _ExpressionPromptRulesEditorState
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               const Text(
+-                'Positive prompts only. Replacements run in order, then prefix and suffix are added. Prompts edited for a single expression keep their own wording.',
++                '此处仅处理正向提示词。替换规则会按顺序执行，随后添加前缀和后缀。单个表情单独编辑过的提示词会保留其自身文本。',
+               ),
+               TextField(
+                 controller: _prefix,
+                 enabled: !_saving,
+                 maxLength: 4096,
+                 decoration: const InputDecoration(
+-                  labelText: 'Text before each prompt',
++                  labelText: '每条提示词前添加的文本',
+                 ),
+                 onChanged: (_) => setState(() {
+                   _error = null;
+@@ -205,7 +205,7 @@ class _ExpressionPromptRulesEditorState
+                 enabled: !_saving,
+                 maxLength: 4096,
+                 decoration: const InputDecoration(
+-                  labelText: 'Text after each prompt',
++                  labelText: '每条提示词后添加的文本',
+                 ),
+                 onChanged: (_) => setState(() {
+                   _error = null;
+@@ -219,28 +219,28 @@ class _ExpressionPromptRulesEditorState
+                       child: TextButton(
+                         onPressed: _saving ? null : () => _edit(i),
+                         child: Text(
+-                          '${i + 1}. ${_rows[i].find} -> ${_rows[i].replace} (${_rows[i].caseSensitive ? 'case sensitive' : 'ignore case'})',
++                          '${i + 1}. ${_rows[i].find} -> ${_rows[i].replace} (${_rows[i].caseSensitive ? '区分大小写' : '忽略大小写'})',
+                           maxLines: 2,
+                           overflow: TextOverflow.ellipsis,
+                         ),
+                       ),
+                     ),
+                     IconButton(
+-                      tooltip: 'Move up',
++                      tooltip: '上移',
+                       onPressed: !_saving && i > 0
+                           ? () => _move(i, i - 1)
+                           : null,
+                       icon: const Icon(Icons.arrow_upward),
+                     ),
+                     IconButton(
+-                      tooltip: 'Move down',
++                      tooltip: '下移',
+                       onPressed: !_saving && i < _rows.length - 1
+                           ? () => _move(i, i + 1)
+                           : null,
+                       icon: const Icon(Icons.arrow_downward),
+                     ),
+                     IconButton(
+-                      tooltip: 'Delete replacement',
++                      tooltip: '删除替换规则',
+                       onPressed: _saving
+                           ? null
+                           : () => setState(() {
+@@ -253,7 +253,7 @@ class _ExpressionPromptRulesEditorState
+                 ),
+               TextButton(
+                 onPressed: !_saving && _rows.length < 32 ? () => _edit() : null,
+-                child: const Text('Add replacement'),
++                child: const Text('添加替换规则'),
+               ),
+               if (validationError != null) Text(validationError),
+               if (_error != null) Text(_error!),
+@@ -280,7 +280,7 @@ class _ExpressionPromptRulesEditorState
+       actions: [
+         TextButton(
+           onPressed: _saving ? null : _reset,
+-          child: const Text('Reset to global defaults'),
++          child: const Text('恢复全局默认值'),
+         ),
+         TextButton(
+           onPressed: _saving || preview == null
+@@ -290,11 +290,11 @@ class _ExpressionPromptRulesEditorState
+                   try {
+                     await widget.saveDefaults(_rules());
+                     if (mounted) {
+-                      setState(() => _status = 'Global defaults saved.');
++                      setState(() => _status = '已保存为全局默认值。');
+                     }
+                   } catch (e) {
+                     if (mounted) {
+-                      setState(() => _error = 'Could not save defaults: $e');
++                      setState(() => _error = '无法保存默认值：$e');
+                     }
+                   } finally {
+                     if (mounted) {
+@@ -302,7 +302,7 @@ class _ExpressionPromptRulesEditorState
+                     }
+                   }
+                 },
+-          child: const Text('Save as global defaults'),
++          child: const Text('保存为全局默认值'),
+         ),
+         TextButton(
+           onPressed: () => Navigator.pop(context),
+@@ -316,7 +316,7 @@ class _ExpressionPromptRulesEditorState
+           onPressed: preview == null || _saving
+               ? null
+               : () => Navigator.pop(context, _rules()),
+-          child: const Text('Use for this pack'),
++          child: const Text('应用于此表情包'),
+         ),
+       ],
+     );
+diff --git a/lib/ui/image_studio/generation_history.dart b/lib/ui/image_studio/generation_history.dart
+index 5cb402c..7fd3d60 100644
+--- a/lib/ui/image_studio/generation_history.dart
++++ b/lib/ui/image_studio/generation_history.dart
+@@ -40,7 +40,7 @@ class GenerationHistory extends StatelessWidget {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text(
+-          'Generation history (this session)',
++          '生成历史（本次会话）',
+           style: TextStyle(
+             color: AppColors.textSecondary(context),
+             fontSize: 11,
+diff --git a/lib/ui/image_studio/other_expression_pack.dart b/lib/ui/image_studio/other_expression_pack.dart
+index b3ad031..252420f 100644
+--- a/lib/ui/image_studio/other_expression_pack.dart
++++ b/lib/ui/image_studio/other_expression_pack.dart
+@@ -16,13 +16,13 @@ class OtherExpressionPack extends StatelessWidget {
+   Future<void> _discard(BuildContext context, PackRun run) async {
+     final discard = await showWarmDialog<bool>(
+       context,
+-      title: 'Discard phone expression pack?',
++      title: '丢弃手机端的表情包任务？',
+       icon: Icons.delete_outline,
+       content: WarmDialogText(
+-        'Discard the unimported results for ${run.characterName}? Imported expressions remain in the library.',
++        '丢弃 ${run.characterName} 尚未导入的结果？已导入的表情仍会保留在角色库中。',
+       ),
+       actions: [
+-        warmDialogCancel(context, label: 'Keep pack'),
++        warmDialogCancel(context, label: '保留表情包'),
+         warmDialogConfirm(
+           context,
+           label: '放弃',
+@@ -56,14 +56,14 @@ class OtherExpressionPack extends StatelessWidget {
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                '${run.characterName}: another ${run.origin == PackOrigin.phone ? 'phone' : 'desktop'} screen has an expression pack.',
++                '${run.characterName}：另一个${run.origin == PackOrigin.phone ? '手机端' : '桌面端'}页面正在运行表情包任务。',
+               ),
+               Text(
+                 run.importing
+-                    ? 'Importing…'
++                    ? '正在导入…'
+                     : running
+-                    ? 'Generating…'
+-                    : 'Pack stopped.',
++                    ? '正在生成…'
++                    : '表情包任务已停止。',
+               ),
+               if (run.origin == PackOrigin.phone) ...[
+                 TextButton(
+@@ -75,15 +75,15 @@ class OtherExpressionPack extends StatelessWidget {
+                       ? null
+                       : () => _discard(context, run),
+                   child: Text(
+-                    running ? 'Stop phone pack' : 'Discard phone pack',
++                    running ? '停止手机端任务' : '丢弃手机端任务',
+                   ),
+                 ),
+                 const Text(
+-                  'Import or continue its results on the phone, or discard them here to start a new pack.',
++                  '请在手机端导入或继续处理结果；也可以在此处丢弃结果，然后开始新的表情包任务。',
+                 ),
+               ] else
+                 const Text(
+-                  'Import or discard it in the desktop screen that started it.',
++                  '请返回启动该任务的桌面页面进行导入或丢弃。',
+                 ),
+             ],
+           ),
+diff --git a/lib/ui/image_studio/reference_image_picker.dart b/lib/ui/image_studio/reference_image_picker.dart
+index 0ccd0c0..6ad1cf3 100644
+--- a/lib/ui/image_studio/reference_image_picker.dart
++++ b/lib/ui/image_studio/reference_image_picker.dart
+@@ -82,7 +82,7 @@ class ReferenceImagePicker extends StatelessWidget {
+               const SizedBox(width: 6),
+               Expanded(
+                 child: Text(
+-                  'Reference image (optional)',
++                  '参考图（可选）',
+                   style: TextStyle(
+                     color: AppColors.textSecondary(context),
+                     fontSize: 12,
+@@ -112,7 +112,7 @@ class ReferenceImagePicker extends StatelessWidget {
+             OutlinedButton.icon(
+               onPressed: isBusy ? null : onPick,
+               icon: const Icon(Icons.add_photo_alternate_outlined, size: 16),
+-              label: const Text('Choose image…'),
++              label: const Text('选择图片…'),
+               style: OutlinedButton.styleFrom(
+                 foregroundColor: AppColors.formAccentOf(context),
+                 side: BorderSide(color: AppColors.borderOf(context)),
+@@ -138,8 +138,8 @@ class ReferenceImagePicker extends StatelessWidget {
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       Text(
+-                        'This photo is a starting point — the slider below sets '
+-                        'how far the result can drift from it.',
++                        '这张图片将作为起点；使用下方滑块调整 '
++                        '生成结果可以偏离原图的程度。',
+                         style: TextStyle(
+                           color: AppColors.textTertiary(context),
+                           fontSize: 10,
+@@ -193,7 +193,7 @@ class _DenoiseSlider extends StatelessWidget {
+       mainAxisSize: MainAxisSize.min,
+       children: [
+         Text(
+-          'How different from the photo?',
++          '与原图的差异程度',
+           style: TextStyle(
+             color: AppColors.textSecondary(context),
+             fontSize: 11,
+@@ -215,7 +215,7 @@ class _DenoiseSlider extends StatelessWidget {
+                     .setImageGenDenoise(v),
+         ),
+         Text(
+-          'Left keeps it close to your photo; right lets the prompt take over.',
++          '滑块靠左时更接近原图；靠右时更遵循提示词。',
+           style: TextStyle(
+             color: AppColors.textTertiary(context),
+             fontSize: 10,
+diff --git a/lib/ui/image_studio/remote_image_host_chips.dart b/lib/ui/image_studio/remote_image_host_chips.dart
+index a4486bb..a937456 100644
+--- a/lib/ui/image_studio/remote_image_host_chips.dart
++++ b/lib/ui/image_studio/remote_image_host_chips.dart
+@@ -37,7 +37,7 @@ class RemoteImageHostChips extends StatelessWidget {
+   @override
+   Widget build(BuildContext context) {
+     return Semantics(
+-      label: 'Remote host',
++      label: '远程主机',
+       container: true,
+       child: Row(
+         crossAxisAlignment: CrossAxisAlignment.start,
+diff --git a/lib/ui/image_studio/result_view.dart b/lib/ui/image_studio/result_view.dart
+index c2f6e7c..cf3df1f 100644
+--- a/lib/ui/image_studio/result_view.dart
++++ b/lib/ui/image_studio/result_view.dart
+@@ -92,7 +92,7 @@ class ResultView extends StatelessWidget {
+               ElevatedButton.icon(
+                 onPressed: onVariations,
+                 icon: const Icon(Icons.refresh, size: 16),
+-                label: const Text('Variations'),
++                label: const Text('生成变体'),
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: AppColors.surfaceContainerOf(context),
+                   foregroundColor: AppColors.textPrimary(context),
+@@ -105,7 +105,7 @@ class ResultView extends StatelessWidget {
+               ElevatedButton.icon(
+                 onPressed: onEditRegen,
+                 icon: const Icon(Icons.edit, size: 16),
+-                label: const Text('Edit prompt & regenerate'),
++                label: const Text('编辑提示词并重新生成'),
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: AppColors.surfaceContainerOf(context),
+                   foregroundColor: AppColors.textPrimary(context),
+@@ -119,7 +119,7 @@ class ResultView extends StatelessWidget {
+                 ElevatedButton.icon(
+                   onPressed: isSaving ? null : onSendToChat,
+                   icon: const Icon(Icons.chat_bubble_outline, size: 16),
+-                  label: const Text('Send to chat'),
++                  label: const Text('发送到聊天'),
+                   style: ElevatedButton.styleFrom(
+                     backgroundColor: AppColors.surfaceContainerOf(context),
+                     foregroundColor: AppColors.textPrimary(context),
+@@ -133,7 +133,7 @@ class ResultView extends StatelessWidget {
+                 ElevatedButton.icon(
+                   onPressed: isSaving ? null : onSaveToGallery,
+                   icon: const Icon(Icons.photo_library_outlined, size: 16),
+-                  label: const Text('Save to gallery'),
++                  label: const Text('保存到图库'),
+                   style: ElevatedButton.styleFrom(
+                     backgroundColor: AppColors.surfaceContainerOf(context),
+                     foregroundColor: AppColors.textPrimary(context),
+diff --git a/lib/ui/image_studio/studio_civitai_base.dart b/lib/ui/image_studio/studio_civitai_base.dart
+index 8980166..f20a686 100644
+--- a/lib/ui/image_studio/studio_civitai_base.dart
++++ b/lib/ui/image_studio/studio_civitai_base.dart
+@@ -22,8 +22,8 @@ PreferredSizeWidget? studioCivitaiStatus({
+   final line = progress == null
+       ? error!
+       : percent == null
+-      ? 'Downloading $progress'
+-      : 'Downloading $progress · $percent%';
++      ? '正在下载 $progress'
++      : '正在下载 $progress · $percent%';
+   return PreferredSize(
+     preferredSize: Size.fromHeight(
+       progress != null && onCancel != null ? 68 : 56,
+@@ -105,7 +105,7 @@ class StudioCivitaiBasePicker extends StatelessWidget {
+         child: Column(
+           crossAxisAlignment: CrossAxisAlignment.stretch,
+           children: [
+-            _option(context, '', 'Any base'),
++            _option(context, '', '任意基础模型'),
+             for (final group in groups) ...[
+               Padding(
+                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
+@@ -157,8 +157,8 @@ class StudioCivitaiBasePicker extends StatelessWidget {
+                   controller: text,
+                   focusNode: focus,
+                   decoration: InputDecoration(
+-                    labelText: 'Base model',
+-                    hintText: 'Type to narrow: Qwen, Flux, SDXL',
++                    labelText: '基础模型',
++                    hintText: '输入以筛选：Qwen、Flux、SDXL',
+                     suffixIcon: open && text.text.isNotEmpty
+                         ? IconButton(
+                             tooltip: '清空',
+@@ -180,11 +180,11 @@ class StudioCivitaiBasePicker extends StatelessWidget {
+           CheckboxListTile(
+             contentPadding: EdgeInsets.zero,
+             value: installedOnly,
+-            title: const Text('Only installed models'),
++            title: const Text('仅显示已安装模型'),
+             subtitle: Text(
+               scanning
+-                  ? 'Looking through the models folder…'
+-                  : 'Limits the bases to ones that match model files on this computer.',
++                  ? '正在扫描模型文件夹…'
++                  : '仅显示与此电脑上的模型文件匹配的基础模型。',
+             ),
+             onChanged: (next) {
+               if (next == null) return;
+diff --git a/lib/ui/image_studio/studio_civitai_card.dart b/lib/ui/image_studio/studio_civitai_card.dart
+index bdd385a..7324747 100644
+--- a/lib/ui/image_studio/studio_civitai_card.dart
++++ b/lib/ui/image_studio/studio_civitai_card.dart
+@@ -14,7 +14,7 @@ String studioDownloadCount(int count) {
+     if (i > 0 && (digits.length - i) % 3 == 0) out.write(',');
+     out.write(digits[i]);
+   }
+-  return '$out downloads';
++  return '$out 次下载';
+ }
+ 
+ /// One CivitAI hit: a result picture, the download count, and Download.
+@@ -125,7 +125,7 @@ class StudioCivitaiCard extends StatelessWidget {
+               const SizedBox(width: 8),
+               FilledButton(
+                 onPressed: busy ? null : onDownload,
+-                child: Text(installed ? 'Installed' : 'Download'),
++                child: Text(installed ? '已安装' : '下载'),
+               ),
+             ],
+           ),
+diff --git a/lib/ui/image_studio/studio_civitai_detail.dart b/lib/ui/image_studio/studio_civitai_detail.dart
+index 6085cfd..1bf1299 100644
+--- a/lib/ui/image_studio/studio_civitai_detail.dart
++++ b/lib/ui/image_studio/studio_civitai_detail.dart
+@@ -80,7 +80,7 @@ class _StudioCivitaiDetailState extends State<StudioCivitaiDetail> {
+         actions: [
+           TextButton(
+             onPressed: widget.onDownload,
+-            child: Text(widget.installed ? 'Installed' : 'Download'),
++            child: Text(widget.installed ? '已安装' : '下载'),
+           ),
+         ],
+       ),
+@@ -112,8 +112,8 @@ class _StudioCivitaiDetailState extends State<StudioCivitaiDetail> {
+           Text(
+             _row.description.isEmpty
+                 ? (_loading
+-                      ? 'Loading the CivitAI description…'
+-                      : 'CivitAI did not send a description.')
++                      ? '正在加载 CivitAI 介绍…'
++                      : 'CivitAI 未提供介绍。')
+                 : _row.description,
+             style: TextStyle(
+               color: AppColors.textPrimary(context),
+diff --git a/lib/ui/image_studio/studio_civitai_get.dart b/lib/ui/image_studio/studio_civitai_get.dart
+index 5bc3daf..be8118a 100644
+--- a/lib/ui/image_studio/studio_civitai_get.dart
++++ b/lib/ui/image_studio/studio_civitai_get.dart
+@@ -99,7 +99,7 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+       if (!mounted) return;
+       setState(() {
+         _error =
+-            'This ComfyUI is on another computer. Save the download on that computer.';
++            '此 ComfyUI 运行在另一台电脑上。请在那台电脑上保存下载文件。';
+         _needFolder = false;
+         _base.scanning = false;
+       });
+@@ -233,7 +233,7 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+       if (_current(seq)) setState(() => _error = e.message);
+     } catch (e) {
+       debugPrint('civitai search failed: ${e.runtimeType}');
+-      if (_current(seq)) setState(() => _error = 'CivitAI search failed.');
++      if (_current(seq)) setState(() => _error = 'CivitAI 搜索失败。');
+     } finally {
+       if (_current(seq)) setState(() => _results.searching = false);
+     }
+@@ -243,7 +243,7 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+     final picked = await GuardedPicker.getDirectoryPath(
+       context,
+       category: 'studio-models',
+-      dialogTitle: 'Models folder',
++      dialogTitle: '模型文件夹',
+     );
+     if (picked == null) return;
+     await rememberStudioModelRoot(widget.backend, picked);
+@@ -265,8 +265,8 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+     setState(() {
+       _offerFolder = null;
+       _error = ok
+-          ? 'That folder is saved as a models folder. Press Download again.'
+-          : 'That folder cannot be used as a models folder.';
++          ? '已将该文件夹保存为模型文件夹。请再次点击“下载”。'
++          : '无法将该文件夹用作模型文件夹。';
+     });
+   }
+ 
+@@ -351,8 +351,8 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+   @override
+   Widget build(BuildContext context) {
+     final title = widget.lora
+-        ? 'Get a LoRA from CivitAI'
+-        : 'Get a model from CivitAI';
++        ? '从 CivitAI 获取 LoRA'
++        : '从 CivitAI 获取模型';
+     return Scaffold(
+       backgroundColor: AppColors.surfaceOf(context),
+       appBar: AppBar(
+@@ -387,7 +387,7 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+             CheckboxListTile(
+               contentPadding: EdgeInsets.zero,
+               value: _adult,
+-              title: const Text('Include adult models from civitai.red'),
++              title: const Text('包含来自 civitai.red 的成人模型'),
+               onChanged: (value) {
+                 if (value == null) return;
+                 setState(() {
+@@ -418,8 +418,8 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+           TextField(
+             controller: _query,
+             decoration: InputDecoration(
+-              labelText: widget.lora ? 'Search LoRAs' : 'Search CivitAI',
+-              hintText: widget.lora ? 'Clothes' : null,
++              labelText: widget.lora ? '搜索 LoRA' : '搜索 CivitAI',
++              hintText: widget.lora ? '例如：服装' : null,
+             ),
+             onSubmitted: (_) => _search(),
+           ),
+@@ -430,7 +430,7 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+             ),
+             TextButton(
+               onPressed: _downloading ? null : _useOfferedFolder,
+-              child: const Text('Use this folder'),
++              child: const Text('使用此文件夹'),
+             ),
+           ],
+           if (_needFolder)
+@@ -438,8 +438,8 @@ class _StudioCivitaiGetState extends State<StudioCivitaiGet> {
+               onPressed: _downloading ? null : _pickFolder,
+               child: Text(
+                 widget.backend == 'a1111'
+-                    ? 'Pick the Automatic1111 folder'
+-                    : 'Pick the ComfyUI models folder',
++                    ? '选择 Automatic1111 模型文件夹'
++                    : '选择 ComfyUI 模型文件夹',
+               ),
+             ),
+           for (final row in _results.rows)
+diff --git a/lib/ui/image_studio/studio_civitai_install.dart b/lib/ui/image_studio/studio_civitai_install.dart
+index 207e3b9..1d91687 100644
+--- a/lib/ui/image_studio/studio_civitai_install.dart
++++ b/lib/ui/image_studio/studio_civitai_install.dart
+@@ -64,7 +64,7 @@ class CivitaiInstallFailed extends CivitaiInstallResult {
+ }
+ 
+ const String _kRemoteComfy =
+-    'This ComfyUI is on another computer. Save the download on that computer.';
++    '此 ComfyUI 运行在另一台电脑上。请在那台电脑上保存下载文件。';
+ 
+ /// Downloads [row]. What is saved comes from CivitAI's own listing of the
+ /// version: its file, its folder, its size and checksum. The search row only
+@@ -82,7 +82,7 @@ Future<CivitaiInstallResult> installCivitaiRow({
+ }) async {
+   final versionId = row.versionId;
+   if (versionId == null) {
+-    return const CivitaiInstallFailed('That row has no file to download.');
++    return const CivitaiInstallFailed('该条目没有可下载的文件。');
+   }
+   String? wanted = row.filename;
+   try {
+@@ -98,7 +98,7 @@ Future<CivitaiInstallResult> installCivitaiRow({
+     );
+     if (blocked != null || root == null) {
+       return CivitaiInstallFailed(
+-        blocked ?? 'Pick your models folder on this computer first',
++        blocked ?? '请先选择此电脑上的模型文件夹',
+         needFolder:
+             root == null && (backend == 'comfyui' || backend == 'a1111'),
+       );
+@@ -147,7 +147,7 @@ Future<CivitaiInstallResult> installCivitaiRow({
+   } catch (e) {
+     debugPrint('civitai download failed: ${e.runtimeType}');
+     if (cancel.isCancelled) return const CivitaiInstallStopped();
+-    return const CivitaiInstallFailed('CivitAI download failed.');
++    return const CivitaiInstallFailed('CivitAI 下载失败。');
+   }
+ }
+ 
+diff --git a/lib/ui/image_studio/studio_civitai_key.dart b/lib/ui/image_studio/studio_civitai_key.dart
+index 8a019d3..43379d8 100644
+--- a/lib/ui/image_studio/studio_civitai_key.dart
++++ b/lib/ui/image_studio/studio_civitai_key.dart
+@@ -122,14 +122,14 @@ class CivitaiKeyPanel extends StatelessWidget {
+     final sure = await showDialog<bool>(
+       context: context,
+       builder: (context) => AlertDialog(
+-        title: const Text('Remove the CivitAI key?'),
++        title: const Text('移除 CivitAI 密钥？'),
+         content: const Text(
+           'Searching adult models and downloading will ask for a key again.',
+         ),
+         actions: [
+           TextButton(
+             onPressed: () => Navigator.of(context).pop(false),
+-            child: const Text('Keep it'),
++            child: const Text('保留'),
+           ),
+           TextButton(
+             onPressed: () => Navigator.of(context).pop(true),
+@@ -165,9 +165,9 @@ class CivitaiKeyPanel extends StatelessWidget {
+             if (showSaved) ...[
+               const ListTile(
+                 contentPadding: EdgeInsets.zero,
+-                title: Text('API key saved'),
++                title: Text('API 密钥已保存'),
+                 subtitle: Text(
+-                  'This key is used for search and for adult results on civitai.red.',
++                  '此密钥用于搜索，以及获取 civitai.red 上的成人内容搜索结果。',
+                 ),
+               ),
+               Row(
+diff --git a/lib/ui/image_studio/studio_comfy_address.dart b/lib/ui/image_studio/studio_comfy_address.dart
+index e6b6994..aa44125 100644
+--- a/lib/ui/image_studio/studio_comfy_address.dart
++++ b/lib/ui/image_studio/studio_comfy_address.dart
+@@ -79,14 +79,14 @@ class _StudioComfyAddressState extends State<StudioComfyAddress> {
+     if (typed.isEmpty) {
+       setState(() {
+         _error = null;
+-        _status = 'Looking for ComfyUI on this computer.';
++        _status = '正在此电脑上查找 ComfyUI。';
+       });
+       await widget.onSave('');
+       return;
+     }
+     final address = normalizeComfyAddress(typed);
+     if (address == null) {
+-      setState(() => _error = 'Use a host and port, like 127.0.0.1:8188.');
++      setState(() => _error = '请输入主机地址和端口，例如 127.0.0.1:8188。');
+       return;
+     }
+     setState(() => _error = null);
+@@ -100,15 +100,15 @@ class _StudioComfyAddressState extends State<StudioComfyAddress> {
+   Future<void> _test(String address) async {
+     setState(() {
+       _testing = true;
+-      _status = 'Testing…';
++      _status = '正在测试…';
+     });
+     final up = await widget.answers(address);
+     if (!mounted) return;
+     setState(() {
+       _testing = false;
+       _status = up
+-          ? 'ComfyUI answers at $address.'
+-          : 'Nothing answers at $address. Saved anyway.';
++          ? 'ComfyUI 可通过此地址访问：$address。'
++          : '此地址 $address 没有响应，但已保存。';
+     });
+   }
+ 
+@@ -126,7 +126,7 @@ class _StudioComfyAddressState extends State<StudioComfyAddress> {
+                 controller: _text,
+                 focusNode: _focus,
+                 decoration: InputDecoration(
+-                  labelText: 'ComfyUI address',
++                  labelText: 'ComfyUI 地址',
+                   hintText: '127.0.0.1:8188',
+                   helperText: widget.explicit
+                       ? null
+@@ -145,7 +145,7 @@ class _StudioComfyAddressState extends State<StudioComfyAddress> {
+                       if (address == null) {
+                         setState(
+                           () => _error =
+-                              'Use a host and port, like 127.0.0.1:8188.',
++                              '请输入主机地址和端口，例如 127.0.0.1:8188。',
+                         );
+                         return;
+                       }
+@@ -162,7 +162,7 @@ class _StudioComfyAddressState extends State<StudioComfyAddress> {
+             children: [
+               Expanded(
+                 child: Text(
+-                  'ComfyUI answers at $offer',
++                  'ComfyUI 可通过此地址访问：$offer',
+                   style: TextStyle(color: secondary, fontSize: 12),
+                 ),
+               ),
+diff --git a/lib/ui/image_studio/studio_commit_field.dart b/lib/ui/image_studio/studio_commit_field.dart
+index ec64d7b..5f418aa 100644
+--- a/lib/ui/image_studio/studio_commit_field.dart
++++ b/lib/ui/image_studio/studio_commit_field.dart
+@@ -81,10 +81,10 @@ class _StudioCommitFieldState extends State<StudioCommitField> {
+         labelText: widget.label,
+         hintText: widget.hint,
+         helperText: _pending
+-            ? 'Draft kept. Apply after generation finishes.'
++            ? '草稿已保留。生成完成后即可应用。'
+             : null,
+         suffixIcon: _pending
+-            ? TextButton(onPressed: _commit, child: const Text('Apply'))
++            ? TextButton(onPressed: _commit, child: const Text('应用'))
+             : null,
+       ),
+       onSubmitted: (_) => _commit(),
+diff --git a/lib/ui/image_studio/studio_desk.dart b/lib/ui/image_studio/studio_desk.dart
+index 949ae07..15844cb 100644
+--- a/lib/ui/image_studio/studio_desk.dart
++++ b/lib/ui/image_studio/studio_desk.dart
+@@ -236,8 +236,8 @@ class _StudioDeskState extends State<StudioDesk> implements StudioDeskHost {
+             : _catalog.unet.length + _catalog.gguf.length,
+         loraCount: _catalog.loras.length,
+         familyLabel: primary.isEmpty
+-            ? 'No model chosen'
+-            : (family == ModelFamily.unknown ? 'Model' : family.label),
++            ? '未选择模型'
++            : (family == ModelFamily.unknown ? '模型' : family.label),
+         primaryFile: primary,
+         why: why,
+         onGraphs: () => _actions.openGraphs(settings),
+@@ -324,7 +324,7 @@ class _StudioDeskState extends State<StudioDesk> implements StudioDeskHost {
+           comfyOwnShift: ready?.ownShift ?? kEditRecommendedShift,
+         ),
+         readyLine: ready == null
+-            ? 'Checking…'
++            ? '正在检查…'
+             : studioNotReadyLine(
+                 readiness: ready,
+                 backendName: studioBackendName(backend),
+@@ -354,8 +354,8 @@ class _StudioDeskState extends State<StudioDesk> implements StudioDeskHost {
+                     : () => _actions.useExistingLoaderSupport(settings),
+                 child: Text(
+                   City96Gate.instance.hasExistingSupport(settings.comfyUiUrl)
+-                      ? 'Recheck GGUF support'
+-                      : 'Use existing GGUF support…',
++                      ? '重新检查 GGUF 支持情况'
++                      : '使用现有的 GGUF 支持…',
+                 ),
+               )
+             : null,
+@@ -389,7 +389,7 @@ class _StudioDeskState extends State<StudioDesk> implements StudioDeskHost {
+           edit: editing,
+         ),
+         readyLine: ready == null
+-            ? 'Checking…'
++            ? '正在检查…'
+             : studioNotReadyLine(
+                 readiness: ready,
+                 backendName: studioBackendName('remote'),
+@@ -454,7 +454,7 @@ class _StudioDeskState extends State<StudioDesk> implements StudioDeskHost {
+       builder: (dialogContext) => AlertDialog(
+         content: StudioCommitField(
+           value: _url(settings),
+-          label: 'Address',
++          label: '地址',
+           onSubmit: (value) {
+             _saveUrl(settings, value);
+             Navigator.of(dialogContext).pop();
+diff --git a/lib/ui/image_studio/studio_desk_copy.dart b/lib/ui/image_studio/studio_desk_copy.dart
+index 5dbcce2..024c27e 100644
+--- a/lib/ui/image_studio/studio_desk_copy.dart
++++ b/lib/ui/image_studio/studio_desk_copy.dart
+@@ -7,33 +7,33 @@ import 'package:front_porch_ai/services/image/image.dart';
+ import 'package:front_porch_ai/services/storage/settings/image_gen_settings.dart';
+ 
+ const String kStudioCreateWell =
+-    'Start from a picture — optional. A reference here varies the Create '
+-    'model. It does not switch you to Edit.';
++    '从图片开始（可选）。这里的参考图会改变生成模型的输出，'
++    '但不会切换到编辑模式。';
+ 
+ const String kStudioEditWell =
+-    'Portrait in this chat. Edit sends an instruction with this picture.';
++    '此聊天中的角色肖像。编辑模式会连同这张图片一起发送编辑指令。';
+ 
+ const String kStudioCreatePack =
+-    'Pack uses this Create model to vary the portrait.';
++    '表情包会使用此生成模型来变化角色肖像。';
+ 
+-const String kStudioEditPack = 'Pack uses this edit model.';
++const String kStudioEditPack = '表情包会使用此编辑模型。';
+ 
+ const String kStudioDropCopy =
+-    'Drop a ComfyUI graph, or an image that has one saved inside it.';
++    '拖入 ComfyUI 工作流，或拖入内嵌了工作流的图片。';
+ 
+-const String kStudioDropKind = 'JSON, or a PNG from Comfy’s Save.';
++const String kStudioDropKind = 'JSON 文件，或通过 ComfyUI 的保存功能导出的 PNG。';
+ 
+ const String kStudioPngReject =
+-    'That image has no ComfyUI workflow saved inside it.';
++    '该图片中没有保存 ComfyUI 工作流。';
+ 
+-const String kStudioFileReject = 'That file isn’t a ComfyUI graph.';
++const String kStudioFileReject = '该文件不是 ComfyUI 工作流。';
+ 
+ const String kStudioLoraFamilyNote =
+-    'These files do not set the LoRA family. The text encoder can be Qwen '
+-    'while the model is Z-Image.';
++    '这些文件无法确定 LoRA 所属系列。文本编码器可能是 Qwen，'
++    '而模型本身是 Z-Image。';
+ 
+ const String kStudioCheckpointSupport =
+-    'This checkpoint graph has no text encoder or VAE slot.';
++    '此检查点工作流没有文本编码器或 VAE 槽位。';
+ 
+ const List<(int, int, String)> kStudioSizeChips = [
+   (512, 512, '512×512'),
+@@ -44,7 +44,7 @@ const List<(int, int, String)> kStudioSizeChips = [
+ ];
+ 
+ String studioSizeNote(int width, int height) =>
+-    'Sends $width×$height. Each side snaps to a multiple of 64, from 256 to 2048.';
++    '发送尺寸为 $width×$height。宽和高会分别调整为 256 至 2048 之间、最接近的 64 的倍数。';
+ 
+ String studioAdvancedSummary({
+   required int steps,
+@@ -53,8 +53,8 @@ String studioAdvancedSummary({
+   required String scheduler,
+   bool showSampler = true,
+ }) => showSampler
+-    ? '$steps steps · cfg $cfg · $sampler · $scheduler'
+-    : '$steps steps · cfg $cfg';
++    ? '$steps 步 · CFG $cfg · $sampler · $scheduler'
++    : '$steps 步 · CFG $cfg';
+ 
+ String studioWorkflowWhy({
+   required String workflowId,
+@@ -65,28 +65,28 @@ String studioWorkflowWhy({
+ }) {
+   if (uploaded) {
+     final title = uploadedTitle.trim().isEmpty
+-        ? 'workflow'
++        ? '工作流'
+         : uploadedTitle.trim();
+-    return 'Workflow · your file · $title · $uploadedNodes nodes';
++    return '工作流 · 自定义文件 · $title · $uploadedNodes 个节点';
+   }
+   if (primaryFile.toLowerCase().endsWith('.gguf')) {
+-    return 'Workflow · GGUF · chosen for this file · $workflowId';
++    return '工作流 · GGUF · 为此文件选择 · $workflowId';
+   }
+   final task = workflowId == 'qwen_image_edit' || workflowId == 'flux_kontext'
+-      ? 'Edit'
+-      : 'Text to image';
+-  return 'Workflow · $task · $workflowId';
++      ? '编辑'
++      : '文生图';
++  return '工作流 · $task · $workflowId';
+ }
+ 
+ /// The one line under the connection that says why the graph cannot run.
+ String studioReadyStatus(StudioReadiness? ready) {
+   switch (ready?.kind) {
+     case StudioReady.unreachable:
+-      return 'ComfyUI can’t be reached.';
++      return '无法连接到 ComfyUI。';
+     case StudioReady.missingNodeClass:
+-      return 'Missing ${ready?.missingClass}.';
++      return '缺少组件：${ready?.missingClass}。';
+     case StudioReady.needsUnetGraph:
+-      return 'A GGUF file needs a diffusion graph.';
++      return 'GGUF 文件需要搭配扩散模型工作流。';
+     case StudioReady.needsLoaderUpdate:
+     case StudioReady.needsComfyRestart:
+       return ready?.message ?? kCity96NeedsUpdate;
+@@ -101,12 +101,12 @@ String studioReadyStatus(StudioReadiness? ready) {
+ String studioLoraBadge(LoraCompat compat) {
+   switch (compat) {
+     case LoraCompat.match:
+-      return 'match';
++      return '匹配';
+     case LoraCompat.certain:
+-      return 'other base';
++      return '其他基础模型';
+     case LoraCompat.likely:
+     case LoraCompat.unknown:
+-      return 'likely';
++      return '可能匹配';
+   }
+ }
+ 
+diff --git a/lib/ui/image_studio/studio_desk_frame.dart b/lib/ui/image_studio/studio_desk_frame.dart
+index 48d7bc3..834f7f8 100644
+--- a/lib/ui/image_studio/studio_desk_frame.dart
++++ b/lib/ui/image_studio/studio_desk_frame.dart
+@@ -16,7 +16,7 @@ class StudioDeskFrame extends StatelessWidget {
+     this.onPromptChanged,
+     this.onCraft,
+     this.crafting = false,
+-    this.promptHint = 'Describe the portrait',
++    this.promptHint = '描述角色肖像',
+     this.showPack = true,
+     required this.well,
+     required this.packNote,
+@@ -187,7 +187,7 @@ class _StudioRail extends StatelessWidget {
+             if (onCraft != null)
+               TextButton(
+                 onPressed: crafting ? null : onCraft,
+-                child: Text(crafting ? 'Writing…' : 'Write it for me'),
++                child: Text(crafting ? '正在编写…' : '帮我编写'),
+               ),
+           ],
+         ),
+@@ -208,7 +208,7 @@ class _StudioRail extends StatelessWidget {
+             children: [
+               TextButton(
+                 onPressed: onExpressionPack,
+-                child: const Text('Expression pack'),
++                child: const Text('表情包'),
+               ),
+               Text(packNote, style: TextStyle(color: secondary, fontSize: 12)),
+             ],
+diff --git a/lib/ui/image_studio/studio_desk_knobs.dart b/lib/ui/image_studio/studio_desk_knobs.dart
+index bea1066..3aea206 100644
+--- a/lib/ui/image_studio/studio_desk_knobs.dart
++++ b/lib/ui/image_studio/studio_desk_knobs.dart
+@@ -61,8 +61,8 @@ class StudioDeskKnobs extends StatelessWidget {
+           StudioCommitField(
+             key: ValueKey('seed-${settings.imageGenSeed}'),
+             value: '${settings.imageGenSeed}',
+-            label: 'Seed',
+-            hint: '-1 = random',
++            label: '随机种子',
++            hint: '-1 = 随机',
+             onSubmit: (value) =>
+                 settings.setImageGenSeed(int.tryParse(value.trim()) ?? -1),
+           ),
+@@ -70,8 +70,8 @@ class StudioDeskKnobs extends StatelessWidget {
+           StudioCommitField(
+             key: ValueKey('negative-${settings.imageGenNegativePrompt}'),
+             value: settings.imageGenNegativePrompt,
+-            label: 'Negative prompt',
+-            hint: 'e.g. blurry, extra fingers',
++            label: '负面提示词',
++            hint: '例如：模糊、多余手指',
+             maxLines: 2,
+             onSubmit: (value) =>
+                 _write(() => settings.setImageGenNegativePrompt(value)),
+@@ -83,11 +83,11 @@ class StudioDeskKnobs extends StatelessWidget {
+           contentPadding: EdgeInsets.zero,
+           dense: true,
+           title: Text(
+-            'Review AI prompts before generating',
++            '生成前检查 AI 提示词',
+             style: TextStyle(color: primary),
+           ),
+           subtitle: const Text(
+-            '/image in chat pauses so you can edit the crafted prompt first.',
++            '在聊天中使用 /image 时会先暂停，让你检查并编辑生成的提示词。',
+           ),
+           value: settings.imageGenPromptReview,
+           activeTrackColor: AppColors.formAccentOf(context),
+@@ -128,7 +128,7 @@ class StudioDeskKnobs extends StatelessWidget {
+           child: TextButton(
+             onPressed: () =>
+                 _write(() => settings.clearComfyShift(graph, edit: edit)),
+-            child: const Text('Use the graph\'s own shift'),
++            child: const Text('使用工作流自身的 Shift 值'),
+           ),
+         ),
+     ];
+@@ -141,7 +141,7 @@ class StudioDeskKnobs extends StatelessWidget {
+       StudioCommitField(
+         key: ValueKey('port-${settings.drawThingsGrpcPort}'),
+         value: '${settings.drawThingsGrpcPort}',
+-        label: 'Draw Things port',
++        label: 'Draw Things 端口',
+         onSubmit: (value) {
+           final port = int.tryParse(value.trim());
+           if (port != null && port > 0) settings.setDrawThingsGrpcPort(port);
+@@ -157,15 +157,15 @@ class StudioDeskKnobs extends StatelessWidget {
+       ),
+       Row(
+         children: [
+-          Text('Seed mode', style: TextStyle(color: primary)),
++          Text('种子模式', style: TextStyle(color: primary)),
+           const SizedBox(width: 12),
+           DropdownButton<int>(
+             value: seedMode.clamp(0, 3),
+             items: const [
+               DropdownMenuItem(value: 0, child: Text('随机')),
+-              DropdownMenuItem(value: 1, child: Text('Constant')),
+-              DropdownMenuItem(value: 2, child: Text('Per image')),
+-              DropdownMenuItem(value: 3, child: Text('From prompt')),
++              DropdownMenuItem(value: 1, child: Text('固定')),
++              DropdownMenuItem(value: 2, child: Text('每张图片不同')),
++              DropdownMenuItem(value: 3, child: Text('从提示词生成')),
+             ],
+             onChanged: (value) {
+               if (!(canWrite?.call() ?? true)) return;
+@@ -253,15 +253,15 @@ class StudioDeskKnobs extends StatelessWidget {
+         key: ValueKey('paradigm-${settings.imageGenPromptParadigm}'),
+         initialValue: settings.imageGenPromptParadigm,
+         isExpanded: true,
+-        decoration: const InputDecoration(labelText: 'Prompt format'),
++        decoration: const InputDecoration(labelText: '提示词格式'),
+         items: const [
+           DropdownMenuItem(
+             value: 'natural',
+-            child: Text('Natural language (FLUX / SD3)'),
++            child: Text('自然语言（FLUX / SD3）'),
+           ),
+           DropdownMenuItem(
+             value: 'tags',
+-            child: Text('Danbooru tags (SD 1.5 / anime)'),
++            child: Text('Danbooru 标签（SD 1.5 / 动漫）'),
+           ),
+         ],
+         onChanged: (value) {
+diff --git a/lib/ui/image_studio/studio_expression_tab/expression_draft_pane.dart b/lib/ui/image_studio/studio_expression_tab/expression_draft_pane.dart
+index e1287b7..a7632b5 100644
+--- a/lib/ui/image_studio/studio_expression_tab/expression_draft_pane.dart
++++ b/lib/ui/image_studio/studio_expression_tab/expression_draft_pane.dart
+@@ -80,11 +80,11 @@ class ExpressionDraftPane extends StatelessWidget {
+         children: [
+           if (repository == null)
+             const Text(
+-              'Character library is unavailable. Open Studio from a library character to build a pack.',
++              '角色库不可用。请从角色库中的某个角色打开工作室，以创建表情包。',
+             )
+           else if (repository.characters.isEmpty)
+             const Text(
+-              'Your character library is empty. Add a character before building a pack.',
++              '角色库为空。请先添加角色，再创建表情包。',
+             )
+           else
+             DropdownButtonFormField<String>(
+@@ -92,7 +92,7 @@ class ExpressionDraftPane extends StatelessWidget {
+               initialValue: card?.dbId,
+               isExpanded: true,
+               decoration: const InputDecoration(
+-                labelText: 'Import expressions into',
++                labelText: '将表情导入到',
+               ),
+               items: [
+                 for (final c in repository.characters)
+@@ -113,7 +113,7 @@ class ExpressionDraftPane extends StatelessWidget {
+           const SizedBox(height: 12),
+           if (edit)
+             const Text(
+-              'Each expression supplies its own edit instruction. No base prompt is needed.',
++              '每个表情都使用自己的编辑指令，无需填写基础提示词。',
+             )
+           else ...[
+             TextField(
+@@ -124,22 +124,22 @@ class ExpressionDraftPane extends StatelessWidget {
+               maxLines: 4,
+               onChanged: (_) => onDraftEdited(),
+               decoration: const InputDecoration(
+-                labelText: 'Image prompt',
+-                hintText: 'Describe the character, appearance, and framing',
++                labelText: '图像提示词',
++                hintText: '描述角色、外观和画面构图',
+               ),
+             ),
+             TextButton(
+               onPressed: frozen || crafting || card == null
+                   ? null
+                   : onWritePrompt,
+-              child: Text(crafting ? 'Writing prompt…' : 'Write it for me'),
++              child: Text(crafting ? '正在编写提示词…' : '帮我编写'),
+             ),
+             const Text(
+-              'Leave blank to prepare an image prompt automatically when starting.',
++              '留空时，开始生成后会自动准备图像提示词。',
+             ),
+           ],
+           const SizedBox(height: 12),
+-          Text('Source: $sourceCaption'),
++          Text('来源：$sourceCaption'),
+           if (source != null)
+             Padding(
+               padding: const EdgeInsets.symmetric(vertical: 8),
+@@ -152,29 +152,29 @@ class ExpressionDraftPane extends StatelessWidget {
+                 onPressed: frozen || loading || card == null
+                     ? null
+                     : onUsePortrait,
+-                child: const Text('Use character portrait'),
++                child: const Text('使用角色肖像'),
+               ),
+               TextButton(
+                 onPressed: frozen || loading ? null : onUpload,
+-                child: const Text('Upload source'),
++                child: const Text('上传来源图片'),
+               ),
+               TextButton(
+                 onPressed: frozen || loading || lastStudioImage == null
+                     ? null
+                     : onUseLast,
+-                child: const Text('Use last Studio picture'),
++                child: const Text('使用工作室中的上一张图片'),
+               ),
+             ],
+           ),
+           if (frozen)
+             const Text(
+-              'Target, prompt, and source are fixed for this pack. Reset pack clears its results and unlocks these fields. Use Start to generate again.',
++              '此表情包的目标角色、提示词和来源图片已锁定。重置表情包会清除结果并解锁这些字段。点击“开始”即可重新生成。',
+             ),
+           if (loading) const LinearProgressIndicator(),
+           if (error.isNotEmpty) Text(error),
+           const SizedBox(height: 12),
+           Text(
+-            edit ? 'Pack uses the Edit model and workflow.' : kStudioCreatePack,
++            edit ? '表情包会使用编辑模型和工作流。' : kStudioCreatePack,
+           ),
+           const SizedBox(height: 8),
+           StudioDesk(editMode: edit, showGenerate: false),
+diff --git a/lib/ui/image_studio/studio_helpers.dart b/lib/ui/image_studio/studio_helpers.dart
+index 5b864e8..b864413 100644
+--- a/lib/ui/image_studio/studio_helpers.dart
++++ b/lib/ui/image_studio/studio_helpers.dart
+@@ -27,7 +27,7 @@ String getAcceptLabel(ImageGenMode mode) {
+   switch (mode) {
+     case ImageGenMode.characterPortrait:
+     case ImageGenMode.userAvatar:
+-      return 'Set as Avatar';
++      return '设为头像';
+     case ImageGenMode.customPrompt:
+       return '';
+   }
+diff --git a/lib/ui/image_studio/studio_lora_sheet.dart b/lib/ui/image_studio/studio_lora_sheet.dart
+index a84cf59..e1d0a96 100644
+--- a/lib/ui/image_studio/studio_lora_sheet.dart
++++ b/lib/ui/image_studio/studio_lora_sheet.dart
+@@ -50,7 +50,7 @@ class StudioLoraMismatch extends StatelessWidget {
+       crossAxisAlignment: WrapCrossAlignment.center,
+       children: [
+         Text(
+-          '$lora does not match $primary.',
++          '$lora 与 $primary 不匹配。',
+           style: TextStyle(color: AppColors.textPrimary(context)),
+         ),
+         TextButton(onPressed: onAnyway, child: const Text('仍然使用')),
+@@ -160,7 +160,7 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text(
+-          'Slot ${index + 1}',
++          '槽位 ${index + 1}',
+           style: TextStyle(
+             color: AppColors.textSecondary(context),
+             fontSize: 12,
+@@ -228,16 +228,16 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+               Align(
+                 alignment: Alignment.centerRight,
+                 child: StudioRefreshButton(
+-                  label: 'Refresh LoRAs',
++                  label: '刷新 LoRA',
+                   refreshing: _refreshing,
+                   onPressed: _refresh,
+                 ),
+               ),
+             Text(
+               _files.isEmpty
+-                  ? 'No LoRA files were listed by the connected app.'
+-                  : 'These are the LoRA files the connected app listed. '
+-                        'A tap fills the first empty slot.',
++                  ? '连接的应用没有列出任何 LoRA 文件。'
++                  : '以下是连接的应用列出的 LoRA 文件。'
++                        '点击即可填入第一个空槽位。',
+               style: TextStyle(
+                 color: AppColors.textSecondary(context),
+                 fontSize: 12,
+@@ -246,7 +246,7 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+             ),
+             const SizedBox(height: 10),
+             Text(
+-              'Slots',
++              '槽位',
+               style: TextStyle(
+                 color: AppColors.formAccentOf(context),
+                 fontSize: 12,
+@@ -275,7 +275,7 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+               Padding(
+                 padding: const EdgeInsets.symmetric(vertical: 6),
+                 child: Text(
+-                  'No LoRA in use.',
++                  '当前未使用 LoRA。',
+                   style: TextStyle(color: AppColors.textSecondary(context)),
+                 ),
+               ),
+@@ -283,7 +283,7 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+               Padding(
+                 padding: const EdgeInsets.only(top: 8),
+                 child: Text(
+-                  'All eight slots are full. Clear one to add another.',
++                  '八个槽位都已占满。请清空一个槽位后再添加。',
+                   style: TextStyle(color: AppColors.textSecondary(context)),
+                 ),
+               ),
+@@ -292,12 +292,12 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+               child: ListView(
+                 children: [
+                   if (matching.isNotEmpty) ...[
+-                    _groupTitle(context, 'Matches this model'),
++                    _groupTitle(context, '与此模型匹配'),
+                     for (final file in matching)
+                       _loraTile(context, file, primary, full),
+                   ],
+                   if (other.isNotEmpty) ...[
+-                    _groupTitle(context, 'Other bases'),
++                    _groupTitle(context, '其他基础模型'),
+                     for (final file in other)
+                       _loraTile(context, file, primary, full),
+                   ],
+@@ -349,13 +349,13 @@ class _StudioLoraSheetState extends State<StudioLoraSheet> {
+     final name = family.label;
+     switch (compat) {
+       case LoraCompat.match:
+-        return '$name · matches this model';
++        return '$name · 与此模型匹配';
+       case LoraCompat.likely:
+-        return '$name · guessed from the name, might fit';
++        return '$name · 根据名称推测，可能适用';
+       case LoraCompat.certain:
+-        return '$name · does not match this model';
++        return '$name · 与此模型不匹配';
+       case LoraCompat.unknown:
+-        return 'Family not known from the file name';
++        return '无法根据文件名判断模型系列';
+     }
+   }
+ }
+diff --git a/lib/ui/image_studio/studio_model_sheet.dart b/lib/ui/image_studio/studio_model_sheet.dart
+index 9db0cbb..ba358e0 100644
+--- a/lib/ui/image_studio/studio_model_sheet.dart
++++ b/lib/ui/image_studio/studio_model_sheet.dart
+@@ -113,7 +113,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+     return AlertDialog(
+       backgroundColor: AppColors.surfaceOf(context),
+       title: Text(
+-        widget.edit ? 'Change model — Edit' : 'Change model — Create',
++        widget.edit ? '更换模型 — 编辑' : '更换模型 — 生成',
+         style: TextStyle(color: AppColors.textPrimary(context)),
+       ),
+       content: SizedBox(
+@@ -126,7 +126,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+               Align(
+                 alignment: Alignment.centerRight,
+                 child: StudioRefreshButton(
+-                  label: 'Refresh models',
++                  label: '刷新模型',
+                   refreshing: _refreshing,
+                   onPressed: _refresh,
+                 ),
+@@ -134,7 +134,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+             TextField(
+               autofocus: true,
+               decoration: const InputDecoration(
+-                hintText: 'Search families or files',
++                hintText: '搜索模型系列或文件',
+                 isDense: true,
+               ),
+               onChanged: (value) => setState(() => _query = value),
+@@ -156,7 +156,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+                   if (offerTyped)
+                     ListTile(
+                       title: Text(typed),
+-                      subtitle: const Text('Use this name'),
++                      subtitle: const Text('使用此名称'),
+                       onTap: () {
+                         widget.onPick(typed);
+                         Navigator.of(context).pop();
+@@ -190,7 +190,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+         Padding(
+           padding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
+           child: Text(
+-            family == ModelFamily.unknown ? 'Other' : family.label,
++            family == ModelFamily.unknown ? '其他' : family.label,
+             style: TextStyle(
+               color: AppColors.formAccentOf(context),
+               fontSize: 12,
+@@ -214,7 +214,7 @@ class _StudioModelSheetState extends State<StudioModelSheet> {
+             ),
+             subtitle: marked
+                 ? Text(
+-                    'The name does not look like it fits this model.',
++                    '该名称似乎与此模型不匹配。',
+                     style: TextStyle(
+                       color: AppColors.textSecondary(context),
+                       fontSize: 12,
+diff --git a/lib/ui/image_studio/studio_refresh_button.dart b/lib/ui/image_studio/studio_refresh_button.dart
+index 3d2500e..648a3d2 100644
+--- a/lib/ui/image_studio/studio_refresh_button.dart
++++ b/lib/ui/image_studio/studio_refresh_button.dart
+@@ -29,7 +29,7 @@ class StudioRefreshButton extends StatelessWidget {
+               child: CircularProgressIndicator(strokeWidth: 2),
+             )
+           : const Icon(Icons.refresh, size: 16),
+-      label: Text(refreshing ? 'Loading...' : label),
++      label: Text(refreshing ? '加载中…' : label),
+       style: TextButton.styleFrom(padding: EdgeInsets.zero),
+     );
+   }
+diff --git a/lib/ui/image_studio/studio_remote_stove.dart b/lib/ui/image_studio/studio_remote_stove.dart
+index aef78cf..251ffa8 100644
+--- a/lib/ui/image_studio/studio_remote_stove.dart
++++ b/lib/ui/image_studio/studio_remote_stove.dart
+@@ -152,7 +152,7 @@ class _StudioRemoteStoveState extends State<StudioRemoteStove> {
+                       onPressed: widget.onRetry,
+                       style: TextButton.styleFrom(foregroundColor: accent),
+                       child: const Text(
+-                        'Check',
++                        '检查',
+                         style: TextStyle(fontWeight: FontWeight.w600),
+                       ),
+                     ),
+@@ -160,7 +160,7 @@ class _StudioRemoteStoveState extends State<StudioRemoteStove> {
+               ),
+             if (!panel.needsKey) ...[
+               section([
+-                Text('Model', style: label()),
++                Text('模型', style: label()),
+                 const SizedBox(height: 8),
+                 Text(
+                   panel.modelName,
+@@ -207,7 +207,7 @@ class _StudioRemoteStoveState extends State<StudioRemoteStove> {
+                       foregroundColor: accent,
+                     ),
+                     child: const Text(
+-                      'Change model',
++                      '更换模型',
+                       style: TextStyle(
+                         fontSize: 15,
+                         fontWeight: FontWeight.w600,
+@@ -226,7 +226,7 @@ class _StudioRemoteStoveState extends State<StudioRemoteStove> {
+                   onPressed: () => setState(() => _promptOpen = !_promptOpen),
+                   style: TextButton.styleFrom(foregroundColor: accent),
+                   child: Text(
+-                    _promptOpen ? 'Prompt options ▾' : 'Prompt options ▸',
++                    _promptOpen ? '提示词选项 ▾' : '提示词选项 ▸',
+                   ),
+                 ),
+               ),
+diff --git a/lib/ui/image_studio/studio_settings_gate.dart b/lib/ui/image_studio/studio_settings_gate.dart
+index 8823a10..405fd82 100644
+--- a/lib/ui/image_studio/studio_settings_gate.dart
++++ b/lib/ui/image_studio/studio_settings_gate.dart
+@@ -25,7 +25,7 @@ class StudioSettingsGate extends StatelessWidget {
+         Padding(
+           padding: const EdgeInsets.only(bottom: 8),
+           child: Text(
+-            'Generation settings are locked while images are being made. You can keep editing your drafts.',
++            '生成图片期间会锁定生成设置，但你仍然可以继续编辑草稿。',
+             style: TextStyle(color: AppColors.textSecondary(context)),
+           ),
+         ),
+diff --git a/lib/ui/image_studio/studio_shell/studio_prompt_craft.dart b/lib/ui/image_studio/studio_shell/studio_prompt_craft.dart
+index 9b92f33..f5ba329 100644
+--- a/lib/ui/image_studio/studio_shell/studio_prompt_craft.dart
++++ b/lib/ui/image_studio/studio_shell/studio_prompt_craft.dart
+@@ -41,7 +41,7 @@ LLMService? liveStudioLlm(
+     ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+         content: Text(
+-          'LLM not ready for smart crafting (using static quality)',
++          '语言模型尚未就绪，将使用静态质量提示词。',
+           style: TextStyle(color: AppColors.textPrimary(context)),
+         ),
+         backgroundColor: AppColors.surfaceContainerOf(context),
+@@ -130,7 +130,7 @@ Future<void> craftIntoPromptBox(
+   } catch (e) {
+     if (context.mounted) {
+       onFailed(
+-        'Craft failed: ${e.toString().replaceFirst(RegExp(r'^Exception:\s*'), '')}',
++        '提示词生成失败：${e.toString().replaceFirst(RegExp(r'^Exception:\s*'), '')}',
+       );
+     }
+   }
+diff --git a/lib/ui/image_studio/studio_shell/studio_result_actions.dart b/lib/ui/image_studio/studio_shell/studio_result_actions.dart
+index 8313273..dfb40a7 100644
+--- a/lib/ui/image_studio/studio_shell/studio_result_actions.dart
++++ b/lib/ui/image_studio/studio_shell/studio_result_actions.dart
+@@ -32,7 +32,7 @@ Future<Uint8List?> pickStudioReference(BuildContext context) async {
+   final result = await GuardedPicker.pickFiles(
+     context,
+     category: PickerPrefs.catImage,
+-    dialogTitle: 'Select a reference image',
++    dialogTitle: '选择参考图',
+     type: FileType.image,
+   );
+   return result?.firstBytes();
+@@ -57,7 +57,7 @@ Future<({Uint8List? bytes, String error})> generateStudioImage(
+       bytes: null,
+       error: service.statusMessage.isNotEmpty
+           ? service.statusMessage
+-          : 'Generation returned no image',
++          : '生成过程未返回图片',
+     );
+   } catch (e) {
+     return (
+@@ -82,7 +82,7 @@ Future<void> saveStudioImage(
+     if (path != null) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+-          content: Text('Image saved to $path'),
++          content: Text('图片已保存到 $path'),
+           backgroundColor: AppColors.resolve(
+             context,
+             AppColors.logReady,
+@@ -152,13 +152,13 @@ Future<void> saveStudioLook(
+     if (context.mounted) {
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(const SnackBar(content: Text('Saved to Avatar Gallery')));
++      ).showSnackBar(const SnackBar(content: Text('已保存到头像库')));
+     }
+   } catch (e) {
+     if (context.mounted) {
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(SnackBar(content: Text('Save to gallery failed: $e')));
++      ).showSnackBar(SnackBar(content: Text('保存到图库失败：$e')));
+     }
+   } finally {
+     if (context.mounted) onSaving(false);
+@@ -176,6 +176,6 @@ Future<void> sendStudioImageToChat(
+   if (context.mounted) {
+     ScaffoldMessenger.of(
+       context,
+-    ).showSnackBar(const SnackBar(content: Text('Image sent to chat')));
++    ).showSnackBar(const SnackBar(content: Text('图片已发送到聊天')));
+   }
+ }
+diff --git a/lib/ui/image_studio/studio_stove.dart b/lib/ui/image_studio/studio_stove.dart
+index 0222c6c..51780d1 100644
+--- a/lib/ui/image_studio/studio_stove.dart
++++ b/lib/ui/image_studio/studio_stove.dart
+@@ -177,7 +177,7 @@ class _StudioStoveState extends State<StudioStove> {
+             _connection(context, primary, secondary),
+             const SizedBox(height: 12),
+             Text(
+-              'Model',
++              '模型',
+               style: TextStyle(
+                 color: secondary,
+                 fontSize: 12,
+@@ -197,16 +197,16 @@ class _StudioStoveState extends State<StudioStove> {
+                 if (widget.backend == 'comfyui')
+                   TextButton(
+                     onPressed: widget.onGraphs,
+-                    child: const Text('Change graph'),
++                    child: const Text('更换工作流'),
+                   ),
+                 if (widget.onModels != null)
+                   TextButton(
+                     onPressed: widget.onModels,
+-                    child: const Text('Change model'),
++                    child: const Text('更换模型'),
+                   ),
+                 TextButton(
+                   onPressed: widget.onGetModel,
+-                  child: const Text('Get a model from CivitAI'),
++                  child: const Text('从 CivitAI 获取模型'),
+                 ),
+               ],
+             ),
+@@ -222,7 +222,7 @@ class _StudioStoveState extends State<StudioStove> {
+                   if (widget.onUpdateLoader != null)
+                     TextButton(
+                       onPressed: widget.onUpdateLoader,
+-                      child: const Text('Update loader…'),
++                      child: const Text('更新加载器…'),
+                     ),
+                 ],
+               ),
+@@ -234,7 +234,7 @@ class _StudioStoveState extends State<StudioStove> {
+             if (widget.support.isNotEmpty) ...[
+               const SizedBox(height: 8),
+               Text(
+-                'This graph also loads',
++                '此工作流还会加载',
+                 style: TextStyle(
+                   color: secondary,
+                   fontSize: 12,
+@@ -268,7 +268,7 @@ class _StudioStoveState extends State<StudioStove> {
+               ),
+             if (widget.loraBlocked) ...[
+               Text(
+-                'Generate stays off until you pick a matching LoRA or press Use anyway.',
++                '选择匹配的 LoRA 或点击“仍然使用”后，才能开始生成。',
+                 style: TextStyle(color: secondary, fontSize: 12, height: 1.35),
+               ),
+               Align(
+@@ -288,7 +288,7 @@ class _StudioStoveState extends State<StudioStove> {
+                 ),
+                 TextButton(
+                   onPressed: widget.onGetLora,
+-                  child: const Text('Get a LoRA from CivitAI'),
++                  child: const Text('从 CivitAI 获取 LoRA'),
+                 ),
+               ],
+             ),
+@@ -329,7 +329,7 @@ class _StudioStoveState extends State<StudioStove> {
+               child: TextButton(
+                 onPressed: () => setState(() => _open = !_open),
+                 child: Text(
+-                  _open ? 'Advanced ▾ $summary' : 'Advanced ▸ $summary',
++                  _open ? '高级选项 ▾ $summary' : '高级选项 ▸ $summary',
+                 ),
+               ),
+             ),
+@@ -412,7 +412,7 @@ class _StudioStoveState extends State<StudioStove> {
+                   ),
+               if (widget.reachable)
+                 Text(
+-                  'Reachable · ${widget.diffusionCount} diffusion files · ${widget.loraCount} LoRAs',
++                  '连接正常 · ${widget.diffusionCount} 个扩散模型文件 · ${widget.loraCount} 个 LoRA',
+                   style: TextStyle(color: secondary, fontSize: 12),
+                 )
+               else if (widget.backend == 'comfyui' || (widget.checkedDown))
+@@ -423,7 +423,7 @@ class _StudioStoveState extends State<StudioStove> {
+               if (widget.onRetry != null)
+                 TextButton(
+                   onPressed: widget.onRetry,
+-                  child: const Text('Check'),
++                  child: const Text('检查'),
+                 ),
+             ],
+           ),
+@@ -439,7 +439,7 @@ class _StudioStoveState extends State<StudioStove> {
+     Color primary,
+     Color secondary,
+   ) {
+-    final name = row.file.isEmpty ? 'Not chosen' : row.file;
++    final name = row.file.isEmpty ? '未选择' : row.file;
+     return Row(
+       children: [
+         SizedBox(
+diff --git a/lib/ui/image_studio/studio_stove_knobs.dart b/lib/ui/image_studio/studio_stove_knobs.dart
+index d758c0f..e1faed2 100644
+--- a/lib/ui/image_studio/studio_stove_knobs.dart
++++ b/lib/ui/image_studio/studio_stove_knobs.dart
+@@ -93,7 +93,7 @@ class StudioStoveKnobs extends StatelessWidget {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.stretch,
+       children: [
+-        const Text('Steps'),
++        const Text('步数'),
+         Slider(
+           value: stepValue,
+           min: 1,
+@@ -112,13 +112,13 @@ class StudioStoveKnobs extends StatelessWidget {
+           onChanged: (value) => onCfg(value.toStringAsFixed(1)),
+         ),
+         if (showSampler) ...[
+-          const Text('Sampler'),
++          const Text('采样器'),
+           _choice(
+             sampler,
+             samplers.isEmpty ? kStudioSamplerChoices : samplers,
+             onSampler,
+           ),
+-          const Text('Scheduler'),
++          const Text('调度器'),
+           _choice(
+             scheduler,
+             schedulers.isEmpty
+diff --git a/lib/ui/image_studio/studio_stove_modes.dart b/lib/ui/image_studio/studio_stove_modes.dart
+index 9f38ae8..de050c1 100644
+--- a/lib/ui/image_studio/studio_stove_modes.dart
++++ b/lib/ui/image_studio/studio_stove_modes.dart
+@@ -20,7 +20,7 @@ class StudioStoveModes extends StatelessWidget {
+         children: [
+           TextButton(
+             onPressed: editing ? () => onMode?.call(false) : null,
+-            child: const Text('Create'),
++            child: const Text('生成'),
+           ),
+           TextButton(
+             onPressed: editing ? null : () => onMode?.call(true),
+diff --git a/lib/ui/image_studio/studio_view.dart b/lib/ui/image_studio/studio_view.dart
+index 5dfebab..defbc98 100644
+--- a/lib/ui/image_studio/studio_view.dart
++++ b/lib/ui/image_studio/studio_view.dart
+@@ -295,9 +295,9 @@ class StudioView extends StatelessWidget {
+           const SizedBox(width: 8),
+           Expanded(
+             child: Text(
+-              'Group shot: rendering multiple specific characters in one image is '
+-              'unreliable — faces and features often blend or mix up. Results vary '
+-              'a lot by model; expect a few re-rolls.',
++              '群像：在一张图片中同时呈现多个指定角色并不稳定，'
++              '面孔和特征经常会混合或错位。效果因模型而异，'
++              '通常需要多次重新生成才能得到满意结果。',
+               style: TextStyle(
+                 color: AppColors.textSecondary(context),
+                 fontSize: 11.5,
+diff --git a/lib/ui/image_studio/vision_gate.dart b/lib/ui/image_studio/vision_gate.dart
+index f46d451..9ed1ff5 100644
+--- a/lib/ui/image_studio/vision_gate.dart
++++ b/lib/ui/image_studio/vision_gate.dart
+@@ -49,18 +49,15 @@ Future<VisionEvalFn?> resolveVisionFireWithExplainer(
+     final unknown = support.source == VisionSource.unknown;
+     await showWarmDialog(
+       context,
+-      title: unknown ? 'Couldn\'t check vision' : 'No vision model',
++      title: unknown ? '无法进行视觉检查' : '没有视觉模型',
+       icon: Icons.visibility_off_outlined,
+       accent: AppColors.formAccentOf(context),
+       content: WarmDialogText(
+         unknown
+-            ? 'The model server didn\'t answer the vision check (it may '
+-                  'still be loading the model). Make sure it\'s running '
+-                  'with your model loaded, then try again.'
+-            : 'Your current text model can\'t see images. Local models '
+-                  'need a vision-capable GGUF with its mmproj loaded '
+-                  '(Model Settings → Vision); for remote APIs pick a '
+-                  'vision-capable model.',
++            ? '模型服务器未响应视觉检查请求（模型可能仍在加载）。请确认服务器正在运行，'
++                  '并已加载模型，然后重试。'
++            : '当前文本模型无法识别图片。本地模型需要支持视觉的 GGUF 文件，并加载 mmproj '
++                  '文件（模型设置 → 视觉）；使用远程 API 时，请选择支持视觉的模型。',
+       ),
+       actions: [warmDialogCancel(context, label: '知道了')],
+     );
