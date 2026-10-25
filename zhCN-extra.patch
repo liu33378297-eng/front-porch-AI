@@ -1,0 +1,401 @@
+diff --git a/lib/services/chargen/creator_template.dart b/lib/services/chargen/creator_template.dart
+index f078643..87c489d 100644
+--- a/lib/services/chargen/creator_template.dart
++++ b/lib/services/chargen/creator_template.dart
+@@ -182,7 +182,7 @@ final List<CreatorTemplate> _builtIns = List.unmodifiable([
+ List<CreatorTemplate> get kBuiltInTemplates => _builtIns;
+ 
+ /// The Mode step's last tile.
+-String get kAllBuiltInLabel => 'All ${kBuiltInTemplates.length} built in';
++String get kAllBuiltInLabel => '全部 ${kBuiltInTemplates.length} 个内置模板';
+ 
+ CreatorTemplate? builtInTemplate(String slug) {
+   for (final t in _builtIns) {
+diff --git a/lib/ui/character_creator/steps/mode_select_step.dart b/lib/ui/character_creator/steps/mode_select_step.dart
+index 6cec56e..4fc5cec 100644
+--- a/lib/ui/character_creator/steps/mode_select_step.dart
++++ b/lib/ui/character_creator/steps/mode_select_step.dart
+@@ -51,7 +51,7 @@ class _ModeSelectStepState extends State<ModeSelectStep> {
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                'How do you want to create?',
++                '你想如何创建角色？',
+                 style: TextStyle(
+                   fontSize: 24,
+                   fontWeight: FontWeight.w700,
+@@ -60,7 +60,7 @@ class _ModeSelectStepState extends State<ModeSelectStep> {
+               ),
+               const SizedBox(height: 6),
+               Text(
+-                'Choose the creation mode that fits your workflow.',
++                '选择最适合你创作习惯的模式。',
+                 style: TextStyle(
+                   fontSize: 14,
+                   color: StudioColors.mutedOf(context),
+@@ -80,17 +80,17 @@ class _ModeSelectStepState extends State<ModeSelectStep> {
+                   children: [
+                     Expanded(
+                       child: ModeCard(
+-                        title: 'Automated Creator',
++                        title: '自动创建',
+                         subtitle:
+-                            'Pick traits from bubbles, let AI fill the gaps',
++                            '选择角色特征，其余交给 AI 补全',
+                         description:
+-                            'Best when you want to explore and discover. '
+-                            'Select from archetypes, appearance options, backstory presets, '
+-                            'and personality keywords. The AI handles the rest.',
++                            '适合还在探索灵感、寻找方向时使用。'
++                            '从角色原型、外观选项、背景故事预设和性格关键词中选择，'
++                            '剩下的交给 AI。',
+                         features: const [
+-                          'Archetype presets',
+-                          'Bubble selectors for every trait',
+-                          'AI generates description from selections',
++                          '角色原型预设',
++                          '通过选项选择各项特征',
++                          'AI 根据选择生成角色描述',
+                         ],
+                         icon: Icons.auto_awesome,
+                         accentColor: amber,
+@@ -100,17 +100,16 @@ class _ModeSelectStepState extends State<ModeSelectStep> {
+                     ),
+                     Expanded(
+                       child: ModeCard(
+-                        title: 'Guided Creator',
++                        title: '引导式创建',
+                         subtitle:
+-                            'Write your vision, AI helps you flesh it out',
++                            '写下你的构想，由 AI 帮你完善',
+                         description:
+-                            'Best when you already have a character in mind but need help '
+-                            'getting it on paper. Describe your idea in your own words — '
+-                            'guided prompts and suggestions help you express your vision.',
++                            '适合已经有角色构想，但需要帮助整理成文的情况。'
++                            '用自己的话描述想法，再通过引导提示和建议表达完整构想。',
+                         features: const [
+-                          'Free-form text with guided prompts',
+-                          'Suggestion chips for inspiration',
+-                          '"Help me expand this" AI assist',
++                          '自由输入，并提供引导提示',
++                          '灵感建议标签',
++                          '“帮我扩写” AI 辅助',
+                         ],
+                         icon: Icons.edit_note,
+                         accentColor: amber,
+@@ -120,17 +119,16 @@ class _ModeSelectStepState extends State<ModeSelectStep> {
+                     ),
+                     Expanded(
+                       child: ModeCard(
+-                        title: 'Quick Create',
++                        title: '快速创建',
+                         subtitle:
+-                            'Name it, describe it, done — AI does the rest',
++                            '填写名称和简短描述，剩下的交给 AI',
+                         description:
+-                            'Fastest path to a finished character. '
+-                            'Just give a name and a one-liner. The full AI pipeline '
+-                            '(interview, lorebook, greetings) runs automatically.',
++                            '最快完成角色创建的方式。只需填写名称和一句简介，完整的 AI 流程'
++                            '（访谈、世界书和问候语）会自动运行。',
+                         features: const [
+-                          'Name + concept only',
+-                          'NSFW toggle',
+-                          'Full pipeline in ~2 min',
++                          '只需名称和概念',
++                          '成人内容开关',
++                          '约 2 分钟完成完整流程',
+                         ],
+                         icon: Icons.bolt,
+                         accentColor: amber,
+diff --git a/lib/ui/character_creator/widgets/template_picker_card.dart b/lib/ui/character_creator/widgets/template_picker_card.dart
+index 72cf634..865629c 100644
+--- a/lib/ui/character_creator/widgets/template_picker_card.dart
++++ b/lib/ui/character_creator/widgets/template_picker_card.dart
+@@ -107,7 +107,7 @@ class TemplatePickerCard extends StatelessWidget {
+         ),
+         Flexible(
+           child: Text(
+-            'Every box filled the way you saved it. Pick one, or choose a mode below to start blank.',
++            '模板已保存完整配置。选择一个模板，或在下方选择模式从头开始。',
+             style: TextStyle(
+               fontSize: 12,
+               color: StudioColors.mutedOf(context),
+diff --git a/lib/ui/character_creator/widgets/template_tile.dart b/lib/ui/character_creator/widgets/template_tile.dart
+index 15eccee..1bb13ce 100644
+--- a/lib/ui/character_creator/widgets/template_tile.dart
++++ b/lib/ui/character_creator/widgets/template_tile.dart
+@@ -292,7 +292,7 @@ class AllBuiltInsTile extends StatelessWidget {
+                   ],
+                 ),
+                 Text(
+-                  'Yandere, Femme Fatale, Dark Lord and the rest',
++                  '病娇、蛇蝎美人、黑暗领主等更多类型',
+                   style: TextStyle(
+                     fontSize: 12,
+                     height: 1.4,
+diff --git a/lib/ui/pages/character_creator_page.dart b/lib/ui/pages/character_creator_page.dart
+index 8a8f611..9b8ca13 100644
+--- a/lib/ui/pages/character_creator_page.dart
++++ b/lib/ui/pages/character_creator_page.dart
+@@ -211,14 +211,14 @@ class _CharacterCreatorPageState extends State<CharacterCreatorPage> {
+   }
+ 
+   static const _stepLabels = [
+-    'Setup',
+-    'Mode',
+-    'Configure',
+-    'Generate',
+-    'Profile',
+-    'Greetings',
+-    'Realism',
+-    'Review',
++    '准备',
++    '模式',
++    '配置',
++    '生成',
++    '角色档案',
++    '问候语',
++    '真实感',
++    '检查',
+   ];
+ 
+   /// The last step's index; its Next is "Save & Finish".
+@@ -273,8 +273,8 @@ class _CharacterCreatorPageState extends State<CharacterCreatorPage> {
+       onBack: () => creatorState.currentStep = step - 1,
+       onNext: _next,
+       nextLabel: step < _lastStep
+-          ? 'Next: ${_stepLabels[step + 1]}'
+-          : 'Save & Finish',
++          ? '下一步：${_stepLabels[step + 1]}'
++          : '保存并完成',
+       isLast: step >= _lastStep,
+     );
+   }
+diff --git a/lib/ui/pages/home/home_page_chrome.dart b/lib/ui/pages/home/home_page_chrome.dart
+index fc3b688..9a45722 100644
+--- a/lib/ui/pages/home/home_page_chrome.dart
++++ b/lib/ui/pages/home/home_page_chrome.dart
+@@ -81,7 +81,7 @@ class HomeEmptyLibrary extends StatelessWidget {
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+             Text(
+-              'Get started by creating a new character!',
++              '先创建一个新角色吧！',
+               textAlign: TextAlign.center,
+               style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                 color: Theme.of(
+@@ -99,13 +99,13 @@ class HomeEmptyLibrary extends StatelessWidget {
+                   onPressed: () =>
+                       Provider.of<AppState>(context, listen: false).setIndex(1),
+                   icon: const Icon(Icons.add_circle_outline),
+-                  label: const Text('Create New'),
++                  label: const Text('创建角色'),
+                   style: _buttonStyle(context),
+                 ),
+                 ElevatedButton.icon(
+                   onPressed: onImportCards,
+                   icon: const Icon(Icons.download),
+-                  label: const Text('Import Card'),
++                  label: const Text('导入角色卡'),
+                   style: _buttonStyle(context),
+                 ),
+                 ElevatedButton.icon(
+@@ -115,7 +115,7 @@ class HomeEmptyLibrary extends StatelessWidget {
+                     ),
+                   ),
+                   icon: const Icon(Icons.auto_awesome),
+-                  label: const Text('AI Create'),
++                  label: const Text('AI 创建角色'),
+                   style: ElevatedButton.styleFrom(
+                     backgroundColor: AppColors.porchAmberOf(context),
+                     foregroundColor: AppColors.onAccentOf(context),
+@@ -124,13 +124,13 @@ class HomeEmptyLibrary extends StatelessWidget {
+                 ElevatedButton.icon(
+                   onPressed: onBulkImport,
+                   icon: const Icon(Icons.library_add),
+-                  label: const Text('Bulk Import'),
++                  label: const Text('批量导入'),
+                   style: _buttonStyle(context),
+                 ),
+                 ElevatedButton.icon(
+                   onPressed: onImportByaf,
+                   icon: const Icon(Icons.archive_outlined),
+-                  label: const Text('Import BYAF'),
++                  label: const Text('导入 BYAF'),
+                   style: _buttonStyle(context),
+                 ),
+               ],
+diff --git a/lib/ui/pages/home/widgets/home_mode_toggle.dart b/lib/ui/pages/home/widgets/home_mode_toggle.dart
+index a04b917..b3894db 100644
+--- a/lib/ui/pages/home/widgets/home_mode_toggle.dart
++++ b/lib/ui/pages/home/widgets/home_mode_toggle.dart
+@@ -78,7 +78,7 @@ class HomeModeToggle extends StatelessWidget {
+             mainAxisSize: MainAxisSize.min,
+             children: [
+               _ModeButton(
+-                label: 'Chats',
++                label: '聊天',
+                 icon: Icons.chat_bubble_outline,
+                 isActive: !showStories && !showWaifu,
+                 showLabel: showLabels,
+@@ -86,7 +86,7 @@ class HomeModeToggle extends StatelessWidget {
+                 onTap: onShowChats,
+               ),
+               _ModeButton(
+-                label: 'Porch Stories',
++                label: '故事工坊',
+                 icon: Icons.auto_stories,
+                 isActive: showStories,
+                 showLabel: showLabels,
+@@ -94,7 +94,7 @@ class HomeModeToggle extends StatelessWidget {
+                 onTap: onShowStories,
+               ),
+               _ModeButton(
+-                label: kWaifuCoderName,
++                label: 'AI 编程助手',
+                 icon: Icons.code,
+                 isActive: showWaifu,
+                 showLabel: showLabels,
+diff --git a/web_ui/src/components/aichargen/ModeCards.tsx b/web_ui/src/components/aichargen/ModeCards.tsx
+index 6daa9cd..b6586ab 100644
+--- a/web_ui/src/components/aichargen/ModeCards.tsx
++++ b/web_ui/src/components/aichargen/ModeCards.tsx
+@@ -21,32 +21,32 @@ const MODES: {
+   {
+     id: 'quick',
+     icon: <BoltIcon />,
+-    title: 'Quick Create',
+-    subtitle: 'Name it, describe it, done — AI does the rest',
++    title: '快速创建',
++    subtitle: '填写名称和简短描述，剩下的交给 AI',
+     description:
+-      'Fastest path to a finished character. Just give a name and a one-liner. ' +
+-      'The full AI pipeline (interview, lorebook, greetings) runs automatically.',
+-    features: ['Name + concept only', 'NSFW toggle', 'Full pipeline in ~2 min'],
++      '最快完成角色创建的方式。只需填写名称和一句简介。' +
++      '完整的 AI 流程（访谈、世界书、问候语）会自动运行。',
++    features: ['只需名称和概念', '成人内容开关', '约 2 分钟完成完整流程'],
+   },
+   {
+     id: 'guided',
+     icon: <PenIcon />,
+-    title: 'Guided Creator',
+-    subtitle: 'Write your vision, AI helps you flesh it out',
++    title: '引导式创建',
++    subtitle: '写下你的构想，由 AI 帮你完善',
+     description:
+-      'Best when you already have a character in mind but need help getting it on paper. ' +
+-      'Describe your idea in your own words — guided prompts and suggestions help you express your vision.',
+-    features: ['Free-form text with guided prompts', 'Suggestion chips for inspiration'],
++      '适合已经有角色构想，但需要帮助整理成文的情况。' +
++      '用自己的话描述想法，再通过引导提示和建议表达完整构想。',
++    features: ['自由输入，并提供引导提示', '灵感建议标签'],
+   },
+   {
+     id: 'automated',
+     icon: <BubblesIcon />,
+-    title: 'Automated Creator',
+-    subtitle: 'Pick traits from bubbles, let AI fill the gaps',
++    title: '自动创建',
++    subtitle: '选择角色特征，其余交给 AI 补全',
+     description:
+-      'Best when you want to explore and discover. Select from archetypes, appearance options, ' +
+-      'backstory presets, and personality keywords. The AI handles the rest.',
+-    features: ['Archetype presets', 'Bubble selectors for every trait', 'AI generates description from selections'],
++      '适合还在探索灵感、寻找方向时使用。从角色原型、外观选项、背景故事预设' +
++      '和性格关键词中选择，剩下的交给 AI。',
++    features: ['角色原型预设', '通过选项选择各项特征', 'AI 根据选择生成角色描述'],
+   },
+ ];
+ 
+diff --git a/web_ui/src/components/aichargen/TemplatePicker.tsx b/web_ui/src/components/aichargen/TemplatePicker.tsx
+index 0c8834a..c50583e 100644
+--- a/web_ui/src/components/aichargen/TemplatePicker.tsx
++++ b/web_ui/src/components/aichargen/TemplatePicker.tsx
+@@ -78,7 +78,7 @@ export function TemplatePicker({
+         <h3 id="cg-tpl-title">从模板开始</h3>
+         {wide && (
+           <span className="cg-tpl-sub">
+-            Every box filled the way you saved it. Pick one, or choose a mode below to start blank.
++            模板已保存完整配置。选择一个模板，或在下方选择模式从头开始。
+           </span>
+         )}
+       </div>
+@@ -87,7 +87,7 @@ export function TemplatePicker({
+         <p className="cg-tpl-error">
+           {error}{' '}
+           <button type="button" className="cg-tpl-retry" onClick={onRetry}>
+-            Try again
++            重试
+           </button>
+         </p>
+       )}
+diff --git a/web_ui/src/components/library/LibraryToolbar.tsx b/web_ui/src/components/library/LibraryToolbar.tsx
+index 309d7c0..715d965 100644
+--- a/web_ui/src/components/library/LibraryToolbar.tsx
++++ b/web_ui/src/components/library/LibraryToolbar.tsx
+@@ -96,7 +96,7 @@ export function LibraryToolbar({
+         ＋ Create
+       </button>
+       <button className="ghost import-btn" onClick={onAiCreate} title="Generate a character with AI">
+-        ✨ AI Create
++        ✨ AI 创建角色
+       </button>
+       <button className="ghost import-btn" onClick={onNewGroup} title="Create a new group chat">
+         👥 New Group
+diff --git a/web_ui/src/pages/CreateAiCharacterPage.tsx b/web_ui/src/pages/CreateAiCharacterPage.tsx
+index 5dd4676..97a140a 100644
+--- a/web_ui/src/pages/CreateAiCharacterPage.tsx
++++ b/web_ui/src/pages/CreateAiCharacterPage.tsx
+@@ -45,6 +45,7 @@ import '../styles/creator-templates.css';
+ import '../styles/profile.css';
+ 
+ const STEPS = ['Mode', 'Details', 'Output', 'Generate', 'Profile', 'Greetings'];
++const STEP_LABELS = ['模式', '详情', '输出', '生成', '角色档案', '问候语'];
+ const GENERATE = STEPS.indexOf('Generate');
+ const PROFILE = STEPS.indexOf('Profile');
+ const GREETINGS = STEPS.indexOf('Greetings');
+@@ -270,7 +271,7 @@ export function CreateAiCharacterPage() {
+           <Sparkle />
+           <h2>AI 角色创建器</h2>
+         </header>
+-        <StepIndicator steps={STEPS} current={step} onJump={held ? undefined : setStep} variant="porch" />
++        <StepIndicator steps={STEP_LABELS} current={step} onJump={held ? undefined : setStep} variant="porch" />
+       </div>
+ 
+       <div className="cg-content">
+@@ -286,11 +287,11 @@ export function CreateAiCharacterPage() {
+             {step === 0 && (
+               <div className="cg-config">
+                 <div className="cg-intro">
+-                  <h2>How do you want to create?</h2>
++                  <h2>你想如何创建角色？</h2>
+                   <p>
+                     {isPhone
+-                      ? 'Pick a template, or a mode to start blank.'
+-                      : 'Choose the creation mode that fits your workflow.'}
++                      ? '选择模板，或选择一种模式从头开始。'
++                      : '选择最适合你创作习惯的模式。'}
+                   </p>
+                 </div>
+                 <label className="cg-field">
+@@ -315,7 +316,7 @@ export function CreateAiCharacterPage() {
+                 <ModeCards mode={form.mode} onPick={(mode) => set({ mode })} />
+                 <label className="cg-field cg-toggle">
+                   <input type="checkbox" checked={form.nsfw} onChange={(e) => set({ nsfw: e.target.checked })} />
+-                  <span>Allow mature content</span>
++                  <span>允许成人内容</span>
+                 </label>
+               </div>
+             )}
+@@ -357,7 +358,7 @@ export function CreateAiCharacterPage() {
+                       disabled={!form.name.trim() || available === false}
+                       onClick={generate}
+                     >
+-                      ✨ Generate character
++                      ✨ 生成角色
+                     </button>
+                     {steps.length > 0 && (
+                       <ol className="chargen-steps">
