@@ -1,0 +1,763 @@
+diff --git a/lib/ui/pages/model_manager/model_manager_search_tab.dart b/lib/ui/pages/model_manager/model_manager_search_tab.dart
+index 9894e31..baab641 100644
+--- a/lib/ui/pages/model_manager/model_manager_search_tab.dart
++++ b/lib/ui/pages/model_manager/model_manager_search_tab.dart
+@@ -83,7 +83,7 @@ class ModelManagerSearchTab extends StatelessWidget {
+                     controller: controller.textController,
+                     focusNode: controller.focusNode,
+                     decoration: InputDecoration(
+-                      hintText: 'Search HuggingFace models...',
++                      hintText: '搜索 Hugging Face 模型…',
+                       hintStyle: TextStyle(
+                         color: AppColors.textTertiary(context),
+                       ),
+@@ -114,7 +114,7 @@ class ModelManagerSearchTab extends StatelessWidget {
+                         child: CircularProgressIndicator(strokeWidth: 2),
+                       )
+                     : const Icon(Icons.search, size: 18),
+-                label: Text(controller.isSearching ? 'Searching...' : 'Search'),
++                label: Text(controller.isSearching ? '搜索中…' : '搜索'),
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: AppColors.porchAmberOf(context),
+                   foregroundColor: AppColors.onAccentOf(context),
+@@ -165,7 +165,7 @@ class ModelManagerSearchTab extends StatelessWidget {
+                       const CircularProgressIndicator(),
+                       const SizedBox(height: 16),
+                       Text(
+-                        'Searching HuggingFace...',
++                        '正在搜索 Hugging Face…',
+                         style: TextStyle(
+                           color: AppColors.textSecondary(context),
+                         ),
+@@ -175,9 +175,9 @@ class ModelManagerSearchTab extends StatelessWidget {
+                 )
+               : controller.results.isEmpty
+               ? const ModelManagerEmptyState(
+-                  title: 'Search for models',
++                  title: '搜索模型',
+                   subtitle:
+-                      'Enter a model name or architecture to search HuggingFace',
++                      '输入模型名称或架构，在 Hugging Face 上搜索',
+                 )
+               : ListView.separated(
+                   padding: const EdgeInsets.all(16),
+diff --git a/lib/ui/settings/dialogs/prompt_delete_dialog.dart b/lib/ui/settings/dialogs/prompt_delete_dialog.dart
+index b3014b3..6d5da9f 100644
+--- a/lib/ui/settings/dialogs/prompt_delete_dialog.dart
++++ b/lib/ui/settings/dialogs/prompt_delete_dialog.dart
+@@ -31,14 +31,14 @@ void showDeletePromptDialog(
+     builder: (ctx) => AlertDialog(
+       backgroundColor: AppColors.surfaceOf(context),
+       title: Text(
+-        'Delete Saved Prompt',
++        '删除已保存的提示词',
+         style: TextStyle(color: AppColors.textPrimary(context)),
+       ),
+       content: SizedBox(
+         width: 300,
+         child: storageService.presetSettings.savedPrompts.isEmpty
+             ? Text(
+-                'No saved prompts.',
++                '没有已保存的提示词。',
+                 style: TextStyle(color: AppColors.textSecondary(context)),
+               )
+             : Column(
+@@ -65,7 +65,7 @@ void showDeletePromptDialog(
+                             Navigator.pop(ctx);
+                             ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+-                                content: Text('Prompt "${p['name']}" deleted.'),
++                                content: Text('已删除提示词「${p['name']}」。'),
+                               ),
+                             );
+                           },
+diff --git a/lib/ui/settings/dialogs/prompt_save_dialog.dart b/lib/ui/settings/dialogs/prompt_save_dialog.dart
+index a78d45d..d90a7e8 100644
+--- a/lib/ui/settings/dialogs/prompt_save_dialog.dart
++++ b/lib/ui/settings/dialogs/prompt_save_dialog.dart
+@@ -29,7 +29,7 @@ void showSavePromptDialog(BuildContext context, StorageService storageService) {
+     builder: (ctx) => AlertDialog(
+       backgroundColor: AppColors.surfaceOf(context),
+       title: Text(
+-        'Save Prompt',
++        '保存提示词',
+         style: TextStyle(color: AppColors.textPrimary(context)),
+       ),
+       content: TextField(
+@@ -48,7 +48,7 @@ void showSavePromptDialog(BuildContext context, StorageService storageService) {
+             );
+             Navigator.pop(ctx);
+             ScaffoldMessenger.of(context).showSnackBar(
+-              SnackBar(content: Text('Prompt "${value.trim()}" saved!')),
++              SnackBar(content: Text('已保存提示词「${value.trim()}」。')),
+             );
+           }
+         },
+@@ -75,7 +75,7 @@ void showSavePromptDialog(BuildContext context, StorageService storageService) {
+               Navigator.pop(ctx);
+               ScaffoldMessenger.of(context).showSnackBar(
+                 SnackBar(
+-                  content: Text('Prompt "${controller.text.trim()}" saved!'),
++                  content: Text('已保存提示词「${controller.text.trim()}」。'),
+                 ),
+               );
+             }
+diff --git a/lib/ui/settings/tabs/appearance_tab/theme_preview_card.dart b/lib/ui/settings/tabs/appearance_tab/theme_preview_card.dart
+index 91a3609..3584140 100644
+--- a/lib/ui/settings/tabs/appearance_tab/theme_preview_card.dart
++++ b/lib/ui/settings/tabs/appearance_tab/theme_preview_card.dart
+@@ -42,7 +42,7 @@ class ThemePreviewCard extends StatelessWidget {
+     return Semantics(
+       button: true,
+       selected: selected,
+-      label: '${theme.label} theme',
++      label: '${theme.label}主题',
+       excludeSemantics: true,
+       child: Material(
+         color: palette.card,
+diff --git a/lib/ui/settings/tabs/backend/kobold_context_control.dart b/lib/ui/settings/tabs/backend/kobold_context_control.dart
+index 02dca9c..6d54c6d 100644
+--- a/lib/ui/settings/tabs/backend/kobold_context_control.dart
++++ b/lib/ui/settings/tabs/backend/kobold_context_control.dart
+@@ -67,7 +67,7 @@ class KoboldContextControl extends StatelessWidget {
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           Text(
+-            'Context: how much chat history the character remembers',
++            '上下文：角色能够记住多少聊天历史',
+             style: keText(context, size: 14, weight: FontWeight.w600),
+           ),
+           const SizedBox(height: 8),
+@@ -118,7 +118,7 @@ class KoboldContextControl extends StatelessWidget {
+                       context,
+                       title: '保留 ${koboldTokens(big)} 个 Token？',
+                       text: words?.text ?? '',
+-                      yes: 'Keep it',
++                      yes: '保留',
+                     );
+                     if (keep && context.mounted) await onApply(big);
+                   },
+diff --git a/lib/ui/settings/tabs/backend/kobold_speed_test_button.dart b/lib/ui/settings/tabs/backend/kobold_speed_test_button.dart
+index 00dde1a..83c98b7 100644
+--- a/lib/ui/settings/tabs/backend/kobold_speed_test_button.dart
++++ b/lib/ui/settings/tabs/backend/kobold_speed_test_button.dart
+@@ -94,8 +94,8 @@ class _KoboldSpeedTestButtonState extends State<KoboldSpeedTestButton> {
+       children: [
+         KeButton(
+           t.running
+-              ? 'Testing speed settings…'
+-              : 'Find the fastest settings for this computer',
++              ? '正在测试速度设置…'
++              : '为这台电脑寻找最快的设置',
+           key: const ValueKey('local-model-speed-test'),
+           kind: KeButtonKind.amberOutline,
+           onPressed: why != null ? null : () => showKoboldSpeedTest(context, t),
+diff --git a/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart b/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
+index fb202a1..b0dc272 100644
+--- a/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
++++ b/lib/ui/settings/tabs/backend/kobold_speed_test_dialog.dart
+@@ -35,12 +35,12 @@ Future<void> showKoboldSpeedTest(
+       ),
+       actions: [
+         KeButton(
+-          'Not now',
++          '暂不',
+           key: const ValueKey('speed-test-not-now'),
+           onPressed: () => Navigator.of(context).pop(false),
+         ),
+         KeButton(
+-          'Run it',
++          '开始测试',
+           key: const ValueKey('speed-test-run'),
+           kind: KeButtonKind.amber,
+           onPressed: () => Navigator.of(context).pop(true),
+@@ -100,7 +100,7 @@ class KoboldSpeedTestProgress extends StatelessWidget {
+               Align(
+                 alignment: Alignment.centerRight,
+                 child: KeButton(
+-                  'Done',
++                  '完成',
+                   key: const ValueKey('speed-test-done'),
+                   kind: KeButtonKind.amber,
+                   onPressed: () => Navigator.of(context).pop(),
+@@ -132,14 +132,14 @@ class KoboldSpeedTestProgress extends StatelessWidget {
+         Row(
+           children: [
+             Text(
+-              steps == 0 ? 'Getting ready' : 'Step ${test.step} of $steps',
++              steps == 0 ? '正在准备' : '第 ${test.step} 步，共 $steps 步',
+               key: const ValueKey('speed-test-step'),
+               style: keText(context, size: 14, weight: FontWeight.w600),
+             ),
+             const Spacer(),
+             if (steps > 0)
+               Text(
+-                '${left[0].toUpperCase()}${left.substring(1)} left',
++                '剩余：${left}',
+                 key: const ValueKey('speed-test-left'),
+                 style: keText(context, size: 14, color: muted),
+               ),
+diff --git a/lib/ui/settings/tabs/backend/kobold_status_card.dart b/lib/ui/settings/tabs/backend/kobold_status_card.dart
+index 897b0e6..65db2d9 100644
+--- a/lib/ui/settings/tabs/backend/kobold_status_card.dart
++++ b/lib/ui/settings/tabs/backend/kobold_status_card.dart
+@@ -316,8 +316,8 @@ class _KoboldStatusCardState extends State<KoboldStatusCard> {
+               ),
+               const SizedBox(height: 4),
+               Text(
+-                '${name ?? 'No model chosen'} · '
+-                '${kobold.isRunning ? 'running' : 'not running'}',
++                '${name ?? '未选择模型'} · '
++                '${kobold.isRunning ? '运行中' : '未运行'}',
+                 style: keText(
+                   context,
+                   size: 14,
+@@ -351,9 +351,9 @@ class _KoboldStatusCardState extends State<KoboldStatusCard> {
+     final read = _preset;
+     final name = kcppsPresetName(_presetPath!);
+     final text = switch (read) {
+-      null => 'Reading the preset…',
++      null => '正在读取预设…',
+       KcppsBroken(:final reason) =>
+-        'The preset "$name" cannot be read: $reason',
++        '无法读取预设「$name」：$reason',
+       KcppsOk(:final config, :final raw) => kcppsPlainWords(
+         config,
+         machineCards: context.read<HardwareService>().hardwareInfo?.cardCount,
+@@ -362,7 +362,7 @@ class _KoboldStatusCardState extends State<KoboldStatusCard> {
+       ),
+     };
+     return [
+-      _line(context, 'Uses your preset "$name".'),
++      _line(context, '正在使用预设「$name」。'),
+       const SizedBox(height: 10),
+       Text(
+         text,
+@@ -384,13 +384,12 @@ class _KoboldStatusCardState extends State<KoboldStatusCard> {
+         _line(
+           context,
+           (_model ?? '').isEmpty
+-              ? 'Choose a model above to see how it runs here.'
++              ? '请先在上方选择模型，以查看它在此设备上的运行情况。'
+               : !_modelRead
+-              ? 'Reading the model file…'
++              ? '正在读取模型文件…'
+               : _info == null || _bytes == null
+-              ? 'The model file could not be read. Is it still in its folder? '
+-                    'You can choose another model above.'
+-              : 'Still finding out what this computer can do…',
++              ? '无法读取模型文件。请确认文件仍位于原文件夹中，或在上方选择其他模型。'
++              : '正在检测这台电脑的性能…',
+         ),
+       ];
+     }
+diff --git a/lib/ui/settings/tabs/backend/managed_backend_section.dart b/lib/ui/settings/tabs/backend/managed_backend_section.dart
+index 4493fe8..42cfeaa 100644
+--- a/lib/ui/settings/tabs/backend/managed_backend_section.dart
++++ b/lib/ui/settings/tabs/backend/managed_backend_section.dart
+@@ -113,7 +113,7 @@ class ManagedBackendSection extends StatelessWidget {
+                       Text(
+                         backendManager.backendPath != null
+                             ? 'Status: Ready${backendManager.localVersionDisplay.isNotEmpty ? ' (${backendManager.localVersionDisplay})' : ''}'
+-                            : 'Status: Missing',
++                            : '状态：缺失',
+                         style: TextStyle(
+                           color: backendManager.backendPath != null
+                               ? AppColors.bondHighOf(context)
+@@ -151,14 +151,14 @@ class ManagedBackendSection extends StatelessWidget {
+                         : null,
+                     child: Text(
+                       backendManager.backendPath == null
+-                          ? 'Download'
++                          ? '下载'
+                           : backendManager.versionError != null
+-                          ? 'Check (failed)'
++                          ? '检查失败'
+                           : backendManager.remoteVersion == null
+-                          ? 'Check for Updates'
++                          ? '检查更新'
+                           : backendManager.isUpdateAvailable
+                           ? 'Update to v${backendManager.remoteVersion}'
+-                          : 'Up to date',
++                          : '已是最新版本',
+                     ),
+                   ),
+               ],
+@@ -180,11 +180,11 @@ class ManagedBackendSection extends StatelessWidget {
+           tileColor: AppColors.cardOf(context),
+           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+           title: const Text(
+-            'Auto-start model on launch',
++            '启动应用时自动加载模型',
+             style: TextStyle(fontSize: 14),
+           ),
+           subtitle: Text(
+-            'Automatically load the last used model when the app starts',
++            '应用启动时自动加载上次使用的模型',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 11,
+@@ -201,11 +201,11 @@ class ManagedBackendSection extends StatelessWidget {
+           tileColor: AppColors.cardOf(context),
+           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+           title: const Text(
+-            'Auto-start on chat open',
++            '打开聊天时自动启动后端',
+             style: TextStyle(fontSize: 14),
+           ),
+           subtitle: Text(
+-            'Automatically start the backend when entering a chat',
++            '进入聊天时自动启动后端服务',
+             style: TextStyle(
+               color: AppColors.textTertiary(context),
+               fontSize: 11,
+@@ -260,7 +260,7 @@ class ManagedBackendSection extends StatelessWidget {
+         KcppsSelector(
+           storage: storageService,
+           localPresets: localPresets,
+-          hint: 'None (Use App Settings)',
++          hint: '无（使用应用设置）',
+           onChanged: onKcppsChanged,
+           onExternalClear: onKcppsExternalClear,
+           onBrowsePicked: onKcppsBrowsePicked,
+diff --git a/lib/ui/settings/tabs/backend/remote_api_section.dart b/lib/ui/settings/tabs/backend/remote_api_section.dart
+index 38ba546..7431c93 100644
+--- a/lib/ui/settings/tabs/backend/remote_api_section.dart
++++ b/lib/ui/settings/tabs/backend/remote_api_section.dart
+@@ -153,7 +153,7 @@ class _RemoteApiSectionState extends State<RemoteApiSection> {
+                 )
+               : const Icon(Icons.wifi_tethering, size: 18),
+           label: Text(
+-            _isCheckingConnection ? '正在检查…' : 'Check Connection',
++            _isCheckingConnection ? '正在检查…' : '检查连接',
+           ),
+           style: ElevatedButton.styleFrom(
+             backgroundColor: accent.withValues(alpha: 0.85),
+@@ -270,8 +270,7 @@ class _RemoteApiSectionState extends State<RemoteApiSection> {
+         content: Text(
+           models.isEmpty
+               ? 'No models found. Check your API URL and key.'
+-              : 'Found ${models.length} '
+-                    'model${models.length == 1 ? '' : 's'}.',
++              : '找到 ${models.length} 个模型。',
+         ),
+       ),
+     );
+diff --git a/lib/ui/settings/tabs/backend/worker_backend_section.dart b/lib/ui/settings/tabs/backend/worker_backend_section.dart
+index b49f8c9..3c23b2c 100644
+--- a/lib/ui/settings/tabs/backend/worker_backend_section.dart
++++ b/lib/ui/settings/tabs/backend/worker_backend_section.dart
+@@ -143,12 +143,8 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+         const SizedBox(height: 8),
+         Text(
+           widget.compact
+-              ? 'Feelings, wiki/web, journal, and growth can use another '
+-                    'host. Chat speech stays above.'
+-              : 'Feelings, wiki/web, journal, growth can use another host. '
+-                    'Chat speech stays above. Two local engines take turns on '
+-                    'the GPU when this app can unload one model before the '
+-                    'other runs.',
++              ? '情感评估、维基／网页、日记和成长系统可以使用其他后端；聊天生成仍使用上方设置的后端。'
++              : '情感评估、维基／网页、日记和成长系统可以使用其他后端；聊天生成仍使用上方设置的后端。两个本地引擎会轮流使用 GPU，应用会在切换前尝试卸载另一个模型。',
+           style: theme.textTheme.bodySmall?.copyWith(color: muted),
+         ),
+         const SizedBox(height: 10),
+@@ -182,7 +178,7 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+               if (!different) ...[
+                 const SizedBox(height: 10),
+                 Text(
+-                  'Realism evals use the chat host above.',
++                  '拟真评估使用上方的聊天后端。',
+                   key: const Key('side-jobs-same-host-status'),
+                   style: theme.textTheme.bodySmall?.copyWith(color: muted),
+                 ),
+@@ -207,14 +203,14 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+                   Padding(
+                     padding: const EdgeInsets.only(top: 10),
+                     child: Text(
+-                      'Pick a host for Realism evals. Chat speech stays above.',
++                      '为拟真评估选择后端；聊天生成仍使用上方的后端。',
+                       style: theme.textTheme.bodySmall?.copyWith(color: muted),
+                     ),
+                   )
+                 else if (sameHost) ...[
+                   const SizedBox(height: 10),
+                   Text(
+-                    'Realism evals use the chat host above. Pick a model only.',
++                    '拟真评估使用上方的聊天后端。这里只需选择模型。',
+                     key: const Key('side-jobs-same-host-status'),
+                     style: theme.textTheme.bodySmall?.copyWith(color: muted),
+                   ),
+@@ -293,7 +289,7 @@ class _WorkerBackendSectionState extends State<WorkerBackendSection> {
+                 if (showSavedKeyHint) ...[
+                   const SizedBox(height: 8),
+                   Text(
+-                    'Using the saved key for this host.',
++                    '正在使用此后端已保存的密钥。',
+                     key: const Key('side-jobs-saved-key-hint'),
+                     style: theme.textTheme.bodySmall?.copyWith(color: muted),
+                   ),
+diff --git a/lib/ui/settings/tabs/general_tab.dart b/lib/ui/settings/tabs/general_tab.dart
+index 32c2c5c..adbb8ce 100644
+--- a/lib/ui/settings/tabs/general_tab.dart
++++ b/lib/ui/settings/tabs/general_tab.dart
+@@ -58,9 +58,7 @@ class GeneralTab extends StatelessWidget {
+               style: TextStyle(color: AppColors.textPrimary(context)),
+             ),
+             subtitle: Text(
+-              'Off, your messages sit on the left with your picture, like '
+-              'the character\'s. On, they move to the right with your '
+-              'picture on the right, the way chat looked before.',
++              '关闭时，你的消息会显示在左侧，并带有你的头像，就像角色的消息一样。开启后，消息会移到右侧，头像也显示在右侧，恢复为旧版聊天布局。',
+               style: TextStyle(
+                 fontSize: 12.5,
+                 color: AppColors.textSecondary(context),
+@@ -77,8 +75,7 @@ class GeneralTab extends StatelessWidget {
+               style: TextStyle(color: AppColors.textPrimary(context)),
+             ),
+             subtitle: Text(
+-              'Keep the chat pinned to the newest words while a reply is '
+-              'writing, as long as you are at the bottom. Scroll up to stop.',
++              '当你位于聊天记录底部时，回复生成期间会自动跟随最新内容。向上滚动即可停止自动跟随。',
+               style: TextStyle(
+                 fontSize: 12.5,
+                 color: AppColors.textSecondary(context),
+diff --git a/lib/ui/settings/tabs/general_tab/porch_life_pointer_card.dart b/lib/ui/settings/tabs/general_tab/porch_life_pointer_card.dart
+index 3dbe0e2..efd88eb 100644
+--- a/lib/ui/settings/tabs/general_tab/porch_life_pointer_card.dart
++++ b/lib/ui/settings/tabs/general_tab/porch_life_pointer_card.dart
+@@ -45,10 +45,7 @@ class PorchLifePointerCard extends StatelessWidget {
+           const SizedBox(width: 10),
+           Expanded(
+             child: Text(
+-              'The Realism Engine, passage of time, weather, the Journal, '
+-              'dreams, promises, ambitions and the welcome-back recap all live '
+-              'in the Porch Life tab now — each one saying plainly what it '
+-              'needs.',
++              '拟真引擎、时间流逝、天气、日记、梦境、承诺、目标以及回归摘要都位于「角色生活」标签页。你可以在那里调整角色如何体验聊天之外的世界，以及他们自身的生活状态。',
+               style: TextStyle(
+                 fontSize: 12.5,
+                 color: AppColors.textSecondary(context),
+diff --git a/lib/ui/settings/tabs/voice_media_tab/expression_section.dart b/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
+index 79153b2..de589d1 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/expression_section.dart
+@@ -38,7 +38,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+       case 'onnx':
+         return 'ONNX';
+       case 'manual':
+-        return 'Manual';
++        return '手动';
+       default:
+         return mode;
+     }
+@@ -47,9 +47,9 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+   static String _expressionDisplayLabel(String mode) {
+     switch (mode) {
+       case 'sidebar':
+-        return 'Sidebar';
++        return '侧边栏';
+       case 'background':
+-        return 'Background';
++        return '背景';
+       case 'both':
+         return '两者都启用';
+       default:
+@@ -134,7 +134,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         ),
+                         const SizedBox(width: 8),
+                         Text(
+-                          'Classification:',
++                          '分类：',
+                           style: TextStyle(
+                             fontSize: 12,
+                             color: AppColors.textSecondary(context),
+@@ -192,7 +192,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         ),
+                         const SizedBox(width: 8),
+                         Text(
+-                          'Display:',
++                          '显示位置：',
+                           style: TextStyle(
+                             fontSize: 12,
+                             color: AppColors.textSecondary(context),
+@@ -246,7 +246,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         const SizedBox(width: 8),
+                         Expanded(
+                           child: Text(
+-                            'Re-roll if same sprite repeats',
++                            '连续出现相同表情时重新抽取',
+                             style: TextStyle(
+                               fontSize: 12,
+                               color: AppColors.textSecondary(context),
+@@ -274,7 +274,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         const SizedBox(width: 8),
+                         Expanded(
+                           child: Text(
+-                            'Expression Emoji Burst',
++                            '表情 Emoji 连发',
+                             style: TextStyle(
+                               fontSize: 12,
+                               color: AppColors.textSecondary(context),
+@@ -297,7 +297,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           Text(
+-                            'Burst emoji size',
++                            '连发 Emoji 大小',
+                             style: TextStyle(
+                               fontSize: 12,
+                               color: AppColors.textSecondary(context),
+@@ -334,7 +334,7 @@ class VoiceMediaExpressionSection extends StatelessWidget {
+                         ),
+                         const SizedBox(width: 8),
+                         Text(
+-                          'Fallback:',
++                          '备用显示：',
+                           style: TextStyle(
+                             fontSize: 12,
+                             color: AppColors.textSecondary(context),
+@@ -403,7 +403,7 @@ class _OnnxDownloadButton extends StatelessWidget {
+       // theme-keep: download-ready status green (this whole ready/downloading
+       // cluster, through the IconButton.styleFrom below)
+       return Tooltip(
+-        message: 'Expression model downloaded and ready',
++        message: '表情模型已下载并就绪',
+         child: Container(
+           width: 36,
+           height: 36,
+@@ -444,7 +444,7 @@ class _OnnxDownloadButton extends StatelessWidget {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(
+                       content: Text(
+-                        'Download failed. Check your internet connection and try again.',
++                        '下载失败。请检查网络连接后重试。',
+                       ),
+                     ),
+                   );
+diff --git a/lib/ui/settings/tabs/voice_media_tab/stt_section.dart b/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
+index 8fa3eb1..7ad116c 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/stt_section.dart
+@@ -82,7 +82,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                       ),
+                       const SizedBox(width: 12),
+                       const Text(
+-                        'Enable Voice Input',
++                        '启用语音输入',
+                         style: TextStyle(fontWeight: FontWeight.bold),
+                       ),
+                     ],
+@@ -200,7 +200,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                               label: Text(
+                                 sttService.isDownloading
+                                     ? sttService.downloadStatus
+-                                    : 'Download Model',
++                                    : '下载模型',
+                               ),
+                               style: OutlinedButton.styleFrom(
+                                 // theme-keep: download-ready status green
+@@ -250,11 +250,8 @@ class VoiceMediaSttSection extends StatelessWidget {
+                             Expanded(
+                               child: Text(
+                                 sttService.isSelectedModelDownloaded
+-                                    ? 'Model files verified on disk — '
+-                                          'voice input is ready.'
+-                                    : 'Not downloaded yet — use the button '
+-                                          'above, or it downloads on first '
+-                                          'use.',
++                                    ? '已确认模型文件存在，语音输入已就绪。'
++                                    : '尚未下载模型。请点击上方按钮，或在首次使用时自动下载。',
+                                 style: TextStyle(
+                                   fontSize: 11,
+                                   color: AppColors.textTertiary(context),
+@@ -287,7 +284,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                   Text(
+-                                    'Microphone',
++                                    '麦克风',
+                                     style: TextStyle(
+                                       fontSize: 12,
+                                       color: AppColors.textSecondary(context),
+@@ -355,7 +352,7 @@ class VoiceMediaSttSection extends StatelessWidget {
+                           Padding(
+                             padding: const EdgeInsets.only(top: 4),
+                             child: Text(
+-                              'No microphones detected. Click refresh to scan.',
++                              '未检测到麦克风。点击刷新按钮重新扫描。',
+                               style: TextStyle(
+                                 fontSize: 11,
+                                 // theme-keep: warning semantics
+diff --git a/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart b/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
+index 918dcd0..0188853 100644
+--- a/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
++++ b/lib/ui/settings/tabs/voice_media_tab/voice_call_settings.dart
+@@ -60,7 +60,7 @@ List<Widget> voiceCallSettingsChildren(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                'Voice Call Model',
++                '语音通话模型',
+                 style: TextStyle(
+                   fontSize: 12,
+                   color: AppColors.textSecondary(context),
+@@ -108,7 +108,7 @@ List<Widget> voiceCallSettingsChildren(
+             Row(
+               children: [
+                 Text(
+-                  'Voice Call Model',
++                  '语音通话模型',
+                   style: TextStyle(
+                     fontSize: 12,
+                     color: AppColors.textSecondary(context),
+@@ -165,7 +165,7 @@ List<Widget> voiceCallSettingsChildren(
+                   DropdownMenuItem<String>(
+                     value: '',
+                     child: Text(
+-                      'Same as main model',
++                      '与主模型相同',
+                       style: TextStyle(
+                         color: AppColors.textTertiary(context),
+                         fontSize: 13,
+@@ -238,9 +238,7 @@ List<Widget> voiceCallSettingsChildren(
+                         'recommended.\n'
+                         '⚠ oMLX runs on this machine — calls will be '
+                         'slower than a remote hosted model.'
+-                  : '💡 Use a smaller, faster model for voice calls.\n'
+-                        'Reasoning/thinking models add latency — not '
+-                        'recommended.',
++                  : '💡 语音通话建议使用更小、速度更快的模型。\n推理／思考型模型会增加延迟，因此不推荐。',
+               style: TextStyle(
+                 fontSize: 11,
+                 color: AppColors.textTertiary(context),
+@@ -249,7 +247,7 @@ List<Widget> voiceCallSettingsChildren(
+             if (recommended.isNotEmpty) ...[
+               const SizedBox(height: 6),
+               Text(
+-                '⭐ Recommended for voice calls:',
++                '⭐ 推荐用于语音通话的模型：',
+                 style: TextStyle(
+                   fontSize: 10,
+                   color: AppColors.textTertiary(context),
+@@ -305,7 +303,7 @@ List<Widget> voiceCallSettingsChildren(
+           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+             Text(
+-              'Voice Buffer',
++              '语音缓冲',
+               style: TextStyle(
+                 fontSize: 12,
+                 color: AppColors.textSecondary(context),
+@@ -335,8 +333,7 @@ List<Widget> voiceCallSettingsChildren(
+           },
+         ),
+         Text(
+-          'Sentences to pre-generate before playback starts. '
+-          'Auto-expands if generation is slow.',
++          '开始播放前预先生成的句子数量。生成速度较慢时会自动增加缓冲。',
+           style: TextStyle(
+             fontSize: 11,
+             color: AppColors.textTertiary(context),
+@@ -385,7 +382,7 @@ List<Widget> voiceCallSettingsChildren(
+         ),
+         const SizedBox(height: 4),
+         Text(
+-          'Appended to the system prompt during voice calls to control response style.',
++          '语音通话时会将此内容追加到系统提示词中，用于控制回复风格。',
+           style: TextStyle(
+             fontSize: 11,
+             color: AppColors.textTertiary(context),
+@@ -402,7 +399,7 @@ List<Widget> voiceCallSettingsChildren(
+             Icon(Icons.send, color: AppColors.porchAmberOf(context), size: 16),
+             const SizedBox(width: 8),
+             const Text(
+-              'Auto-send transcription',
++              '自动发送转写文本',
+               style: TextStyle(fontSize: 13),
+             ),
+           ],
+diff --git a/lib/ui/settings/widgets/kobold_keep_recent_row.dart b/lib/ui/settings/widgets/kobold_keep_recent_row.dart
+index 42ecea7..4907727 100644
+--- a/lib/ui/settings/widgets/kobold_keep_recent_row.dart
++++ b/lib/ui/settings/widgets/kobold_keep_recent_row.dart
+@@ -25,10 +25,7 @@ class KoboldKeepRecentRow extends StatelessWidget {
+   Widget build(BuildContext context) => LaunchChoiceRow(
+     title: '保留近期聊天',
+     blurb:
+-        'Besides the chat you have open, keeps the ones you used last ready '
+-        'in system memory, so going back to one is quick. Off keeps only the '
+-        'open chat, and frees its memory when you leave it. Fewer are kept '
+-        'when memory is short.',
++        '除了当前打开的聊天外，还会将最近使用的聊天保留在系统内存中，以便快速切换。关闭后只保留当前聊天，并在离开时释放其内存。可用内存不足时，保留的聊天数量会自动减少。',
+     choices: kKoboldKeepRecentChoices,
+     chosen: settings.keepRecentChats,
+     label: koboldKeepRecentLabel,
+diff --git a/lib/ui/settings/widgets/legacy_cleanup_card.dart b/lib/ui/settings/widgets/legacy_cleanup_card.dart
+index d16730b..22fda05 100644
+--- a/lib/ui/settings/widgets/legacy_cleanup_card.dart
++++ b/lib/ui/settings/widgets/legacy_cleanup_card.dart
+@@ -67,10 +67,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+       icon: Icons.cleaning_services_outlined,
+       destructive: true,
+       content: Text(
+-        'This permanently deletes '
+-        '${formatBytes(total)} of model files that '
+-        'only the old speech engines could use. Your voices and settings '
+-        'are unaffected — the new engines have their own models.',
++        '此操作会永久删除旧版语音引擎专用的模型文件（${formatBytes(total)}）。不会影响你的语音和设置；新版引擎使用独立的模型。',
+         style: TextStyle(color: AppColors.textSecondary(context), fontSize: 13),
+       ),
+       actions: [
+@@ -96,7 +93,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+     setState(() => _working = false);
+     ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+-        content: Text('Freed ${formatBytes(freed)} of disk space'),
++        content: Text('已释放 ${formatBytes(freed)} 磁盘空间'),
+         duration: const Duration(seconds: 3),
+       ),
+     );
+@@ -126,8 +123,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Text(
+-                'The new built-in speech engines use their own models. '
+-                'These files from the old engines are no longer used:',
++                '新版内置语音引擎使用独立模型。以下旧版引擎的文件已不再使用：',
+                 style: TextStyle(
+                   color: AppColors.textTertiary(context),
+                   fontSize: 12,
+@@ -161,7 +157,7 @@ class _LegacyCleanupCardState extends State<LegacyCleanupCard> {
+                           ),
+                         )
+                       : const Icon(Icons.cleaning_services_outlined, size: 16),
+-                  label: Text('Reclaim ${formatBytes(total)}'),
++                  label: Text('释放 ${formatBytes(total)}'),
+                   style: ElevatedButton.styleFrom(
+                     backgroundColor: AppColors.formAccentOf(context),
+                     foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/settings/widgets/thinking_settings_block.dart b/lib/ui/settings/widgets/thinking_settings_block.dart
+index ede78a6..2c0f027 100644
+--- a/lib/ui/settings/widgets/thinking_settings_block.dart
++++ b/lib/ui/settings/widgets/thinking_settings_block.dart
+@@ -301,8 +301,7 @@ class _ThinkingSettingsBlockState extends State<ThinkingSettingsBlock> {
+           Padding(
+             padding: EdgeInsets.only(top: widget.compact ? 2 : 4),
+             child: Text(
+-              'This model has no thinking mode — its chat template never '
+-              'produces think-steps, so this switch would do nothing.',
++              '此模型不支持思考模式：它的聊天模板不会生成思考步骤，因此切换此选项不会产生效果。',
+               style: TextStyle(
+                 color: AppColors.textTertiary(context),
+                 fontSize: 12,
+@@ -314,8 +313,7 @@ class _ThinkingSettingsBlockState extends State<ThinkingSettingsBlock> {
+           Padding(
+             padding: EdgeInsets.only(top: widget.compact ? 2 : 4),
+             child: Text(
+-              'This model thinks on or off only — it has no strength levels, '
+-              'so there are no chips to pick.',
++              '此模型只能开启或关闭思考模式，不支持调整思考强度，因此没有可选的强度档位。',
+               style: TextStyle(
+                 color: AppColors.textTertiary(context),
+                 fontSize: 12,
