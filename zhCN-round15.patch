@@ -1,0 +1,1595 @@
+diff --git a/lib/ui/pages/create_character_page.dart b/lib/ui/pages/create_character_page.dart
+index b6556cc..a21edec 100644
+--- a/lib/ui/pages/create_character_page.dart
++++ b/lib/ui/pages/create_character_page.dart
+@@ -88,7 +88,7 @@ class _CreateCharacterPageState extends State<CreateCharacterPage> {
+     if (name.isEmpty) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(
+-          content: Text('Character name is required'),
++          content: Text('必须填写角色名称'),
+           backgroundColor: StatusColors.alertFill,
+           behavior: SnackBarBehavior.floating,
+         ),
+@@ -116,7 +116,7 @@ class _CreateCharacterPageState extends State<CreateCharacterPage> {
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+-            content: Text('Failed to save character: $e'),
++            content: Text('保存角色失败：$e'),
+             backgroundColor: StatusColors.failFill,
+             behavior: SnackBarBehavior.floating,
+           ),
+diff --git a/lib/ui/pages/create_character_page/creator_dialogue_step.dart b/lib/ui/pages/create_character_page/creator_dialogue_step.dart
+index b2e89af..776bf0b 100644
+--- a/lib/ui/pages/create_character_page/creator_dialogue_step.dart
++++ b/lib/ui/pages/create_character_page/creator_dialogue_step.dart
+@@ -69,7 +69,7 @@ class CreatorDialogueStep extends StatelessWidget {
+                 onChanged();
+               },
+               icon: const Icon(Icons.add, size: 16),
+-              label: const Text('Add Greeting'),
++              label: const Text('添加开场白'),
+               style: TextButton.styleFrom(
+                 foregroundColor: AppColors.formAccentOf(context),
+               ),
+diff --git a/lib/ui/pages/create_character_page/creator_review_summary.dart b/lib/ui/pages/create_character_page/creator_review_summary.dart
+index 14db097..4621ac0 100644
+--- a/lib/ui/pages/create_character_page/creator_review_summary.dart
++++ b/lib/ui/pages/create_character_page/creator_review_summary.dart
+@@ -235,7 +235,7 @@ class CreatorReviewSummary extends StatelessWidget {
+             child: OutlinedButton.icon(
+               onPressed: onBackToEdit,
+               icon: const Icon(Icons.arrow_back, size: 18),
+-              label: const Text('Back to Edit'),
++              label: const Text('返回编辑'),
+               style: OutlinedButton.styleFrom(
+                 foregroundColor: AppColors.textSecondary(context),
+                 side: BorderSide(color: AppColors.borderOf(context)),
+diff --git a/lib/ui/pages/image_batches/image_batch_prepare.dart b/lib/ui/pages/image_batches/image_batch_prepare.dart
+index 04bc145..6ed780c 100644
+--- a/lib/ui/pages/image_batches/image_batch_prepare.dart
++++ b/lib/ui/pages/image_batches/image_batch_prepare.dart
+@@ -129,7 +129,7 @@ class _ImageBatchPrepareState extends State<ImageBatchPrepare> {
+       ),
+       const SizedBox(height: 12),
+       ExpansionTile(
+-        title: const Text('Backend and model'),
++        title: const Text('后端与模型'),
+         subtitle: Text(_engineLine(queue)),
+         children: [
+           ChangeNotifierProvider<StorageService>.value(
+@@ -178,7 +178,7 @@ class _ImageBatchPrepareState extends State<ImageBatchPrepare> {
+         maxLines: 5,
+         decoration: const InputDecoration(
+           labelText: 'Prompt / instruction',
+-          hintText: 'Use {character} for each character’s name.',
++          hintText: '使用 {character} 代表每个角色的名称。',
+         ),
+       ),
+       if (_kind != 'expressions')
+@@ -203,11 +203,11 @@ class _ImageBatchPrepareState extends State<ImageBatchPrepare> {
+           items: [
+             DropdownMenuItem(
+               value: false,
+-              child: Text('Starter (${kCuratedExpressionSet.length})'),
++              child: Text('基础组（${kCuratedExpressionSet.length}）'),
+             ),
+             DropdownMenuItem(
+               value: true,
+-              child: Text('Full (${kFullExpressionSet.length})'),
++              child: Text('完整组（${kFullExpressionSet.length}）'),
+             ),
+           ],
+           onChanged: busy ? null : (v) => _update(() => _fullSet = v!),
+diff --git a/lib/ui/pages/image_batches/image_batch_results.dart b/lib/ui/pages/image_batches/image_batch_results.dart
+index a27201c..f28f92a 100644
+--- a/lib/ui/pages/image_batches/image_batch_results.dart
++++ b/lib/ui/pages/image_batches/image_batch_results.dart
+@@ -67,7 +67,7 @@ class ImageBatchResults extends StatelessWidget {
+                             ? null
+                             : () =>
+                                   onAction(() => queue.decide(job.id, 'keep')),
+-                        child: Text(job.kept ? 'Kept ✓' : 'Keep'),
++                        child: Text(job.kept ? '已保留 ✓' : '保留'),
+                       ),
+                     if ([
+                       'review',
+@@ -87,7 +87,7 @@ class ImageBatchResults extends StatelessWidget {
+                                   context,
+                                   builder: (context) => StatefulBuilder(
+                                     builder: (context, update) => WarmDialog(
+-                                      title: 'Prepare another pass',
++                                      title: '准备新一轮生成',
+                                       width: 560,
+                                       content: SizedBox(
+                                         width: 520,
+diff --git a/lib/ui/pages/model_manager_page.dart b/lib/ui/pages/model_manager_page.dart
+index 1fc284e..7116b25 100644
+--- a/lib/ui/pages/model_manager_page.dart
++++ b/lib/ui/pages/model_manager_page.dart
+@@ -122,7 +122,7 @@ class _ModelManagerPageState extends State<ModelManagerPage>
+         if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+-              content: Text('Model imported successfully!'),
++              content: Text('模型导入成功！'),
+               backgroundColor: StatusColors.doneFill,
+             ),
+           );
+@@ -152,7 +152,7 @@ class _ModelManagerPageState extends State<ModelManagerPage>
+       if (mounted) {
+         Provider.of<ModelManager>(context, listen: false).refreshModels();
+         ScaffoldMessenger.of(context).showSnackBar(
+-          SnackBar(content: Text('Models folder set to: $picked')),
++          SnackBar(content: Text('模型文件夹已设置为：$picked')),
+         );
+       }
+     }
+@@ -164,7 +164,7 @@ class _ModelManagerPageState extends State<ModelManagerPage>
+     if (mounted) {
+       Provider.of<ModelManager>(context, listen: false).refreshModels();
+       ScaffoldMessenger.of(context).showSnackBar(
+-        const SnackBar(content: Text('Models folder reset to default.')),
++        const SnackBar(content: Text('模型文件夹已恢复为默认值。')),
+       );
+     }
+   }
+@@ -357,7 +357,7 @@ class _ModelManagerPageState extends State<ModelManagerPage>
+                 ),
+                 child: TextField(
+                   decoration: InputDecoration(
+-                    hintText: 'Filter models...',
++                    hintText: '筛选模型……',
+                     hintStyle: TextStyle(
+                       color: AppColors.textTertiary(context),
+                     ),
+@@ -406,8 +406,8 @@ class _ModelManagerPageState extends State<ModelManagerPage>
+         Expanded(
+           child: localModels.isEmpty
+               ? const ModelManagerEmptyState(
+-                  title: 'No models found',
+-                  subtitle: 'Import a model or download from HuggingFace',
++                  title: '未找到模型',
++                  subtitle: '导入模型或从 HuggingFace 下载',
+                 )
+               : ListView.separated(
+                   padding: const EdgeInsets.all(16),
+diff --git a/lib/ui/pages/repository/repository_auth_view.dart b/lib/ui/pages/repository/repository_auth_view.dart
+index f7f85b5..7c6b94a 100644
+--- a/lib/ui/pages/repository/repository_auth_view.dart
++++ b/lib/ui/pages/repository/repository_auth_view.dart
+@@ -161,7 +161,7 @@ class _RepositoryAuthViewState extends State<RepositoryAuthView> {
+       context: context,
+       builder: (ctx) => AlertDialog(
+         backgroundColor: stoopCard2(ctx),
+-        title: Text('Locked out?', style: TextStyle(color: stoopCream(ctx))),
++        title: Text('无法登录？', style: TextStyle(color: stoopCream(ctx))),
+         content: Column(
+           mainAxisSize: MainAxisSize.min,
+           crossAxisAlignment: CrossAxisAlignment.start,
+@@ -198,7 +198,7 @@ class _RepositoryAuthViewState extends State<RepositoryAuthView> {
+               }
+               if (ctx.mounted) Navigator.pop(ctx, true);
+             },
+-            child: const Text('Email me a link'),
++            child: const Text('通过邮件发送登录链接'),
+           ),
+         ],
+       ),
+@@ -310,7 +310,7 @@ class _RepositoryAuthViewState extends State<RepositoryAuthView> {
+                 ],
+                 const SizedBox(height: 20),
+                 StoopAmberButton(
+-                  label: _isSignup ? 'Create account' : 'Sign in',
++                  label: _isSignup ? '创建账号' : '登录',
+                   busy: _busy,
+                   onPressed: _busy ? null : _submit,
+                   padding: const EdgeInsets.symmetric(vertical: 14),
+diff --git a/lib/ui/pages/repository/stoop_browse/stoop_browse_hero.dart b/lib/ui/pages/repository/stoop_browse/stoop_browse_hero.dart
+index c4ff2a4..f98570d 100644
+--- a/lib/ui/pages/repository/stoop_browse/stoop_browse_hero.dart
++++ b/lib/ui/pages/repository/stoop_browse/stoop_browse_hero.dart
+@@ -175,7 +175,7 @@ class StoopBrowseHero extends StatelessWidget {
+         Row(
+           children: [
+             StoopAmberButton(
+-              label: 'View card',
++              label: '查看角色卡',
+               onPressed: onOpen,
+               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+             ),
+diff --git a/lib/ui/pages/repository/stoop_browse_view.dart b/lib/ui/pages/repository/stoop_browse_view.dart
+index 079dce2..698ad5f 100644
+--- a/lib/ui/pages/repository/stoop_browse_view.dart
++++ b/lib/ui/pages/repository/stoop_browse_view.dart
+@@ -289,7 +289,7 @@ class _StoopBrowseViewState extends State<StoopBrowseView> {
+       return stoopEmpty(
+         context,
+         glyph: '🌙',
+-        title: 'Couldn’t load The Stoop',
++        title: '无法加载社区广场',
+         body: 'Check your connection and try again.',
+         action: OutlinedButton(
+           onPressed: _loadAll,
+@@ -339,7 +339,7 @@ class _StoopBrowseViewState extends State<StoopBrowseView> {
+               child: stoopEmpty(
+                 context,
+                 glyph: '🏮',
+-                title: 'Nothing on the porch',
++                title: '这里还没有内容',
+                 body: _query.isEmpty
+                     ? 'No cards here yet — check back soon.'
+                     : 'No cards match “$_query”.',
+diff --git a/lib/ui/pages/repository/stoop_card_comments.dart b/lib/ui/pages/repository/stoop_card_comments.dart
+index e9a010b..fb68feb 100644
+--- a/lib/ui/pages/repository/stoop_card_comments.dart
++++ b/lib/ui/pages/repository/stoop_card_comments.dart
+@@ -108,7 +108,7 @@ class _StoopCardCommentsState extends State<StoopCardComments> {
+ 
+   void _nudgeSignIn() {
+     ScaffoldMessenger.of(context).showSnackBar(
+-      const SnackBar(content: Text('Sign in from Account to comment.')),
++      const SnackBar(content: Text('请先在账号页面登录，再发表评论。')),
+     );
+   }
+ 
+@@ -247,7 +247,7 @@ class _StoopCardCommentsState extends State<StoopCardComments> {
+     if (user == null) return;
+     final confirmed = await confirmStoopCommentDelete(
+       context,
+-      title: 'Delete comment?',
++      title: '删除这条评论？',
+     );
+     if (!confirmed) return;
+     try {
+@@ -273,7 +273,7 @@ class _StoopCardCommentsState extends State<StoopCardComments> {
+     if (user == null) return;
+     final confirmed = await confirmStoopCommentDelete(
+       context,
+-      title: 'Delete reply?',
++      title: '删除这条回复？',
+     );
+     if (!confirmed) return;
+     try {
+@@ -299,7 +299,7 @@ class _StoopCardCommentsState extends State<StoopCardComments> {
+     if (!stoopCanReportComment(comment: comment, user: user)) return;
+     final result = await showDialog<({String category, String reason})>(
+       context: context,
+-      builder: (_) => const StoopReportDialog(title: 'Report this comment'),
++      builder: (_) => const StoopReportDialog(title: '举报这条评论'),
+     );
+     if (result == null) return;
+     try {
+@@ -331,7 +331,7 @@ class _StoopCardCommentsState extends State<StoopCardComments> {
+     if (!stoopCanReportReply(reply: reply, user: user)) return;
+     final result = await showDialog<({String category, String reason})>(
+       context: context,
+-      builder: (_) => const StoopReportDialog(title: 'Report this reply'),
++      builder: (_) => const StoopReportDialog(title: '举报这条回复'),
+     );
+     if (result == null) return;
+     try {
+diff --git a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_reply_composer.dart b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_reply_composer.dart
+index 24599c9..2801720 100644
+--- a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_reply_composer.dart
++++ b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_reply_composer.dart
+@@ -75,7 +75,7 @@ class StoopCommentReplyComposer extends StatelessWidget {
+               padding: const EdgeInsets.only(top: 4),
+               child: StoopAmberButton(
+                 key: Key('stoop-comment-reply-post-${parent.id}'),
+-                label: 'Post',
++                label: '发布',
+                 busy: posting,
+                 padding: const EdgeInsets.symmetric(
+                   horizontal: 14,
+diff --git a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_rows.dart b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_rows.dart
+index 60214c6..327221b 100644
+--- a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_rows.dart
++++ b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_rows.dart
+@@ -104,7 +104,7 @@ class StoopCommentRow extends StatelessWidget {
+                         minimumSize: Size.zero,
+                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                       ),
+-                      child: const Text('Report'),
++                      child: const Text('举报'),
+                     ),
+                 ],
+               ),
+@@ -233,7 +233,7 @@ class StoopCommentReplyRow extends StatelessWidget {
+                           minimumSize: Size.zero,
+                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                         ),
+-                        child: const Text('Report'),
++                        child: const Text('举报'),
+                       ),
+                   ],
+                 ),
+diff --git a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_thread.dart b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_thread.dart
+index 8619ac0..6e57a01 100644
+--- a/lib/ui/pages/repository/stoop_card_comments/stoop_comment_thread.dart
++++ b/lib/ui/pages/repository/stoop_card_comments/stoop_comment_thread.dart
+@@ -120,7 +120,7 @@ class StoopCommentThread extends StatelessWidget {
+                     minimumSize: Size.zero,
+                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                   ),
+-                  child: const Text('Reply'),
++                  child: const Text('回复'),
+                 ),
+               ),
+             ),
+diff --git a/lib/ui/pages/repository/stoop_card_detail/stoop_detail_actions.dart b/lib/ui/pages/repository/stoop_card_detail/stoop_detail_actions.dart
+index 6a4fa69..85175ae 100644
+--- a/lib/ui/pages/repository/stoop_card_detail/stoop_detail_actions.dart
++++ b/lib/ui/pages/repository/stoop_card_detail/stoop_detail_actions.dart
+@@ -74,7 +74,7 @@ class StoopDetailActions extends StatelessWidget {
+         const SizedBox(width: 12),
+         Expanded(
+           child: StoopAmberButton(
+-            label: downloading ? 'Adding…' : 'Download to library',
++            label: downloading ? '正在添加……' : '下载到资料库',
+             icon: downloading ? null : Icons.download_rounded,
+             busy: downloading,
+             onPressed: downloading ? null : onDownload,
+diff --git a/lib/ui/pages/repository/stoop_card_detail/stoop_detail_first_message.dart b/lib/ui/pages/repository/stoop_card_detail/stoop_detail_first_message.dart
+index 1ecb8f2..5d12c23 100644
+--- a/lib/ui/pages/repository/stoop_card_detail/stoop_detail_first_message.dart
++++ b/lib/ui/pages/repository/stoop_card_detail/stoop_detail_first_message.dart
+@@ -33,7 +33,7 @@ class StoopDetailFirstMessage extends StatelessWidget {
+     final idx = index.clamp(0, greetings.length - 1);
+     final multi = greetings.length > 1;
+     return StoopCollapsible(
+-      title: multi ? 'First message (${greetings.length})' : 'First message',
++      title: multi ? '开场消息（${greetings.length}）' : '开场消息',
+       child: Column(
+         crossAxisAlignment: CrossAxisAlignment.stretch,
+         children: [
+diff --git a/lib/ui/pages/repository/stoop_change_email_dialog.dart b/lib/ui/pages/repository/stoop_change_email_dialog.dart
+index 6ae248b..a7b092f 100644
+--- a/lib/ui/pages/repository/stoop_change_email_dialog.dart
++++ b/lib/ui/pages/repository/stoop_change_email_dialog.dart
+@@ -132,7 +132,7 @@ class _ChangeEmailDialogState extends State<_ChangeEmailDialog> {
+     final pending = user?.pendingEmail;
+     return AlertDialog(
+       backgroundColor: stoopCard2(context),
+-      title: Text('Change email', style: TextStyle(color: stoopCream(context))),
++      title: Text('更改邮箱', style: TextStyle(color: stoopCream(context))),
+       content: SizedBox(
+         width: 380,
+         child: Column(
+@@ -207,7 +207,7 @@ class _ChangeEmailDialogState extends State<_ChangeEmailDialog> {
+         ),
+         FilledButton(
+           onPressed: _busy ? null : _submit,
+-          child: const Text('Send confirmation'),
++          child: const Text('发送确认邮件'),
+         ),
+       ],
+     );
+diff --git a/lib/ui/pages/repository/stoop_creator_page.dart b/lib/ui/pages/repository/stoop_creator_page.dart
+index 92569d1..e45c172 100644
+--- a/lib/ui/pages/repository/stoop_creator_page.dart
++++ b/lib/ui/pages/repository/stoop_creator_page.dart
+@@ -174,7 +174,7 @@ class _StoopCreatorPageState extends State<StoopCreatorPage> {
+             child: stoopEmpty(
+               context,
+               glyph: '🏮',
+-              title: 'No published cards yet',
++              title: '还没有已发布的角色卡',
+             ),
+           )
+         else
+@@ -220,7 +220,7 @@ class _StoopCreatorPageState extends State<StoopCreatorPage> {
+                     child: const Text('关注中'),
+                   )
+                 : StoopAmberButton(
+-                    label: 'Follow',
++                    label: '关注',
+                     onPressed: _followBusy ? null : _toggleFollow,
+                     padding: const EdgeInsets.symmetric(
+                       horizontal: 18,
+@@ -234,7 +234,7 @@ class _StoopCreatorPageState extends State<StoopCreatorPage> {
+               displayName: p.displayName,
+             ),
+             icon: const Icon(Icons.link_rounded, size: 16),
+-            label: const Text('Share'),
++            label: const Text('分享'),
+             style: OutlinedButton.styleFrom(
+               foregroundColor: stoopCream2(context),
+               side: BorderSide(color: stoopBorderHi(context)),
+diff --git a/lib/ui/pages/repository/stoop_edit_profile_dialog.dart b/lib/ui/pages/repository/stoop_edit_profile_dialog.dart
+index 9914e29..bbffb23 100644
+--- a/lib/ui/pages/repository/stoop_edit_profile_dialog.dart
++++ b/lib/ui/pages/repository/stoop_edit_profile_dialog.dart
+@@ -112,7 +112,7 @@ class _EditProfileCardState extends State<_EditProfileCard> {
+       await auth.uploadAvatar(cropped, 'avatar.jpg');
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+-          const SnackBar(content: Text('Profile photo updated — it’s live.')),
++          const SnackBar(content: Text('个人头像已更新并发布。')),
+         );
+       }
+     } on BackporchApiException catch (e) {
+@@ -222,7 +222,7 @@ class _EditProfileCardState extends State<_EditProfileCard> {
+             mainAxisSize: MainAxisSize.min,
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+-              Text('Edit your profile', style: stoopDisplay(context, size: 19)),
++              Text('编辑个人资料', style: stoopDisplay(context, size: 19)),
+               const SizedBox(height: 2),
+               Text(
+                 'This is what visitors see on your public porch page.',
+@@ -346,7 +346,7 @@ class _EditProfileCardState extends State<_EditProfileCard> {
+                   ),
+                   const SizedBox(width: 10),
+                   StoopAmberButton(
+-                    label: 'Save profile',
++                    label: '保存个人资料',
+                     busy: _busy,
+                     onPressed: _busy ? null : _save,
+                     padding: const EdgeInsets.symmetric(
+diff --git a/lib/ui/pages/repository/stoop_home_view.dart b/lib/ui/pages/repository/stoop_home_view.dart
+index c0ccc0a..05fd7ad 100644
+--- a/lib/ui/pages/repository/stoop_home_view.dart
++++ b/lib/ui/pages/repository/stoop_home_view.dart
+@@ -114,7 +114,7 @@ class _StoopHomeViewState extends State<StoopHomeView> {
+     if (shared == true && mounted) {
+       ScaffoldMessenger.of(
+         context,
+-      ).showSnackBar(const SnackBar(content: Text('Submitted for review.')));
++      ).showSnackBar(const SnackBar(content: Text('已提交审核。')));
+       _load();
+     }
+   }
+@@ -154,7 +154,7 @@ class _StoopHomeViewState extends State<StoopHomeView> {
+             'Your cards',
+             hint: _mine.isEmpty ? null : '${_mine.length} shared',
+             trailing: StoopAmberButton(
+-              label: 'Share to The Stoop',
++              label: '分享到社区广场',
+               icon: Icons.upload_outlined,
+               onPressed: _startUpload,
+               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+@@ -231,7 +231,7 @@ class _StoopHomeViewState extends State<StoopHomeView> {
+       creator: creator,
+       actions: [
+         StoopAmberButton(
+-          label: 'Edit profile',
++          label: '编辑个人资料',
+           icon: Icons.edit_outlined,
+           onPressed: _editProfile,
+           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+@@ -243,7 +243,7 @@ class _StoopHomeViewState extends State<StoopHomeView> {
+             displayName: user.displayName,
+           ),
+           icon: const Icon(Icons.link_rounded, size: 16),
+-          label: const Text('Share'),
++          label: const Text('分享'),
+           style: OutlinedButton.styleFrom(
+             foregroundColor: stoopCream2(context),
+             side: BorderSide(color: stoopBorderHi(context)),
+diff --git a/lib/ui/pages/repository/stoop_inbox_bell.dart b/lib/ui/pages/repository/stoop_inbox_bell.dart
+index dbf0caf..5a50ec4 100644
+--- a/lib/ui/pages/repository/stoop_inbox_bell.dart
++++ b/lib/ui/pages/repository/stoop_inbox_bell.dart
+@@ -46,12 +46,12 @@ class _StoopInboxBellState extends State<StoopInboxBell> {
+       if (m.fromMod && mounted && !_inboxOpen) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+-            content: const Text('New message from a moderator'),
++            content: const Text('收到版主的新消息'),
+             // Without persist:false, Flutter keeps action snackbars up forever
+             // (persist defaults to `action != null`); this notice should fade
+             // on its own after the default duration.
+             persist: false,
+-            action: SnackBarAction(label: 'View', onPressed: _open),
++            action: SnackBarAction(label: '查看', onPressed: _open),
+           ),
+         );
+       }
+diff --git a/lib/ui/pages/repository/stoop_inbox_page.dart b/lib/ui/pages/repository/stoop_inbox_page.dart
+index 2fd8ae1..09f4532 100644
+--- a/lib/ui/pages/repository/stoop_inbox_page.dart
++++ b/lib/ui/pages/repository/stoop_inbox_page.dart
+@@ -191,7 +191,7 @@ class _StoopInboxPageState extends State<StoopInboxPage>
+       if (mounted) {
+         setState(() => _sending = false);
+         ScaffoldMessenger.of(context).showSnackBar(
+-          const SnackBar(content: Text('Couldn’t send. Try again.')),
++          const SnackBar(content: Text('发送失败，请重试。')),
+         );
+       }
+     }
+@@ -206,7 +206,7 @@ class _StoopInboxPageState extends State<StoopInboxPage>
+         foregroundColor: stoopCream(context),
+         elevation: 0,
+         shape: Border(bottom: BorderSide(color: stoopBorder(context))),
+-        title: Text('Inbox', style: stoopDisplay(context, size: 19)),
++        title: Text('收件箱', style: stoopDisplay(context, size: 19)),
+         bottom: TabBar(
+           controller: _tabs,
+           labelColor: stoopAmberText(context),
+@@ -245,7 +245,7 @@ class _StoopInboxPageState extends State<StoopInboxPage>
+       return stoopEmpty(
+         context,
+         glyph: '💬',
+-        title: 'No messages yet',
++        title: '暂无消息',
+         body:
+             'Questions about a review or the rules? The moderation team '
+             'reads this thread — you can write to them right here.',
+diff --git a/lib/ui/pages/repository/stoop_my_upload_tile.dart b/lib/ui/pages/repository/stoop_my_upload_tile.dart
+index 5d8f908..0f49a1c 100644
+--- a/lib/ui/pages/repository/stoop_my_upload_tile.dart
++++ b/lib/ui/pages/repository/stoop_my_upload_tile.dart
+@@ -107,7 +107,7 @@ class StoopMyUploadTile extends StatelessWidget {
+     );
+     if (updated == true && context.mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+-        const SnackBar(content: Text('Update submitted for review.')),
++        const SnackBar(content: Text('更新已提交审核。')),
+       );
+       onChanged();
+     }
+@@ -181,7 +181,7 @@ class StoopMyUploadTile extends StatelessWidget {
+     );
+     if (updated == true && context.mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+-        const SnackBar(content: Text('Update submitted for review.')),
++        const SnackBar(content: Text('更新已提交审核。')),
+       );
+       onChanged();
+     }
+@@ -215,7 +215,7 @@ class StoopMyUploadTile extends StatelessWidget {
+               backgroundColor: AppColors.stoopEmber,
+             ),
+             onPressed: () => Navigator.pop(ctx, true),
+-            child: const Text('Delete from The Stoop'),
++            child: const Text('从社区广场删除'),
+           ),
+         ],
+       ),
+@@ -232,7 +232,7 @@ class StoopMyUploadTile extends StatelessWidget {
+       onChanged();
+     } catch (_) {
+       messenger.showSnackBar(
+-        const SnackBar(content: Text('Couldn’t delete that. Try again.')),
++        const SnackBar(content: Text('删除失败，请重试。')),
+       );
+     }
+   }
+diff --git a/lib/ui/pages/repository/stoop_notifications_tab.dart b/lib/ui/pages/repository/stoop_notifications_tab.dart
+index 024494e..5e77dbd 100644
+--- a/lib/ui/pages/repository/stoop_notifications_tab.dart
++++ b/lib/ui/pages/repository/stoop_notifications_tab.dart
+@@ -28,7 +28,7 @@ class StoopNotificationsTab extends StatelessWidget {
+       return stoopEmpty(
+         context,
+         glyph: '📣',
+-        title: 'No notifications yet',
++        title: '暂无通知',
+         body:
+             'Approvals and review notes for your shared characters land '
+             'here automatically.',
+diff --git a/lib/ui/pages/repository/stoop_policy_gate.dart b/lib/ui/pages/repository/stoop_policy_gate.dart
+index d650642..54a4a00 100644
+--- a/lib/ui/pages/repository/stoop_policy_gate.dart
++++ b/lib/ui/pages/repository/stoop_policy_gate.dart
+@@ -228,11 +228,11 @@ class _StoopPolicyGateState extends State<StoopPolicyGate> {
+                     style: TextButton.styleFrom(
+                       foregroundColor: stoopMute(context),
+                     ),
+-                    child: const Text('Decline & sign out'),
++                    child: const Text('拒绝并退出登录'),
+                   ),
+                   const Spacer(),
+                   StoopAmberButton(
+-                    label: 'Agree & continue',
++                    label: '同意并继续',
+                     busy: _busy,
+                     onPressed: (_agreed && !_busy) ? _accept : null,
+                     padding: const EdgeInsets.symmetric(
+diff --git a/lib/ui/pages/repository/stoop_report.dart b/lib/ui/pages/repository/stoop_report.dart
+index e12805c..01a70fb 100644
+--- a/lib/ui/pages/repository/stoop_report.dart
++++ b/lib/ui/pages/repository/stoop_report.dart
+@@ -41,7 +41,7 @@ class StoopReportControl extends StatelessWidget {
+             foregroundColor: ember,
+             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+           ),
+-          child: const Text('Confirm email to report'),
++          child: const Text('请验证邮箱后再举报'),
+         ),
+       );
+     }
+@@ -51,7 +51,7 @@ class StoopReportControl extends StatelessWidget {
+       child: TextButton.icon(
+         onPressed: onReport,
+         icon: const Icon(Icons.flag_rounded, size: 18),
+-        label: const Text('Report Character'),
++        label: const Text('举报角色'),
+         style: TextButton.styleFrom(
+           foregroundColor: ember,
+           backgroundColor: AppColors.stoopEmber.withValues(alpha: 0.1),
+@@ -165,7 +165,7 @@ class _StoopReportDialogState extends State<StoopReportDialog> {
+           child: const Text('取消'),
+         ),
+         StoopAmberButton(
+-          label: 'Submit report',
++          label: '提交举报',
+           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+           onPressed: _submit,
+         ),
+diff --git a/lib/ui/pages/repository/stoop_twofa_sheet.dart b/lib/ui/pages/repository/stoop_twofa_sheet.dart
+index 25b82f8..c12ea0f 100644
+--- a/lib/ui/pages/repository/stoop_twofa_sheet.dart
++++ b/lib/ui/pages/repository/stoop_twofa_sheet.dart
+@@ -180,7 +180,7 @@ class _TwoFactorSheetState extends State<_TwoFactorSheet> {
+           style: FilledButton.styleFrom(
+             padding: const EdgeInsets.symmetric(vertical: 14),
+           ),
+-          child: _busy ? _spinner() : const Text('Turn on 2FA'),
++          child: _busy ? _spinner() : const Text('启用双重验证'),
+         ),
+       ],
+     ];
+@@ -204,7 +204,7 @@ class _TwoFactorSheetState extends State<_TwoFactorSheet> {
+           backgroundColor: AppColors.stoopEmber,
+           padding: const EdgeInsets.symmetric(vertical: 14),
+         ),
+-        child: _busy ? _spinner() : const Text('Turn off 2FA'),
++        child: _busy ? _spinner() : const Text('关闭双重验证'),
+       ),
+     ];
+   }
+@@ -252,7 +252,7 @@ class _TwoFactorSheetState extends State<_TwoFactorSheet> {
+             Clipboard.setData(ClipboardData(text: secret));
+             ScaffoldMessenger.of(
+               context,
+-            ).showSnackBar(const SnackBar(content: Text('Setup key copied.')));
++            ).showSnackBar(const SnackBar(content: Text('设置密钥已复制。')));
+           },
+         ),
+       ],
+diff --git a/lib/ui/pages/repository/stoop_verify_banner.dart b/lib/ui/pages/repository/stoop_verify_banner.dart
+index ff7ee76..e155d23 100644
+--- a/lib/ui/pages/repository/stoop_verify_banner.dart
++++ b/lib/ui/pages/repository/stoop_verify_banner.dart
+@@ -136,7 +136,7 @@ class _StoopVerifyBannerState extends State<StoopVerifyBanner> {
+                             vertical: 10,
+                           ),
+                         ),
+-                        child: Text(_sending ? 'Sending…' : 'Send it again'),
++                        child: Text(_sending ? '正在发送……' : '重新发送'),
+                       ),
+                     ],
+                   ),
+diff --git a/lib/ui/pages/story_dashboard/story_studio_actions.dart b/lib/ui/pages/story_dashboard/story_studio_actions.dart
+index 2f82d9a..6c3d99a 100644
+--- a/lib/ui/pages/story_dashboard/story_studio_actions.dart
++++ b/lib/ui/pages/story_dashboard/story_studio_actions.dart
+@@ -74,7 +74,7 @@ class StoryStudioActions {
+         .length;
+     final ok = await showStoryConfirm(
+       context,
+-      title: 'Regenerate the bible?',
++      title: '重新生成故事设定集？',
+       body:
+           'This rewrites the cast, themes, threads and lore from your idea. '
+           '${written > 0 ? 'Your $written written scene${written == 1 ? '' : 's'} stay but may no longer match. ' : ''}'
+@@ -92,7 +92,7 @@ class StoryStudioActions {
+         .length;
+     final ok = await showStoryConfirm(
+       context,
+-      title: 'Rewrite the arc?',
++      title: '重写故事弧线？',
+       body:
+           'This rewrites the inciting incident, themes, twists and threads '
+           'together, to fit your world and cast. The world, cast and '
+@@ -112,7 +112,7 @@ class StoryStudioActions {
+   Future<void> redistill(StoryProject project) async {
+     final ok = await showStoryConfirm(
+       context,
+-      title: 'Redistill the chat?',
++      title: '重新提炼聊天内容？',
+       body:
+           'The timeline is rebuilt from the chat. The bible is not changed; '
+           'regenerate it afterwards if the timeline moved.',
+@@ -143,7 +143,7 @@ class StoryStudioActions {
+       if (!context.mounted) return;
+       if (!wrote) {
+         ScaffoldMessenger.of(context).showSnackBar(
+-          const SnackBar(content: Text('The whole story is written.')),
++          const SnackBar(content: Text('整个故事已经写完。')),
+         );
+       }
+       onChanged();
+@@ -160,7 +160,7 @@ class StoryStudioActions {
+     final left = total - written;
+     final ok = await showStoryConfirm(
+       context,
+-      title: 'Write the whole story?',
++      title: '要写完整个故事吗？',
+       body: total == 0
+           ? 'Autopilot builds the acts, outlines every sequence and writes '
+                 'every scene, one after another'
+diff --git a/lib/ui/pages/story_dashboard/studio_overview_cards.dart b/lib/ui/pages/story_dashboard/studio_overview_cards.dart
+index 681d6a3..50e585d 100644
+--- a/lib/ui/pages/story_dashboard/studio_overview_cards.dart
++++ b/lib/ui/pages/story_dashboard/studio_overview_cards.dart
+@@ -125,7 +125,7 @@ class StudioChatCard extends StatelessWidget {
+             'View timeline',
+             onPressed: () => showStoryDialog<void>(
+               context,
+-              title: 'Timeline',
++              title: '时间线',
+               width: 560,
+               body: Text(
+                 project.distilledTimeline,
+diff --git a/lib/ui/pages/story_structure_page.dart b/lib/ui/pages/story_structure_page.dart
+index bc4f245..018543d 100644
+--- a/lib/ui/pages/story_structure_page.dart
++++ b/lib/ui/pages/story_structure_page.dart
+@@ -66,7 +66,7 @@ class _StoryStructurePageState extends State<StoryStructurePage> {
+               const SizedBox(height: 12),
+               if (project.acts.isEmpty)
+                 StoryEmptyState(
+-                  title: 'No structure yet',
++                  title: '还没有故事结构',
+                   detail: project.cast.isEmpty
+                       ? 'Build the bible first; the acts follow from it.'
+                       : 'The bible is ready. Build the acts and the first '
+@@ -171,7 +171,7 @@ class _StoryStructurePageState extends State<StoryStructurePage> {
+     final wrote = await pipeline.writeNextScene(p);
+     if (!wrote && mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+-        const SnackBar(content: Text('The whole story is written.')),
++        const SnackBar(content: Text('整个故事已经写完。')),
+       );
+     }
+   });
+@@ -184,7 +184,7 @@ class _StoryStructurePageState extends State<StoryStructurePage> {
+     final left = total - written;
+     final ok = await showStoryConfirm(
+       context,
+-      title: 'Write the whole story?',
++      title: '要写完整个故事吗？',
+       body:
+           'Autopilot writes the ${total == 0 ? 'scenes' : '$left scene${left == 1 ? '' : 's'} that ${left == 1 ? 'is' : 'are'}'} left, '
+           'one after another${p.reviewEnabled ? ', with reviews on' : ''}. It '
+diff --git a/lib/ui/pages/story_writer/story_writer_dialogs.dart b/lib/ui/pages/story_writer/story_writer_dialogs.dart
+index cb50420..a81cc7b 100644
+--- a/lib/ui/pages/story_writer/story_writer_dialogs.dart
++++ b/lib/ui/pages/story_writer/story_writer_dialogs.dart
+@@ -29,7 +29,7 @@ Future<SceneRef?> showStoryScenePicker(
+   StoryProject project,
+ ) => showStoryDialog<SceneRef>(
+   context,
+-  title: 'Go to scene',
++  title: '跳转到场景',
+   width: 460,
+   body: Column(
+     mainAxisSize: MainAxisSize.min,
+@@ -172,7 +172,7 @@ Future<String?> showStoryLensPicker(
+   String current,
+ ) => showStoryDialog<String>(
+   context,
+-  title: 'Writing lens for this scene',
++  title: '本场景的写作视角',
+   width: 480,
+   body: Column(
+     mainAxisSize: MainAxisSize.min,
+@@ -240,7 +240,7 @@ Future<StoryLens?> showStoryCustomLensDialog(BuildContext context) async {
+   final how = TextEditingController();
+   final ok = await showStoryDialog<bool>(
+     context,
+-    title: 'Your own lens',
++    title: '自定义写作视角',
+     width: 460,
+     body: Column(
+       mainAxisSize: MainAxisSize.min,
+diff --git a/lib/ui/pages/user_persona/persona_edit_form.dart b/lib/ui/pages/user_persona/persona_edit_form.dart
+index d561c6b..d6d481a 100644
+--- a/lib/ui/pages/user_persona/persona_edit_form.dart
++++ b/lib/ui/pages/user_persona/persona_edit_form.dart
+@@ -143,7 +143,7 @@ class PersonaEditForm extends StatelessWidget {
+                           _buildFormField(
+                             context: context,
+                             controller: titleController,
+-                            label: 'Title',
++                            label: '标题',
+                             hint:
+                                 'Label to distinguish this persona (optional)',
+                           ),
+@@ -176,7 +176,7 @@ class PersonaEditForm extends StatelessWidget {
+                 _buildExpandableFormField(
+                   context: context,
+                   controller: personaController,
+-                  label: 'Persona Text (injected into AI context)',
++                  label: '角色描述（将注入 AI 上下文）',
+                   hint:
+                       'Detailed persona info the AI will know about you — '
+                       'appearance, traits, background, preferences...',
+@@ -201,7 +201,7 @@ class PersonaEditForm extends StatelessWidget {
+                     ElevatedButton.icon(
+                       onPressed: onSave,
+                       icon: const Icon(Icons.save, size: 18),
+-                      label: const Text('Save Persona'),
++                      label: const Text('保存身份设定'),
+                       style: ElevatedButton.styleFrom(
+                         backgroundColor: AppColors.porchAmberOf(context),
+                         foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/pages/user_persona/persona_list_cards.dart b/lib/ui/pages/user_persona/persona_list_cards.dart
+index 413a98a..dbb65b7 100644
+--- a/lib/ui/pages/user_persona/persona_list_cards.dart
++++ b/lib/ui/pages/user_persona/persona_list_cards.dart
+@@ -323,7 +323,7 @@ class PersonaEmptyState extends StatelessWidget {
+               ElevatedButton.icon(
+                 onPressed: onCreate,
+                 icon: const Icon(Icons.add, size: 18),
+-                label: const Text('Create Persona'),
++                label: const Text('创建身份设定'),
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: AppColors.porchAmberOf(context),
+                   foregroundColor: AppColors.onAccentOf(context),
+diff --git a/lib/ui/pages/user_persona/persona_text_expand_dialog.dart b/lib/ui/pages/user_persona/persona_text_expand_dialog.dart
+index 4744115..96db217 100644
+--- a/lib/ui/pages/user_persona/persona_text_expand_dialog.dart
++++ b/lib/ui/pages/user_persona/persona_text_expand_dialog.dart
+@@ -76,7 +76,7 @@ void showPersonaTextExpandDialog(
+                   ),
+                   maxLines: null,
+                   decoration: InputDecoration(
+-                    hintText: 'Enter detailed persona info...',
++                    hintText: '输入详细的身份设定信息……',
+                     hintStyle: TextStyle(
+                       color: AppColors.textTertiary(dialogContext),
+                     ),
+diff --git a/lib/ui/pages/world_management/world_basics_section.dart b/lib/ui/pages/world_management/world_basics_section.dart
+index f2205fa..e7fbf84 100644
+--- a/lib/ui/pages/world_management/world_basics_section.dart
++++ b/lib/ui/pages/world_management/world_basics_section.dart
+@@ -188,7 +188,7 @@ class WorldBasicsSection extends StatelessWidget {
+               labelText: 'World Name',
+               errorText: draft.nameError,
+               labelStyle: TextStyle(color: AppColors.textSecondary(context)),
+-              hintText: 'Enter a name for this world',
++              hintText: '输入世界名称',
+               hintStyle: TextStyle(color: AppColors.textTertiary(context)),
+               filled: true,
+               fillColor: AppColors.surfaceContainerOf(context),
+@@ -259,7 +259,7 @@ class WorldBasicsSection extends StatelessWidget {
+           _draftSwitch(
+             context,
+             title: '将描述注入故事',
+-            subtitle: 'Place prose reaches the model each turn',
++            subtitle: '地点描述会在每轮对话中发送给模型',
+             value: draft.injectDescription,
+             onChanged: (v) => setDialogState(() => draft.injectDescription = v),
+           ),
+diff --git a/lib/ui/pages/world_management/world_management_header.dart b/lib/ui/pages/world_management/world_management_header.dart
+index 25578f0..50b4ea0 100644
+--- a/lib/ui/pages/world_management/world_management_header.dart
++++ b/lib/ui/pages/world_management/world_management_header.dart
+@@ -150,7 +150,7 @@ class WorldManagementHeroHeader extends StatelessWidget {
+                   const SizedBox(height: 8),
+                   OutlinedButton.icon(
+                     icon: const Icon(Icons.menu_book_outlined, size: 18),
+-                    label: const Text('From Wiki'),
++                    label: const Text('从维基导入'),
+                     style: OutlinedButton.styleFrom(
+                       foregroundColor: AppColors.formAccentOf(context),
+                       side: BorderSide(color: AppColors.formAccentOf(context)),
+@@ -255,7 +255,7 @@ class WorldManagementStatsSection extends StatelessWidget {
+                   .expand((w) => w.lorebook.entries)
+                   .length
+                   .toString(),
+-              label: 'Lore Entries',
++              label: '世界设定条目',
+               color: AppColors.formAccentOf(context),
+             ),
+             _WorldStatItem(
+@@ -269,7 +269,7 @@ class WorldManagementStatsSection extends StatelessWidget {
+                   )
+                   .length
+                   .toString(),
+-              label: 'Custom climates',
++              label: '自定义气候',
+               color: AppColors.formAccentOf(context),
+             ),
+           ],
+diff --git a/lib/ui/pages/worlds/climate_editor_chrome.dart b/lib/ui/pages/worlds/climate_editor_chrome.dart
+index fa63c90..9ccd9d2 100644
+--- a/lib/ui/pages/worlds/climate_editor_chrome.dart
++++ b/lib/ui/pages/worlds/climate_editor_chrome.dart
+@@ -81,7 +81,7 @@ class ClimateEditorHeader extends StatelessWidget {
+                   if (templateId == 'custom')
+                     const DropdownMenuItem(
+                       value: 'custom',
+-                      child: Text('Current custom'),
++                      child: Text('当前自定义项'),
+                     ),
+                   for (final b in Biome.builtIns)
+                     DropdownMenuItem(
+@@ -153,7 +153,7 @@ class ClimateEditorFooter extends StatelessWidget {
+               ),
+             ),
+             onPressed: canSave ? onSave : null,
+-            child: const Text('Save climate'),
++            child: const Text('保存气候'),
+           ),
+         ],
+       ),
+diff --git a/lib/ui/pages/worlds/climate_editor_right.dart b/lib/ui/pages/worlds/climate_editor_right.dart
+index 3597166..f06b079 100644
+--- a/lib/ui/pages/worlds/climate_editor_right.dart
++++ b/lib/ui/pages/worlds/climate_editor_right.dart
+@@ -68,7 +68,7 @@ class ClimateEditorRightColumn extends StatelessWidget {
+                 ),
+               ),
+               onPressed: onRefresh,
+-              child: const Text('Refresh preview'),
++              child: const Text('刷新预览'),
+             ),
+           ],
+         ),
+diff --git a/lib/ui/pages/worlds/climate_emoji_picker.dart b/lib/ui/pages/worlds/climate_emoji_picker.dart
+index 6486253..e34be8b 100644
+--- a/lib/ui/pages/worlds/climate_emoji_picker.dart
++++ b/lib/ui/pages/worlds/climate_emoji_picker.dart
+@@ -156,7 +156,7 @@ class _EmojiPickerDialogState extends State<_EmojiPickerDialog> {
+               decoration: InputDecoration(
+                 isDense: true,
+                 counterText: '',
+-                hintText: 'or type any emoji…',
++                hintText: '或输入任意表情符号……',
+                 hintStyle: TextStyle(
+                   fontSize: 12,
+                   color: AppColors.textTertiary(context),
+diff --git a/lib/ui/pages/worlds/climate_season_strip.dart b/lib/ui/pages/worlds/climate_season_strip.dart
+index 2f7b7c8..4059a8f 100644
+--- a/lib/ui/pages/worlds/climate_season_strip.dart
++++ b/lib/ui/pages/worlds/climate_season_strip.dart
+@@ -76,7 +76,7 @@ class ClimateSeasonStrip extends StatelessWidget {
+             height: 88,
+             child: OutlinedButton(
+               onPressed: onAdd,
+-              child: const Text('+ Season'),
++              child: const Text('+ 季节'),
+             ),
+           ),
+       ],
+diff --git a/lib/ui/pages/worlds/place_traits_editor.dart b/lib/ui/pages/worlds/place_traits_editor.dart
+index cd1e384..22d3b89 100644
+--- a/lib/ui/pages/worlds/place_traits_editor.dart
++++ b/lib/ui/pages/worlds/place_traits_editor.dart
+@@ -85,7 +85,7 @@ class PlaceTraitsEditor extends StatelessWidget {
+             Expanded(
+               child: _traitDropdown<WorldAtmosphere>(
+                 context,
+-                label: 'Atmosphere',
++                label: '氛围',
+                 value: atmosphere,
+                 labels: _atmosphereLabels,
+                 onChanged: onAtmosphere,
+@@ -95,7 +95,7 @@ class PlaceTraitsEditor extends StatelessWidget {
+             Expanded(
+               child: _traitDropdown<WorldGravity>(
+                 context,
+-                label: 'Gravity',
++                label: '重力',
+                 value: gravity,
+                 labels: _gravityLabels,
+                 onChanged: onGravity,
+diff --git a/web_ui/src/components/DirectorTools.tsx b/web_ui/src/components/DirectorTools.tsx
+index 532734f..189d63b 100644
+--- a/web_ui/src/components/DirectorTools.tsx
++++ b/web_ui/src/components/DirectorTools.tsx
+@@ -91,8 +91,8 @@ export function DirectorTools({
+           <input
+             className="director-goal-input"
+             value={goalDraft}
+-            placeholder="Scene goal: where should the scene go?"
+-            aria-label="Scene goal"
++            placeholder="场景目标：接下来应该如何发展？"
++            aria-label="场景目标"
+             onChange={(e) => setGoalDraft(e.target.value)}
+           />
+           <button type="submit" className="ghost small" disabled={!goalDraft.trim()}>
+@@ -117,7 +117,7 @@ export function DirectorTools({
+         <span className="director-label">自动聊天运行</span>
+         <select
+           value={TURN_BUDGET_CHOICES.includes(turnBudget) ? turnBudget : 0}
+-          aria-label="Auto-chat run length"
++          aria-label="自动聊天轮数"
+           onChange={(e) => onTurnBudget(Number(e.target.value))}
+         >
+           {TURN_BUDGET_CHOICES.map((n) => (
+diff --git a/web_ui/src/components/FindBar.tsx b/web_ui/src/components/FindBar.tsx
+index f6c9187..9369aac 100644
+--- a/web_ui/src/components/FindBar.tsx
++++ b/web_ui/src/components/FindBar.tsx
+@@ -66,7 +66,7 @@ export function FindBar(props: FindBarProps) {
+           type="button"
+           onMouseDown={keepFocus}
+           className={props.caseOn ? 'find-toggle on' : 'find-toggle'}
+-          title="Match case"
++          title="区分大小写"
+           onClick={props.onToggleCase}
+         >
+           Aa
+@@ -75,7 +75,7 @@ export function FindBar(props: FindBarProps) {
+           type="button"
+           onMouseDown={keepFocus}
+           className={props.regexOn ? 'find-toggle on' : 'find-toggle'}
+-          title="Regular expression"
++          title="正则表达式"
+           onClick={props.onToggleRegex}
+         >
+           .*
+@@ -87,7 +87,7 @@ export function FindBar(props: FindBarProps) {
+           type="button"
+           onMouseDown={keepFocus}
+           className="find-btn"
+-          title="Previous (⇧↵)"
++          title="上一个（⇧↵）"
+           onClick={() => props.onStep(-1)}
+         >
+           ↑
+@@ -96,7 +96,7 @@ export function FindBar(props: FindBarProps) {
+           type="button"
+           onMouseDown={keepFocus}
+           className="find-btn"
+-          title="Next (↵)"
++          title="下一个（↵）"
+           onClick={() => props.onStep(1)}
+         >
+           ↓
+@@ -105,7 +105,7 @@ export function FindBar(props: FindBarProps) {
+           type="button"
+           onMouseDown={keepFocus}
+           className="find-btn"
+-          title="Close (Esc)"
++          title="关闭（Esc）"
+           onClick={props.onClose}
+         >
+           ✕
+diff --git a/web_ui/src/components/ImportLorebookWizard.tsx b/web_ui/src/components/ImportLorebookWizard.tsx
+index 663ad6e..149f859 100644
+--- a/web_ui/src/components/ImportLorebookWizard.tsx
++++ b/web_ui/src/components/ImportLorebookWizard.tsx
+@@ -199,7 +199,7 @@ export function ImportLorebookWizard({
+                       onChange={(e) => setWorldName(e.target.value)}
+                     />
+                     <input
+-                      placeholder="Description (optional)"
++                      placeholder="描述（可选）"
+                       value={worldDesc}
+                       onChange={(e) => setWorldDesc(e.target.value)}
+                     />
+diff --git a/web_ui/src/components/JournalPanel.tsx b/web_ui/src/components/JournalPanel.tsx
+index 49f227a..ded5c02 100644
+--- a/web_ui/src/components/JournalPanel.tsx
++++ b/web_ui/src/components/JournalPanel.tsx
+@@ -70,7 +70,7 @@ function CardEditor({
+           rows={3}
+           autoFocus
+           maxLength={400}
+-          placeholder='One memory in their words — "I left my keys on the hall table."'
++          placeholder='用角色自己的话记录一段记忆——“我把钥匙落在玄关桌上了。”'
+           value={text}
+           onChange={(e) => setText(e.target.value)}
+         />
+@@ -165,14 +165,14 @@ export function JournalPanel({
+         </button>
+         <button
+           className="icon-btn"
+-          title="Edit wording"
++          title="编辑措辞"
+           onClick={() => setEditor({ mode: 'edit', card: c })}
+         >
+           ✏️
+         </button>
+         <button
+           className="icon-btn"
+-          title="Retire this memory"
++          title="归档这段记忆"
+           onClick={() =>
+             window.confirm('Retire this memory from the journal? The conversation is untouched.') &&
+             act('retire', { cardId: c.id })
+@@ -229,7 +229,7 @@ export function JournalPanel({
+       )}
+       {editor?.mode === 'edit' && (
+         <CardEditor
+-          title="Edit memory"
++          title="编辑记忆"
+           initialText={editor.card.content}
+           initialCategory={editor.card.category}
+           initialFeeling={editor.card.feeling ?? ''}
+diff --git a/web_ui/src/components/ObjectivesPanel.tsx b/web_ui/src/components/ObjectivesPanel.tsx
+index aab1d43..039a127 100644
+--- a/web_ui/src/components/ObjectivesPanel.tsx
++++ b/web_ui/src/components/ObjectivesPanel.tsx
+@@ -196,7 +196,7 @@ export function ObjectivesPanel({
+             </div>
+             <div className="tool-row">
+               <input
+-                placeholder="Add a task manually…"
++                placeholder="手动添加任务……"
+                 value={taskDraft}
+                 onChange={(e) => setTaskDraft(e.target.value)}
+                 onKeyDown={(e) => {
+@@ -211,7 +211,7 @@ export function ObjectivesPanel({
+         ) : (
+           <div className="tool-row">
+             <input
+-              placeholder="Set a goal for this character…"
++              placeholder="为这个角色设定目标……"
+               value={goal}
+               onChange={(e) => setGoal(e.target.value)}
+             />
+diff --git a/web_ui/src/components/PromptSource.tsx b/web_ui/src/components/PromptSource.tsx
+index 184d61b..5e235be 100644
+--- a/web_ui/src/components/PromptSource.tsx
++++ b/web_ui/src/components/PromptSource.tsx
+@@ -28,8 +28,8 @@ export interface PromptSourceState {
+ 
+ export const PROMPT_PRESETS: { wire: PromptPresetWire; label: string; sub: string }[] = [
+   { wire: 'card+amend', label: 'Card + my amendments', sub: 'Recommended · what happens today' },
+-  { wire: 'card', label: 'Card only', sub: "Author's prompt, nothing added" },
+-  { wire: 'user', label: 'My prompt', sub: "Replaces the card's prompt" },
++  { wire: 'card', label: '仅角色卡', sub: "使用作者的提示词，不额外添加内容" },
++  { wire: 'user', label: '我的提示词', sub: "替代角色卡中的提示词" },
+ ];
+ 
+ /** The preset a stored pair reads as, the same mapping as the desktop row. */
+@@ -142,8 +142,8 @@ export function PromptSourcePickerModal({ picker, onDone, onFailed }: {
+             ))}
+           </div>
+           <div className="prompt-picker-panes">
+-            <PromptPane title="Character card prompt" text={picker.cardPrompt} isBase={usesCard} />
+-            <PromptPane title="Your prompt (Settings → General)" text={picker.userPrompt} isBase={!usesCard} />
++            <PromptPane title="角色卡提示词" text={picker.cardPrompt} isBase={usesCard} />
++            <PromptPane title="你的提示词（设置 → 常规）" text={picker.userPrompt} isBase={!usesCard} />
+           </div>
+           <div className="prompt-picker-preview">
+             <div className="prompt-picker-preview-head">
+diff --git a/web_ui/src/components/ReadingSizeSettings.tsx b/web_ui/src/components/ReadingSizeSettings.tsx
+index 4877fbf..c65d3bd 100644
+--- a/web_ui/src/components/ReadingSizeSettings.tsx
++++ b/web_ui/src/components/ReadingSizeSettings.tsx
+@@ -35,7 +35,7 @@ export function ReadingSizeSlider() {
+         aria-valuemin={READING_SIZE_MIN}
+         aria-valuemax={READING_SIZE_MAX}
+         aria-valuenow={scale}
+-        aria-label="Reading size"
++        aria-label="阅读字号"
+       />
+       <span className="reading-size-value">{scale.toFixed(1)}×</span>
+     </label>
+diff --git a/web_ui/src/components/models/ModelDownloads.tsx b/web_ui/src/components/models/ModelDownloads.tsx
+index 9a05da6..a608ae4 100644
+--- a/web_ui/src/components/models/ModelDownloads.tsx
++++ b/web_ui/src/components/models/ModelDownloads.tsx
+@@ -117,7 +117,7 @@ export function ModelDownloads({
+ 
+       <div className="tool-row">
+         <input
+-          placeholder="Search GGUF models…"
++          placeholder="搜索 GGUF 模型……"
+           value={query}
+           onChange={(e) => setQuery(e.target.value)}
+           onKeyDown={(e) => e.key === 'Enter' && search(query)}
+diff --git a/web_ui/src/components/stoop/StoopCardTile.tsx b/web_ui/src/components/stoop/StoopCardTile.tsx
+index 7ad0a67..6118bdd 100644
+--- a/web_ui/src/components/stoop/StoopCardTile.tsx
++++ b/web_ui/src/components/stoop/StoopCardTile.tsx
+@@ -87,8 +87,8 @@ export function StoopCardTile({ card }: { card: StoopCard }) {
+             <StoopBadges card={card} />
+           </div>
+           <div className="stoop-tile-meta">
+-            <span title="Score">▲ {card.score}</span>
+-            <span title="Downloads">⬇ {card.downloadCount}</span>
++            <span title="评分">▲ {card.score}</span>
++            <span title="下载次数">⬇ {card.downloadCount}</span>
+             {card.creator && (
+               <span className="muted">
+                 {card.creator.displayName}
+diff --git a/web_ui/src/pages/ChatPage.tsx b/web_ui/src/pages/ChatPage.tsx
+index aa0f615..4c1104f 100644
+--- a/web_ui/src/pages/ChatPage.tsx
++++ b/web_ui/src/pages/ChatPage.tsx
+@@ -332,7 +332,7 @@ export function ChatPage() {
+             </div>
+             <button
+               className="absence-banner-close"
+-              aria-label="Dismiss"
++              aria-label="关闭"
+               onClick={() =>
+                 setAbsenceDismissed((prev) => new Set(prev).add(state.sessionId!))
+               }
+diff --git a/web_ui/src/pages/StoriesPage.tsx b/web_ui/src/pages/StoriesPage.tsx
+index 841a786..94ca192 100644
+--- a/web_ui/src/pages/StoriesPage.tsx
++++ b/web_ui/src/pages/StoriesPage.tsx
+@@ -184,7 +184,7 @@ export function StoriesPage() {
+         </Dialog>
+       )}
+       {deleting && (
+-        <ConfirmDialog destructive confirmLabel="Delete" title={`Delete ${deleting.title}?`}
++        <ConfirmDialog destructive confirmLabel="删除" title={`确定删除 ${deleting.title} 吗？`}
+           body={words > 0
+             ? `${groupThousands(words)} words, its bible and its run log will be removed. This cannot be undone.`
+             : 'Its setup and bible will be removed. This cannot be undone.'}
+diff --git a/web_ui/src/pages/StoryCastPage.tsx b/web_ui/src/pages/StoryCastPage.tsx
+index 7ff6267..6dc91c2 100644
+--- a/web_ui/src/pages/StoryCastPage.tsx
++++ b/web_ui/src/pages/StoryCastPage.tsx
+@@ -83,7 +83,7 @@ export function StoryCastPage() {
+       {failure && <p className="s-error">{failure}</p>}
+ 
+       {count === 0 ? (
+-        <EmptyState title="No cast yet" detail="The story bible creates it, or add someone yourself." testid="cast-empty" />
++        <EmptyState title="还没有角色阵容" detail="故事设定集会自动创建角色，也可以手动添加。" testid="cast-empty" />
+       ) : (
+         <div className="s-over-cols">
+           {p.cast.map((m, i) => (
+diff --git a/web_ui/src/pages/StoryDirectorPage.tsx b/web_ui/src/pages/StoryDirectorPage.tsx
+index 83aa77f..aa73111 100644
+--- a/web_ui/src/pages/StoryDirectorPage.tsx
++++ b/web_ui/src/pages/StoryDirectorPage.tsx
+@@ -133,7 +133,7 @@ export function StoryDirectorPage() {
+       {notice && <p className="s-muted s-small" role="status">{notice}</p>}
+ 
+       {refining && (
+-        <FieldsDialog title="Refine the plan" wide confirmLabel="Revise plan" required="refinement"
++        <FieldsDialog title="完善计划" wide confirmLabel="修改计划" required="refinement"
+           note={<div className="body">Say what to change about the plan, e.g. “keep him sympathetic” or “do it in Sequence 4 instead”.</div>}
+           fields={[{ key: 'refinement', hint: 'Your note', multiline: true, rows: 3, testid: 'director-refinement' }]}
+           onSubmit={(values) => revise(values.refinement)} onCancel={() => setRefining(false)} />
+diff --git a/web_ui/src/pages/StoryRelationshipsPage.tsx b/web_ui/src/pages/StoryRelationshipsPage.tsx
+index ea9ee6a..4385e85 100644
+--- a/web_ui/src/pages/StoryRelationshipsPage.tsx
++++ b/web_ui/src/pages/StoryRelationshipsPage.tsx
+@@ -67,7 +67,7 @@ export function StoryRelationshipsPage() {
+       </div>
+ 
+       {names.length < 2 || rels.length === 0 ? (
+-        <EmptyState testid="rel-empty" title="No relationships yet" detail={p.engine_mode === 'studio'
++        <EmptyState testid="rel-empty" title="还没有关系记录" detail={p.engine_mode === 'studio'
+           ? 'Studio records who feels what about whom after every scene. Write a scene, or add a pair yourself.'
+           : 'The Quick engine does not track relationships. Switch the story to Studio under Setup, or add a pair yourself.'} />
+       ) : narrow ? (
+diff --git a/web_ui/src/pages/StoryWriterPage.tsx b/web_ui/src/pages/StoryWriterPage.tsx
+index 4a0f442..8aafbfd 100644
+--- a/web_ui/src/pages/StoryWriterPage.tsx
++++ b/web_ui/src/pages/StoryWriterPage.tsx
+@@ -221,7 +221,7 @@ export function StoryWriterPage() {
+       {open?.kind === 'customLens' && <CustomLensDialog onSave={saveLens} onCancel={() => setOpen(null)} />}
+       {open?.kind === 'phrases' && <PhrasesDialog own={own} auto={auto} onSave={savePhrases} onCancel={() => setOpen(null)} />}
+       {open?.kind === 'note' && (
+-        <FieldsDialog title={`Rewrite beat ${open.beat + 1} with a note`} wide confirmLabel="Rewrite"
++        <FieldsDialog title={`添加备注并重写第 ${open.beat + 1} 个节拍`} wide confirmLabel="Rewrite"
+           fields={[{
+             key: 'note', hint: 'What should change? e.g. slower, let Joss speak first, less smoke',
+             multiline: true, rows: 3, testid: 'story-note',
+diff --git a/web_ui/src/pages/WorldsPage.tsx b/web_ui/src/pages/WorldsPage.tsx
+index 9c44916..3f539a0 100644
+--- a/web_ui/src/pages/WorldsPage.tsx
++++ b/web_ui/src/pages/WorldsPage.tsx
+@@ -375,7 +375,7 @@ export function WorldsPage() {
+               rows={3}
+               value={edit.description}
+               onChange={(e) => setEdit({ ...edit, description: e.target.value })}
+-              placeholder="What it feels like to be here — can reach the story when inject is on"
++              placeholder="描述身处此地的感受——启用注入后，这段内容会加入故事"
+             />
+           </label>
+ 
+diff --git a/web_ui/src/pages/chat/ChatHeader.tsx b/web_ui/src/pages/chat/ChatHeader.tsx
+index 53e215d..8b03a99 100644
+--- a/web_ui/src/pages/chat/ChatHeader.tsx
++++ b/web_ui/src/pages/chat/ChatHeader.tsx
+@@ -115,8 +115,8 @@ export function ChatHeader({
+           <button
+             ref={moreRef}
+             className="link-btn chat-header-more"
+-            aria-label="More chat options"
+-            title="More chat options"
++            aria-label="更多聊天选项"
++            title="更多聊天选项"
+             aria-haspopup="menu"
+             aria-expanded={menu !== null}
+             onClick={openMenu}
+diff --git a/web_ui/src/pages/chat/ChatModelSwitcher.tsx b/web_ui/src/pages/chat/ChatModelSwitcher.tsx
+index 2359872..bcae6af 100644
+--- a/web_ui/src/pages/chat/ChatModelSwitcher.tsx
++++ b/web_ui/src/pages/chat/ChatModelSwitcher.tsx
+@@ -234,7 +234,7 @@ function ModelSwitchSheet({
+       <div
+         className="modal model-switch-sheet"
+         role="dialog"
+-        aria-label="Change model"
++        aria-label="切换模型"
+         onClick={(e) => e.stopPropagation()}
+       >
+         <div className="model-switch-head">
+diff --git a/web_ui/src/pages/stoop/StoopAccountPage.tsx b/web_ui/src/pages/stoop/StoopAccountPage.tsx
+index 39091d7..daeac41 100644
+--- a/web_ui/src/pages/stoop/StoopAccountPage.tsx
++++ b/web_ui/src/pages/stoop/StoopAccountPage.tsx
+@@ -353,7 +353,7 @@ export function StoopAccountPage() {
+           <textarea
+             rows={3}
+             maxLength={300}
+-            placeholder="A short bio for your public porch page (300 characters max)."
++            placeholder="公开个人主页简介（最多 300 个字符）"
+             value={bio}
+             onChange={(e) => setBio(e.target.value)}
+           />
+diff --git a/web_ui/src/pages/stoop/StoopBrowsePage.tsx b/web_ui/src/pages/stoop/StoopBrowsePage.tsx
+index 6278b3d..16b0671 100644
+--- a/web_ui/src/pages/stoop/StoopBrowsePage.tsx
++++ b/web_ui/src/pages/stoop/StoopBrowsePage.tsx
+@@ -78,7 +78,7 @@ export function StoopBrowsePage() {
+     <div className="stoop-browse">
+       <form className="stoop-search" onSubmit={search}>
+         <input
+-          placeholder="Search characters, #tags, @creators…"
++          placeholder="搜索角色、#标签、@创作者……"
+           value={q}
+           onChange={(e) => setQ(e.target.value)}
+         />
+diff --git a/web_ui/src/pages/stoop/StoopCardPage.tsx b/web_ui/src/pages/stoop/StoopCardPage.tsx
+index 7454e6e..4b4f92c 100644
+--- a/web_ui/src/pages/stoop/StoopCardPage.tsx
++++ b/web_ui/src/pages/stoop/StoopCardPage.tsx
+@@ -143,7 +143,7 @@ export function StoopCardPage() {
+               <button
+                 className={myVote === 1 ? 'active' : ''}
+                 onClick={() => void vote(1)}
+-                aria-label="Upvote"
++                aria-label="赞同"
+               >
+                 ▲
+               </button>
+@@ -151,7 +151,7 @@ export function StoopCardPage() {
+               <button
+                 className={myVote === -1 ? 'active' : ''}
+                 onClick={() => void vote(-1)}
+-                aria-label="Downvote"
++                aria-label="反对"
+               >
+                 ▼
+               </button>
+diff --git a/web_ui/src/pages/stoop/StoopCardSections.tsx b/web_ui/src/pages/stoop/StoopCardSections.tsx
+index 3fa22bc..5321019 100644
+--- a/web_ui/src/pages/stoop/StoopCardSections.tsx
++++ b/web_ui/src/pages/stoop/StoopCardSections.tsx
+@@ -189,9 +189,9 @@ function GroupBody({ card, name }: { card: CardMap; name: string }) {
+   return (
+     <>
+       <Section title="群聊" body={stoopGroupTurnLabel(card, members.length)} />
+-      <Section title="Group scenario" body={textOf(card, 'scenario')} />
+-      <Section title="Group greeting" body={textOf(card, 'first_message') || textOf(card, 'first_mes')} />
+-      <LoreSection card={card} title="Group lore" />
++      <Section title="群组情境" body={textOf(card, 'scenario')} />
++      <Section title="群组开场白" body={textOf(card, 'first_message') || textOf(card, 'first_mes')} />
++      <LoreSection card={card} title="群组设定" />
+       <Section title="Group system prompt" body={textOf(card, 'system_prompt')} />
+       {members.length > 0 && (
+         <section className="card stoop-section">
+@@ -201,7 +201,7 @@ function GroupBody({ card, name }: { card: CardMap; name: string }) {
+               <>
+                 <button
+                   className="icon-btn"
+-                  title="Previous member"
++                  title="上一位成员"
+                   disabled={i === 0}
+                   onClick={() => setIdx(i - 1)}
+                 >
+@@ -210,7 +210,7 @@ function GroupBody({ card, name }: { card: CardMap; name: string }) {
+                 <span className="muted small">{i + 1}/{members.length}</span>
+                 <button
+                   className="icon-btn"
+-                  title="Next member"
++                  title="下一位成员"
+                   disabled={i === members.length - 1}
+                   onClick={() => setIdx(i + 1)}
+                 >
+@@ -231,7 +231,7 @@ function WorldBody({ card }: { card: CardMap }) {
+   const traits = stoopWorldTraits(card);
+   return (
+     <>
+-      <Section title="About this place" body={textOf(card, 'description')} />
++      <Section title="关于此处" body={textOf(card, 'description')} />
+       {climateEnabled ? (
+         <>
+           <Section title="气候" body={stoopWorldClimate(card)} />
+@@ -253,7 +253,7 @@ function WorldBody({ card }: { card: CardMap }) {
+           </p>
+         </section>
+       )}
+-      <LoreSection card={card} title="Lore" />
++      <LoreSection card={card} title="设定资料" />
+     </>
+   );
+ }
+diff --git a/web_ui/src/pages/stoop/StoopDiscussion.tsx b/web_ui/src/pages/stoop/StoopDiscussion.tsx
+index 74ff91d..c73b0d4 100644
+--- a/web_ui/src/pages/stoop/StoopDiscussion.tsx
++++ b/web_ui/src/pages/stoop/StoopDiscussion.tsx
+@@ -256,7 +256,7 @@ function ReportBox({
+       <textarea
+         rows={2}
+         value={reason}
+-        placeholder="Why are you reporting this?"
++        placeholder="请说明举报原因"
+         onChange={(e) => setReason(e.target.value)}
+       />
+       {error && <p className="error">{error}</p>}
+diff --git a/web_ui/src/pages/stoop/StoopHomePage.tsx b/web_ui/src/pages/stoop/StoopHomePage.tsx
+index c91fb8d..35db322 100644
+--- a/web_ui/src/pages/stoop/StoopHomePage.tsx
++++ b/web_ui/src/pages/stoop/StoopHomePage.tsx
+@@ -68,7 +68,7 @@ export function StoopHomePage() {
+     <div className="stoop-home">
+       <form className="stoop-search" onSubmit={search}>
+         <input
+-          placeholder="Search characters, #tags, @creators…"
++          placeholder="搜索角色、#标签、@创作者……"
+           value={q}
+           onChange={(e) => setQ(e.target.value)}
+         />
+@@ -80,7 +80,7 @@ export function StoopHomePage() {
+       {error && <p className="error">{error}</p>}
+       <Carousel title="★ Mod picks" cards={picks} />
+       <Carousel title="New from creators you follow" cards={following} />
+-      <Carousel title="New groups" cards={groups} />
++      <Carousel title="最新群组" cards={groups} />
+       {!loading && !error && picks.length + following.length + groups.length === 0 && (
+         <p className="muted">这里还没有内容——试试浏览全部内容。</p>
+       )}
+diff --git a/web_ui/src/pages/stoop/StoopInboxPage.tsx b/web_ui/src/pages/stoop/StoopInboxPage.tsx
+index e6d4449..b8ee1c8 100644
+--- a/web_ui/src/pages/stoop/StoopInboxPage.tsx
++++ b/web_ui/src/pages/stoop/StoopInboxPage.tsx
+@@ -99,7 +99,7 @@ export function StoopInboxPage() {
+       <div className="stoop-composer">
+         <textarea
+           rows={2}
+-          placeholder="Write a message…"
++          placeholder="发送消息……"
+           value={draft}
+           onChange={(e) => onDraft(e.target.value)}
+           onKeyDown={(e) => {
+diff --git a/web_ui/src/pages/story/StudioHeader.tsx b/web_ui/src/pages/story/StudioHeader.tsx
+index 67ae22f..7061d16 100644
+--- a/web_ui/src/pages/story/StudioHeader.tsx
++++ b/web_ui/src/pages/story/StudioHeader.tsx
+@@ -101,7 +101,7 @@ export function StudioHeader({
+         </div>
+       )}
+       {renaming && (
+-        <FieldsDialog title="重命名" confirmLabel="Rename" required="title"
++        <FieldsDialog title="重命名" confirmLabel="重命名" required="title"
+           fields={[{ key: 'title', hint: 'Title', value: p.title, testid: 'story-rename' }]}
+           onSubmit={(v) => { void rename(v.title); }} onCancel={() => setRenaming(false)} />
+       )}
+diff --git a/web_ui/src/pages/story/cast/CastCard.tsx b/web_ui/src/pages/story/cast/CastCard.tsx
+index ba99d77..255971b 100644
+--- a/web_ui/src/pages/story/cast/CastCard.tsx
++++ b/web_ui/src/pages/story/cast/CastCard.tsx
+@@ -74,7 +74,7 @@ export function CastCard({ member: m, portrait, studio, running, painting, canPa
+       {(m.voice_sample || secret || chipPainting) && (
+         <div className="s-chips">
+           {m.voice_sample && <Chip>Voice: {shortText(m.voice_sample)}</Chip>}
+-          {secret && <Chip tone="honey">Secret: {shortText(secret)}</Chip>}
++          {secret && <Chip tone="honey">{`秘密：${shortText(secret)}`}</Chip>}
+           {chipPainting && paintingChip}
+         </div>
+       )}
+diff --git a/web_ui/src/pages/story/director/PlanCard.tsx b/web_ui/src/pages/story/director/PlanCard.tsx
+index ffd66f7..0e6f71c 100644
+--- a/web_ui/src/pages/story/director/PlanCard.tsx
++++ b/web_ui/src/pages/story/director/PlanCard.tsx
+@@ -27,7 +27,7 @@ export function PlanCard({ p, plan, running, onToggle, onRefine, onDiscard, onAp
+         <span className="s-key s-grow">{planHeading(plan)}</span>
+         {plan.review === 'consistent' && <Chip tone="teal">审核通过：内容一致</Chip>}
+         {plan.review && plan.review !== 'consistent' && (
+-          <Chip tone="honey clip" title={plan.review}>Review: {plan.review}</Chip>
++          <Chip tone="honey clip" title={plan.review}>{`审核：${plan.review}`}</Chip>
+         )}
+       </div>
+       {plan.evaluation && <p className="s-muted s-body">{plan.evaluation}</p>}
+diff --git a/web_ui/src/pages/story/lore/FactDialogs.tsx b/web_ui/src/pages/story/lore/FactDialogs.tsx
+index b8e992a..9e90aa0 100644
+--- a/web_ui/src/pages/story/lore/FactDialogs.tsx
++++ b/web_ui/src/pages/story/lore/FactDialogs.tsx
+@@ -26,7 +26,7 @@ export function FactDialog({ fact, onSave, onCancel }: {
+   const submit = () => { if (ready) onSave({ category, key, value, entity }); };
+   const enter = (e: KeyboardEvent) => { if (e.key === 'Enter') submit(); };
+   return (
+-    <Dialog title={fact ? 'Edit fact' : 'Add fact'} wide testid="fact-dialog" onClose={onCancel} actions={(
++    <Dialog title={fact ? '编辑事实条目' : '添加事实条目'} wide testid="fact-dialog" onClose={onCancel} actions={(
+       <>
+         <button type="button" className="s-btn-ghost" onClick={onCancel}>取消</button>
+         <button type="button" className="s-btn-primary" data-testid="story-dialog-confirm" disabled={!ready} onClick={submit}>
+diff --git a/web_ui/src/pages/story/lore/SearchDialog.tsx b/web_ui/src/pages/story/lore/SearchDialog.tsx
+index c31b8fa..f18436a 100644
+--- a/web_ui/src/pages/story/lore/SearchDialog.tsx
++++ b/web_ui/src/pages/story/lore/SearchDialog.tsx
+@@ -42,7 +42,7 @@ export function SearchDialog({ id, onClose }: { id: string; onClose: () => void
+     )}>
+       <div className="s-w520">
+         <textarea className="s-textarea" rows={2} autoFocus aria-label="描述一个情节点" data-testid="lore-search-query"
+-          placeholder={'Describe a beat, e.g. "Mara haggles at the salt market"'}
++          placeholder={'描述一个情节，例如“玛拉在盐市讨价还价”'}
+           value={query} onChange={(e) => setQuery(e.target.value)} />
+       </div>
+       <div className="s-row">
+diff --git a/web_ui/src/pages/story/relationships/PairDialog.tsx b/web_ui/src/pages/story/relationships/PairDialog.tsx
+index 4160bf9..7dbffa5 100644
+--- a/web_ui/src/pages/story/relationships/PairDialog.tsx
++++ b/web_ui/src/pages/story/relationships/PairDialog.tsx
+@@ -31,7 +31,7 @@ export function PairDialog({ names, rel, onSave, onCancel }: {
+     if (name === to) setTo(names.find((n) => n !== name) ?? name);
+   };
+   return (
+-    <Dialog title={rel ? `${rel.from} → ${rel.to}` : 'Add pair'} wide testid="rel-dialog" onClose={onCancel} actions={(
++    <Dialog title={rel ? `${rel.from} → ${rel.to}` : '添加关系对'} wide testid="rel-dialog" onClose={onCancel} actions={(
+       <>
+         <button type="button" className="s-btn-ghost" onClick={onCancel}>取消</button>
+         <button type="button" className="s-btn-primary" data-testid="story-dialog-confirm" disabled={!ready} onClick={submit}>
+diff --git a/web_ui/src/pages/story/runlog/RunDialog.tsx b/web_ui/src/pages/story/runlog/RunDialog.tsx
+index e5f5c4d..6ee97e0 100644
+--- a/web_ui/src/pages/story/runlog/RunDialog.tsx
++++ b/web_ui/src/pages/story/runlog/RunDialog.tsx
+@@ -26,7 +26,7 @@ export function RunDialog({ entry: e, onClose }: { entry: StoryRunEntry; onClose
+   }, [copied]);
+ 
+   return (
+-    <Dialog title={e.stage || 'Model call'} testid="runlog-dialog" onClose={onClose} actions={(
++    <Dialog title={e.stage || '模型调用'} testid="runlog-dialog" onClose={onClose} actions={(
+       <>
+         <button type="button" className="s-btn-ghost" data-testid="runlog-copy"
+           onClick={() => { void copyText(bothText(e)).then((ok) => setCopied(ok ? 'yes' : 'no')); }}>
+diff --git a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+index 8dcc48d..8137712 100644
+--- a/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
++++ b/web_ui/src/pages/story/setup/ModelPickerSheet.tsx
+@@ -198,7 +198,7 @@ export function ModelPickerSheet({ job, current, onPick, onClose }: {
+ 
+   return (
+     <>
+-      <Dialog sheet title={`${job} model`} onClose={onClose} testid="story-model-picker" actions={(
++      <Dialog sheet title={`${job} 模型`} onClose={onClose} testid="story-model-picker" actions={(
+         <>
+           {isHost && choice.backend !== 'kobold' && (
+             <button type="button" className="s-btn-ghost" style={{ marginRight: 'auto' }} disabled={fetching || !host} onClick={() => void refresh()}>测试</button>
+diff --git a/web_ui/src/pages/story/write/LensDialog.tsx b/web_ui/src/pages/story/write/LensDialog.tsx
+index a2fe330..a9d9bc4 100644
+--- a/web_ui/src/pages/story/write/LensDialog.tsx
++++ b/web_ui/src/pages/story/write/LensDialog.tsx
+@@ -22,7 +22,7 @@ export function LensDialog({ lenses, current, onPick, onAdd, onCancel }: {
+   onCancel: () => void;
+ }) {
+   return (
+-    <Dialog title="Writing lens for this scene" wide testid="story-lens-dialog" onClose={onCancel} actions={(
++    <Dialog title="本场景的写作视角" wide testid="story-lens-dialog" onClose={onCancel} actions={(
+       <>
+         <button type="button" className="s-btn-ghost" data-testid="story-lens-add" onClick={onAdd}>添加自定义视角</button>
+         <button type="button" className="s-btn-ghost" onClick={onCancel}>取消</button>
+diff --git a/web_ui/src/pages/story/write/WriteDialogs.tsx b/web_ui/src/pages/story/write/WriteDialogs.tsx
+index d95e8b0..c107055 100644
+--- a/web_ui/src/pages/story/write/WriteDialogs.tsx
++++ b/web_ui/src/pages/story/write/WriteDialogs.tsx
+@@ -24,7 +24,7 @@ export function GoToSceneDialog({ refs, labelOf, onPick, onCancel }: {
+   onCancel: () => void;
+ }) {
+   return (
+-    <Dialog title="Go to scene" wide testid="story-goto-scene" onClose={onCancel} actions={cancel(onCancel)}>
++    <Dialog title="跳转到场景" wide testid="story-goto-scene" onClose={onCancel} actions={cancel(onCancel)}>
+       <div className="s-col" style={{ gap: 0 }}>
+         {refs.map((ref) => (
+           <button key={`${ref.act}-${ref.index}`} type="button" className="s-listrow" onClick={() => onPick(ref)}>
