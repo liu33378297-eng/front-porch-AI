@@ -1,0 +1,10 @@
+diff --git a/web_ui/src/components/GenerationSettingsFields.tsx b/web_ui/src/components/GenerationSettingsFields.tsx
+--- a/web_ui/src/components/GenerationSettingsFields.tsx
++++ b/web_ui/src/components/GenerationSettingsFields.tsx
+@@ -88,5 +88,5 @@ export function replyFillsContextWarning(context: number, maxOutput: number): string | null {
+   if (context <= 0 || maxOutput < context) return null;
+   return (
+-    `最大输出 Token 数（${tokens(maxOutput)}）占满了整个上下文（${tokens(context)} Token），没有为角色设定或聊天历史留下空间。请降低输出上限或增加上下文长度。'
++    `最大输出 Token 数（${tokens(maxOutput)}）占满了整个上下文（${tokens(context)} Token），没有为角色设定或聊天历史留下空间。请降低输出上限或增加上下文长度。`
+   );
+ }
